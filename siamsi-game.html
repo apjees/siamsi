@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>เซียมซีสวนบัว</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chonburi&family=Itim&family=Mitr:wght@400;500;600&display=swap">
+<style>
+/* Layout: one-screen shrine scene (sign / garden SVG / shake controls), sheets slide over it. Single deliberate pastel-illustration look. */
+:root{
+  --ink:#2d2b4e; --muted:#635f86;
+  --sky1:#86c4e8; --sky2:#cfe7f0; --sky3:#f8edc9;
+  --red:#e2574c; --red-d:#b83c35; --gold:#f5d27b; --gold-d:#c9952f;
+  --cream:#fdf5e1; --paper:#fffaf0; --card:#ffffff; --line:#e7dcc0;
+  --stick:#47c086; --stick-d:#2c9a68; --grass:#a9dc8e; --grass-d:#86c774;
+  --pond:#9ed6ea; --pink:#f4a6b6; --blue:#3b82d6;
+  --lv0:#d6453b; --lv1:#2c9a68; --lv2:#3b78c9; --lv3:#8a5cc2;
+  --f-display:'Chonburi','Mitr',serif;
+  --f-cute:'Itim','Mitr',system-ui,sans-serif;
+  --f-ui:'Mitr',system-ui,sans-serif;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 48%,var(--sky3) 100%);color:var(--ink);font-family:var(--f-ui);overflow:hidden;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+.app{height:100%;display:grid;grid-template-rows:auto 1fr auto;max-width:560px;margin:0 auto;position:relative}
+.top{position:relative;z-index:3;display:flex;justify-content:center;padding-top:14px;padding-left:max(62px,calc(env(safe-area-inset-left,0px) + 56px));padding-right:max(62px,calc(env(safe-area-inset-right,0px) + 56px))}
+.sign{background:var(--red);border:3px solid var(--ink);border-radius:10px;padding:5px;box-shadow:0 4px 0 var(--ink);max-width:340px;width:100%}
+.sign-in{border:2px solid var(--gold);border-radius:6px;padding:8px 12px 7px;text-align:center}
+.sign h1{margin:0;font-family:var(--f-display);font-weight:400;color:#ffe7a3;font-size:clamp(24px,7.4vw,34px);line-height:1.25;text-wrap:balance;letter-spacing:.5px;text-shadow:0 2px 0 var(--red-d)}
+.sign p{margin:2px 0 0;font-size:12px;color:#ffe7a3;opacity:.9}
+
+.icon-btn{position:fixed;z-index:6;top:calc(10px + env(safe-area-inset-top,0px));width:42px;height:42px;border-radius:50%;border:2.5px solid var(--ink);background:var(--paper);display:grid;place-items:center;box-shadow:0 3px 0 var(--ink)}
+.icon-btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.icon-btn svg{width:22px;height:22px}
+#btnSound{left:max(10px,env(safe-area-inset-left,0px))}
+#btnMusic{left:max(10px,env(safe-area-inset-left,0px));top:calc(60px + env(safe-area-inset-top,0px))}
+#btnGear{right:max(10px,env(safe-area-inset-right,0px))}
+
+.scene-wrap{position:relative;min-height:0}
+#scene{width:100%;height:100%;display:block;overflow:visible;touch-action:none;user-select:none;-webkit-user-select:none}
+#drop{cursor:pointer}
+.glow{opacity:0}
+.landed .glow{animation:glow 1.1s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:.25}50%{opacity:1}}
+.sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 4.2s ease-in-out infinite alternate}
+.sway.b{animation-duration:5.4s;animation-delay:-2s}
+@keyframes sway{from{transform:rotate(-3.5deg)}to{transform:rotate(3.5deg)}}
+.koi{transform-box:fill-box;transform-origin:50% 50%;animation:swim 11s ease-in-out infinite}
+.koi.b{animation-duration:14s;animation-delay:-6s}
+@keyframes swim{0%{transform:translateX(0) scaleX(1)}46%{transform:translateX(46px) scaleX(1)}50%{transform:translateX(46px) scaleX(-1)}96%{transform:translateX(0) scaleX(-1)}100%{transform:translateX(0) scaleX(1)}}
+.rip{animation:rip 3.2s ease-in-out infinite}
+.rip.b{animation-delay:-1.6s}
+@keyframes rip{0%,100%{opacity:.25;transform:translateX(-3px)}50%{opacity:.95;transform:translateX(3px)}}
+.dfly{animation:hover 7s ease-in-out infinite}
+@keyframes hover{0%,100%{transform:translate(0,0)}20%{transform:translate(26px,-14px)}45%{transform:translate(40px,10px)}70%{transform:translate(8px,22px)}}
+.bfly{animation:flit 9s ease-in-out infinite}
+@keyframes flit{0%,100%{transform:translate(0,0) rotate(-8deg)}25%{transform:translate(-22px,-20px) rotate(10deg)}50%{transform:translate(-36px,6px) rotate(-6deg)}75%{transform:translate(-10px,18px) rotate(8deg)}}
+.drift{animation:drift 26s ease-in-out infinite alternate}
+.drift.b{animation-duration:34s;animation-delay:-8s}
+@keyframes drift{from{transform:translateX(-14px)}to{transform:translateX(14px)}}
+
+.controls{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;gap:10px;padding-block:8px calc(16px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.meter{width:min(280px,80%);height:14px;border:2.5px solid var(--ink);border-radius:99px;background:var(--paper);overflow:hidden}
+.meter{--c1:var(--stick);--c2:var(--stick-d);transition:transform .2s}
+.meter i{display:block;height:100%;width:0;background:repeating-linear-gradient(-45deg,var(--c1) 0 8px,var(--c2) 8px 16px);border-radius:99px;transition:width .08s linear}
+.meter.live i{animation:stripes .45s linear infinite}
+@keyframes stripes{to{background-position:22.63px 0}}
+.meter.s2{--c1:#ffd86b;--c2:#f0a93a}
+.meter.s3{--c1:#ff8a6b;--c2:var(--red);animation:throb .3s ease-in-out infinite}
+@keyframes throb{50%{transform:scale(1.06)}}
+#fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+.pop{position:absolute;left:50%;top:34%;z-index:3;pointer-events:none;white-space:nowrap;font-family:var(--f-display);font-size:30px;color:#fff6da;text-shadow:2px 0 0 var(--ink),-2px 0 0 var(--ink),0 2px 0 var(--ink),0 -2px 0 var(--ink),2px 2px 0 var(--ink),-2px 2px 0 var(--ink),2px -2px 0 var(--ink),-2px -2px 0 var(--ink),0 5px 0 var(--ink);animation:popText .95s ease-out forwards}
+.pop.big{font-size:44px;color:#ffe08a;top:30%}
+@keyframes popText{0%{transform:translate(-50%,-50%) scale(.3) rotate(-10deg);opacity:0}22%{transform:translate(-50%,-62%) scale(1.18) rotate(4deg);opacity:1}40%{transform:translate(-50%,-66%) scale(1) rotate(-2deg)}75%{opacity:1}100%{transform:translate(-50%,-120%) scale(.95);opacity:0}}
+.flash{position:fixed;inset:0;z-index:10;pointer-events:none;background:radial-gradient(circle at 50% 42%,#fffbe6 0%,rgba(255,236,160,.75) 30%,rgba(255,236,160,0) 70%);opacity:0}
+.flash.go{animation:flash .7s ease-out}
+@keyframes flash{0%{opacity:0}12%{opacity:1}100%{opacity:0}}
+.main-btn{min-width:220px;border:3px solid var(--ink);background:var(--red);color:#fff6da;font-family:var(--f-ui);font-weight:600;font-size:20px;padding:12px 28px;border-radius:99px;box-shadow:0 5px 0 var(--ink);letter-spacing:.3px}
+.main-btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--ink)}
+.main-btn[disabled]{opacity:.75;cursor:default}
+.main-btn.ready{background:var(--gold);color:var(--ink);animation:bob 1.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-3px)}}
+.hint{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;font-size:13.5px;color:var(--ink);text-align:center;min-height:30px}
+.chip{border:2px solid var(--ink);background:var(--paper);border-radius:99px;padding:3px 12px;font-size:13px}
+.chip.on{background:var(--stick);color:#fff}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#fff;margin-right:6px;vertical-align:1px}
+
+.toast{position:fixed;left:50%;bottom:calc(120px + env(safe-area-inset-bottom,0px));transform:translate(-50%,10px);opacity:0;z-index:60;background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;max-width:min(90vw,420px);text-align:center;transition:.25s;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- Fortune paper ---------- */
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(45,43,78,.5);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding-block:calc(20px + env(safe-area-inset-top,0px)) calc(24px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.slip-wrap{width:100%;max-width:420px;display:flex;flex-direction:column;gap:14px;margin:auto 0;perspective:900px}
+.slip{background:var(--paper);border:3px solid var(--ink);border-radius:6px;padding:9px;box-shadow:0 8px 0 rgba(45,43,78,.35);transform-origin:50% 0}
+.open .slip{animation:unfold .7s cubic-bezier(.2,.9,.3,1.15) both}
+@keyframes unfold{from{transform:rotateX(-85deg) scaleY(.2);opacity:0}to{transform:none;opacity:1}}
+.slip-frame{border:6px solid var(--red);position:relative;padding:18px 18px 14px}
+.slip-frame::before{content:"";position:absolute;inset:4px;border:1.5px solid var(--gold-d);pointer-events:none}
+.corner{position:absolute;width:22px;height:22px;color:var(--red)}
+.corner svg{width:100%;height:100%;display:block}
+.c-tl{top:7px;left:7px}.c-tr{top:7px;right:7px;transform:scaleX(-1)}.c-bl{bottom:7px;left:7px;transform:scaleY(-1)}.c-br{bottom:7px;right:7px;transform:scale(-1)}
+.slip-head{display:flex;align-items:center;gap:12px;padding:4px 10px 10px;border-bottom:1.5px dashed var(--line)}
+.slip-no{font-family:var(--f-display);color:var(--red);font-size:56px;line-height:1}
+.slip-no-meta{display:flex;flex-direction:column;gap:2px;min-width:0}
+.slip-no-meta b{font-weight:500;font-size:15px}
+.slip-no-meta span{font-size:12.5px;color:var(--muted)}
+.seal{margin-left:auto;flex:none;width:68px;height:68px;border-radius:50%;border:3px solid currentColor;display:grid;place-items:center;transform:rotate(-12deg);font-family:var(--f-display);font-size:14px;text-align:center;line-height:1.1;position:relative}
+.seal::after{content:"";position:absolute;inset:3px;border-radius:50%;border:1.5px solid currentColor;opacity:.6}
+.open .seal{animation:stamp .35s .55s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes stamp{from{transform:rotate(-12deg) scale(2.2);opacity:0}to{transform:rotate(-12deg) scale(1);opacity:1}}
+.lv0{color:var(--lv0)}.lv1{color:var(--lv1)}.lv2{color:var(--lv2)}.lv3{color:var(--lv3)}
+.seal.long{font-size:11.5px;padding:0 6px}
+.slip-title{margin:14px 6px 0;text-align:center;font-family:var(--f-ui);font-weight:600;font-size:19px;line-height:1.4;color:var(--red-d);text-wrap:balance}
+.slip-badge{align-self:center;margin:6px auto 0;display:table;font-size:12px;font-weight:500;letter-spacing:.3px;border:1.5px solid currentColor;border-radius:99px;padding:1px 10px}
+.slip-head-text{font-family:var(--f-cute);font-size:19px;line-height:1.6;text-align:center;margin:12px 6px 12px;text-wrap:balance;white-space:pre-line}
+.slip-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+.tag{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:2px 10px;font-size:12.5px;color:var(--muted)}
+button.tag{border-color:var(--ink);color:var(--ink);border-style:dashed}
+button.tag[aria-pressed=true]{background:var(--ink);color:#fff;border-style:solid}
+.gloss{margin-top:8px;background:var(--cream);border-radius:8px;padding:8px 11px;font-size:13.5px;line-height:1.5}
+.gloss b{font-weight:600}
+.slip-prize{margin-top:14px;display:flex;gap:12px;align-items:center;background:#fff3c4;border:2px dashed var(--gold-d);border-radius:10px;padding:10px 12px}
+.slip-prize svg{flex:none;width:40px;height:40px}
+.slip-prize h3{margin:0 0 2px;font-size:13px;font-weight:600;color:var(--red-d);letter-spacing:.3px}
+.slip-prize p{margin:0;font-family:var(--f-cute);font-size:17px;line-height:1.45;white-space:pre-line;overflow-wrap:anywhere}
+.open .slip-prize{animation:prizeIn .5s .75s cubic-bezier(.3,1.5,.5,1) both,prizeGlow 1.6s 1.3s ease-in-out infinite}
+@keyframes prizeIn{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+@keyframes prizeGlow{50%{box-shadow:0 0 0 5px rgba(245,210,123,.55)}}
+.slip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.slip-sec{background:var(--cream);border-radius:8px;padding:9px 11px;min-width:0}
+.slip-sec h3{margin:0 0 3px;font-size:13px;font-weight:500;color:var(--red-d);letter-spacing:.3px}
+.slip-sec p{margin:0;font-family:var(--f-cute);font-size:15.5px;line-height:1.45;white-space:pre-line;overflow-wrap:anywhere}
+.slip-sec.wide{grid-column:1/-1}
+@media (max-width:460px){.slip-grid{grid-template-columns:1fr}}
+.slip-extra{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;margin-top:12px;font-size:13px;color:var(--muted)}
+.slip-extra b{color:var(--ink);font-weight:500}
+.slip-foot{text-align:center;margin-top:10px;font-size:12px;color:var(--muted);letter-spacing:.4px}
+.slip-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{border:2.5px solid var(--ink);background:var(--paper);border-radius:99px;padding:9px 18px;font-weight:500;box-shadow:0 3px 0 var(--ink)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.btn.primary{background:var(--red);color:#fff6da}
+.btn.gold{background:var(--gold)}
+.btn.sm{padding:5px 12px;font-size:13px;box-shadow:0 2px 0 var(--ink)}
+.btn.danger{background:#fde3df;color:var(--red-d)}
+
+/* ---------- Creator settings ---------- */
+.sheet{position:fixed;inset:0;z-index:25;background:var(--cream);overflow-y:auto;overscroll-behavior:contain}
+.sheet-in{max-width:760px;margin:0 auto;padding-block:calc(16px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+.sheet-bar{display:flex;align-items:center;gap:12px}
+.sheet-bar h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:22px;color:var(--red-d);flex:1;min-width:0}
+.card{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card h3{margin:0;font-size:16px;font-weight:600}
+.card p.note{margin:0;font-size:13.5px;color:var(--muted);line-height:1.55}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--cream);border-radius:10px;padding:10px;text-align:center}
+.stat b{display:block;font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+.field{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);min-width:0}
+.field > span{font-weight:500}
+input[type=number],input[type=text],input[type=password],select,textarea{border:2px solid #cfc6aa;background:#fff;border-radius:9px;padding:7px 10px;font-size:15px;min-width:0;width:100%}
+textarea{font-family:var(--f-ui);line-height:1.5;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);outline:none}
+.row-flex{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.row-flex .field{flex:1 1 140px}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.fchip{border:2px solid var(--ink);background:#fff;border-radius:99px;padding:3px 11px;font-size:13px}
+.fchip[aria-pressed=true]{background:var(--ink);color:#fff}
+.table{display:flex;flex-direction:column;border:2px solid var(--line);border-radius:12px;overflow:hidden}
+.trow{display:grid;grid-template-columns:52px 76px minmax(0,1fr) 92px 92px 74px 80px 64px;gap:8px;align-items:center;padding:7px 10px;border-top:1px solid var(--line);font-size:13.5px}
+.trow:first-child{border-top:0}
+.trow.thead{background:var(--cream);font-size:12px;color:var(--muted);font-weight:500}
+.trow.out{background:#f6f2e8;color:#9a96ad}
+.tno{font-weight:600;font-variant-numeric:tabular-nums}
+.tno small{font-weight:400;color:var(--muted);margin-left:3px}
+.lvtag{font-size:12px;border:1.5px solid currentColor;border-radius:99px;padding:1px 8px;text-align:center;white-space:nowrap}
+.tprev{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-family:var(--f-cute);font-size:14px}
+.trow input{padding:4px 6px;font-size:14px;font-variant-numeric:tabular-nums}
+.tpct,.tused{font-variant-numeric:tabular-nums;text-align:right}
+.tpct{font-weight:500}
+.edited{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold-d);margin-left:4px;vertical-align:2px}
+.mlabel{display:none}
+@media (max-width:640px){
+  .trow{grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-areas:"no lv pct edit" "prev prev prev prev" "w w lim used";row-gap:6px;padding:10px}
+  .trow.thead{display:none}
+  .tno{grid-area:no}.lvtag{grid-area:lv;justify-self:start}.tpct{grid-area:pct}.tedit{grid-area:edit}
+  .tprev{grid-area:prev}
+  .tw{grid-area:w}.tlim{grid-area:lim}.tused{grid-area:used;text-align:left;align-self:end;padding-bottom:6px}
+  .tw,.tlim{display:flex;flex-direction:column;gap:2px}
+  .mlabel{display:block;font-size:11.5px;color:var(--muted)}
+  .stats{grid-template-columns:1fr 1fr 1fr}
+  .stat b{font-size:18px}
+}
+.hist{display:flex;flex-direction:column;gap:4px;max-height:220px;overflow:auto;font-size:13.5px;font-variant-numeric:tabular-nums}
+.hist div{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:3px 0}
+.empty{color:var(--muted);font-size:13.5px}
+.gate{max-width:360px;margin:12vh auto 0;width:100%}
+.err{color:var(--red-d);font-size:13px;min-height:18px}
+.modal{position:fixed;inset:0;z-index:40;background:rgba(45,43,78,.5);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding-block:calc(20px + env(safe-area-inset-top,0px)) 24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.modal .card{width:100%;max-width:520px;margin:auto 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.grid2{grid-template-columns:1fr}}
+code{background:var(--cream);border-radius:5px;padding:1px 5px;font-size:12.5px}
+@media (prefers-reduced-motion:reduce){
+  .drift,.landed .glow,.main-btn.ready,.sway,.koi,.rip,.dfly,.bfly{animation:none}
+  .landed .glow{opacity:1}
+  .open .slip,.open .seal{animation-duration:.01s}
+  .open .slip-prize{animation:none}
+  .meter.s3,.meter.live i{animation:none}
+  .flash.go{animation-duration:.3s}
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <header class="top">
+    <div class="sign"><div class="sign-in">
+      <h1 id="title">เซียมซีสวนบัว</h1>
+      <p id="subtitle">ตั้งจิตอธิษฐาน แล้วเขย่าให้ไม้หล่นมา ๑ อัน</p>
+    </div></div>
+  </header>
+
+  <div class="scene-wrap">
+    <svg id="scene" viewBox="0 0 400 600" preserveAspectRatio="xMidYMax meet" aria-label="กระบอกเซียมซีในสวนบัว ลากไปมาเพื่อเขย่า" role="img">
+      <defs>
+        <symbol id="cloud" viewBox="0 0 124 62">
+          <path d="M6 56 Q2 44 14 39 Q11 22 30 21 Q36 6 56 10 Q70 -1 86 12 Q106 9 107 30 Q121 34 116 56 Z" fill="#fff" stroke="#2d2b4e" stroke-width="2.6" stroke-linejoin="round"/>
+          <path d="M44 48 q-9 0 -9 -8 q0 -7 7 -7 q6 0 6 6 q0 4 -4 4" fill="none" stroke="#2d2b4e" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M82 48 q9 0 9 -8 q0 -7 -7 -7 q-6 0 -6 6 q0 4 4 4" fill="none" stroke="#2d2b4e" stroke-width="2.4" stroke-linecap="round"/>
+        </symbol>
+        <symbol id="lotus" viewBox="0 0 40 46">
+          <path d="M20 30 q-3 8 -1 15" fill="none" stroke="#2c9a68" stroke-width="2.6" stroke-linecap="round"/>
+          <path d="M20 31 C8 30 3 20 4 12 C10 14 16 20 20 31 Z" fill="#f4a6b6" stroke="#2d2b4e" stroke-width="2"/>
+          <path d="M20 31 C32 30 37 20 36 12 C30 14 24 20 20 31 Z" fill="#f4a6b6" stroke="#2d2b4e" stroke-width="2"/>
+          <path d="M20 31 C13 24 13 10 20 2 C27 10 27 24 20 31 Z" fill="#fbc9d3" stroke="#2d2b4e" stroke-width="2"/>
+        </symbol>
+        <clipPath id="win"><circle cx="200" cy="440" r="41"/></clipPath>
+        <radialGradient id="auraG"><stop offset="0" stop-color="#fff6c8" stop-opacity=".95"/><stop offset=".45" stop-color="#ffd86b" stop-opacity=".55"/><stop offset="1" stop-color="#ffd86b" stop-opacity="0"/></radialGradient>
+      </defs>
+      <g id="rays" opacity="0"></g>
+
+      <!-- sky details -->
+      <circle cx="330" cy="96" r="30" fill="#ffe08a" stroke="#2d2b4e" stroke-width="2.6"/>
+      <g class="drift"><use href="#cloud" x="-30" y="70" width="110" height="55"/><use href="#cloud" x="300" y="112" width="96" height="48"/></g>
+      <g class="drift b"><use href="#cloud" x="18" y="250" width="86" height="43"/><use href="#cloud" x="312" y="268" width="90" height="45"/><use href="#cloud" x="-120" y="160" width="100" height="50"/><use href="#cloud" x="430" y="200" width="100" height="50"/></g>
+
+      <!-- ground -->
+      <path d="M-700 446 Q-520 384 -330 424 Q-200 374 -50 416 Q50 376 150 412 Q250 370 345 408 Q450 372 570 416 Q800 384 1100 436 L1100 470 L-700 470 Z" fill="#bfe3cf" stroke="#2d2b4e" stroke-width="2.2"/>
+      <path d="M-700 440 Q200 424 1100 440 L1100 470 L-700 470 Z" fill="#a9dc8e" stroke="#2d2b4e" stroke-width="2.4"/>
+      <g stroke="#2d2b4e" stroke-width="2.2" fill="#86c774"><circle cx="-60" cy="428" r="22"/><circle cx="-28" cy="434" r="16"/><circle cx="150" cy="430" r="13"/><circle cx="168" cy="434" r="10"/><circle cx="250" cy="432" r="12"/><circle cx="430" cy="430" r="20"/><circle cx="462" cy="436" r="15"/><circle cx="560" cy="430" r="22"/><circle cx="-190" cy="432" r="20"/></g>
+      <g fill="#f4a6b6" stroke="#2d2b4e" stroke-width="1.4"><circle cx="-66" cy="420" r="3.2"/><circle cx="-48" cy="432" r="3"/><circle cx="436" cy="422" r="3.2"/><circle cx="424" cy="436" r="3"/><circle cx="154" cy="424" r="2.6"/></g>
+      <g stroke="#2d2b4e" stroke-width="2.2" stroke-linejoin="round">
+  <rect x="36" y="400" width="5" height="36" fill="#e2574c"/><rect x="58" y="400" width="5" height="36" fill="#e2574c"/><rect x="80" y="400" width="5" height="36" fill="#e2574c"/>
+  <rect x="30" y="432" width="61" height="7" rx="1.5" fill="#fdf5e1"/>
+  <path d="M41 418 H80" stroke-width="1.8"/><path d="M41 424 H80" stroke-width="1.8"/>
+  <path d="M16 402 Q60 392 105 402 L93 385 Q60 378 28 385 Z" fill="#e2574c"/>
+  <path d="M16 402 q-6 -1 -8 -7 M105 402 q6 -1 8 -7" fill="none" stroke-linecap="round"/>
+  <path d="M38 385 Q60 380 83 385 L74 370 Q60 366 47 370 Z" fill="#f4a6b6"/>
+  <circle cx="60.5" cy="363" r="4.2" fill="#f5d27b"/>
+  <path d="M30 393 Q60 386 91 393" fill="none" stroke="#f5d27b" stroke-width="1.6"/>
+</g>
+      <g stroke="#2d2b4e" stroke-width="2.2" stroke-linejoin="round">
+  <path d="M300 446 Q345 398 390 446 L390 456 Q345 414 300 456 Z" fill="#e2574c"/>
+  <path d="M304 436 Q345 392 386 436" fill="none" stroke-width="2"/>
+  <path d="M312 428 v12 M328 414 v13 M345 408 v13 M362 414 v13 M378 428 v12" stroke-width="2"/>
+  <path d="M300 446 Q345 398 390 446" fill="none" stroke="#f5d27b" stroke-width="1.4"/>
+</g>
+      <path d="M-700 452 Q200 440 1100 452 L1100 506 Q200 494 -700 506 Z" fill="#9ed6ea" stroke="#2d2b4e" stroke-width="2.6"/>
+      <path d="M-700 478 Q200 468 1100 478 L1100 506 Q200 494 -700 506 Z" fill="#8bcbe3" opacity=".7"/>
+      <path class="rip" d="M17.0 462 q6.5 -4 13.0 0 q6.5 4 13.0 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+      <path class="rip b" d="M97.0 474 q5.5 -4 11.0 0 q5.5 4 11.0 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+      <path class="rip b" d="M288.0 462 q6.0 -4 12.0 0 q6.0 4 12.0 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+      <path class="rip" d="M359.0 480 q6.5 -4 13.0 0 q6.5 4 13.0 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+      <path class="rip" d="M-103.0 470 q6.5 -4 13.0 0 q6.5 4 13.0 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+      <path class="rip b" d="M467.0 468 q6.5 -4 13.0 0 q6.5 4 13.0 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+      <path class="rip" d="M83.0 456 q4.5 -4 9.0 0 q4.5 4 9.0 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+      <g transform="translate(64 477) scale(1)"><g class="koi"><path d="M-10 0 L-19 -6 L-16 0 L-19 6 Z" fill="#f39a4a" stroke="#2d2b4e" stroke-width="1.6" stroke-linejoin="round"/><ellipse rx="11" ry="5" fill="#fff" stroke="#2d2b4e" stroke-width="1.6"/><path d="M-5 -4.4 Q0 -1 -3 4.4 Q-8 2 -5 -4.4Z M4 -4.6 Q8 -3 7 1 Q3 0 4 -4.6Z" fill="#f39a4a"/><circle cx="7" cy="-1" r="1" fill="#2d2b4e"/></g></g>
+      <g transform="translate(336 474) scale(0.9)"><g class="koi b"><path d="M-10 0 L-19 -6 L-16 0 L-19 6 Z" fill="#e2574c" stroke="#2d2b4e" stroke-width="1.6" stroke-linejoin="round"/><ellipse rx="11" ry="5" fill="#fff" stroke="#2d2b4e" stroke-width="1.6"/><path d="M-5 -4.4 Q0 -1 -3 4.4 Q-8 2 -5 -4.4Z M4 -4.6 Q8 -3 7 1 Q3 0 4 -4.6Z" fill="#e2574c"/><circle cx="7" cy="-1" r="1" fill="#2d2b4e"/></g></g>
+      <g transform="translate(-120 480) scale(0.9)"><g class="koi b"><path d="M-10 0 L-19 -6 L-16 0 L-19 6 Z" fill="#f39a4a" stroke="#2d2b4e" stroke-width="1.6" stroke-linejoin="round"/><ellipse rx="11" ry="5" fill="#fff" stroke="#2d2b4e" stroke-width="1.6"/><path d="M-5 -4.4 Q0 -1 -3 4.4 Q-8 2 -5 -4.4Z M4 -4.6 Q8 -3 7 1 Q3 0 4 -4.6Z" fill="#f39a4a"/><circle cx="7" cy="-1" r="1" fill="#2d2b4e"/></g></g>
+      <g transform="translate(20 458)"><path d="M0 0 L15.6 -3.4 A17.0 6.1 0 1 0 16.3 2.4 Z" fill="#7cc38c" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-12.2 -1.5 M0 0 L-6.8 3.7 M0 0 L3.4 -4.4" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <g transform="translate(118 456) scale(-1 1)"><path d="M0 0 L13.8 -3.0 A15.0 5.4 0 1 0 14.4 2.2 Z" fill="#8fd19e" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-10.8 -1.3 M0 0 L-6.0 3.2 M0 0 L3.0 -3.9" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <g transform="translate(290 457)"><path d="M0 0 L14.7 -3.2 A16.0 5.8 0 1 0 15.4 2.3 Z" fill="#7cc38c" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-11.5 -1.4 M0 0 L-6.4 3.5 M0 0 L3.2 -4.1" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <g transform="translate(388 460) scale(-1 1)"><path d="M0 0 L16.6 -3.6 A18.0 6.5 0 1 0 17.3 2.6 Z" fill="#8fd19e" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-13.0 -1.6 M0 0 L-7.2 3.9 M0 0 L3.6 -4.7" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <g transform="translate(-60 462)"><path d="M0 0 L18.4 -4.0 A20.0 7.2 0 1 0 19.2 2.9 Z" fill="#8fd19e" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-14.4 -1.7 M0 0 L-8.0 4.3 M0 0 L4.0 -5.2" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <g transform="translate(470 460) scale(-1 1)"><path d="M0 0 L18.4 -4.0 A20.0 7.2 0 1 0 19.2 2.9 Z" fill="#7cc38c" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-14.4 -1.7 M0 0 L-8.0 4.3 M0 0 L4.0 -5.2" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <g transform="translate(-170 468) scale(-1 1)"><path d="M0 0 L20.2 -4.4 A22.0 7.9 0 1 0 21.1 3.2 Z" fill="#7cc38c" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-15.8 -1.9 M0 0 L-8.8 4.8 M0 0 L4.4 -5.7" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <g transform="translate(560 470)"><path d="M0 0 L20.2 -4.4 A22.0 7.9 0 1 0 21.1 3.2 Z" fill="#8fd19e" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-15.8 -1.9 M0 0 L-8.8 4.8 M0 0 L4.4 -5.7" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <use href="#lotus" x="91.0" y="441.3" width="18" height="20.7"/>
+      <use href="#lotus" x="299.0" y="441.3" width="18" height="20.7"/>
+      <use href="#lotus" x="-50.0" y="445.0" width="20" height="23.0"/>
+      <use href="#lotus" x="442.0" y="445.0" width="20" height="23.0"/>
+      <g class="sway b"><path d="M22 490 Q26 453 22 416" fill="none" stroke="#2c9a68" stroke-width="3" stroke-linecap="round"/><path d="M-7.0 416 Q22 395.1 51.0 414 Q24 431.1 -7.0 416 Z" fill="#8fd19e" stroke="#2d2b4e" stroke-width="2.2" stroke-linejoin="round"/><path d="M22 417 L4.6 415 M22 417 L39.4 414 M22 417 L22 407.9" fill="none" stroke="#2c9a68" stroke-width="1.4" stroke-linecap="round" opacity=".75"/></g>
+      <g class="sway b"><path d="M52 488 Q48 460 52 432" fill="none" stroke="#2c9a68" stroke-width="2.6" stroke-linecap="round"/><path d="M42 420 L62 420 L57 434 L47 434 Z" fill="#cfe08f" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><ellipse cx="52" cy="420" rx="10" ry="3.4" fill="#e3eda9" stroke="#2d2b4e" stroke-width="1.8"/><g fill="#2c9a68"><circle cx="47.5" cy="420" r="1.1"/><circle cx="52" cy="420.6" r="1.1"/><circle cx="56.5" cy="420" r="1.1"/></g></g>
+      <g class="sway"><path d="M84 490 Q79 447 85 404" fill="none" stroke="#2c9a68" stroke-width="3" stroke-linecap="round"/><use href="#lotus" x="70.0" y="380.6" width="30" height="34.5"/></g>
+      <g class="sway"><path d="M108 488 Q112 464 108 440" fill="none" stroke="#2c9a68" stroke-width="2.6" stroke-linecap="round"/><path d="M108 443 C99 436 104 424 108 420 C112 424 117 436 108 443 Z" fill="#f4a6b6" stroke="#2d2b4e" stroke-width="2"/></g>
+      <g class="sway"><path d="M-40 492 Q-36 461 -40 430" fill="none" stroke="#2c9a68" stroke-width="3" stroke-linecap="round"/><path d="M-67.0 430 Q-40 410.6 -13.0 428 Q-38 444.0 -67.0 430 Z" fill="#8fd19e" stroke="#2d2b4e" stroke-width="2.2" stroke-linejoin="round"/><path d="M-40 431 L-56.2 429 M-40 431 L-23.8 428 M-40 431 L-40 422.4" fill="none" stroke="#2c9a68" stroke-width="1.4" stroke-linecap="round" opacity=".75"/></g>
+      <g class="sway"><path d="M378 490 Q382 452 378 414" fill="none" stroke="#2c9a68" stroke-width="3" stroke-linecap="round"/><path d="M349.0 414 Q378 393.1 407.0 412 Q380 429.1 349.0 414 Z" fill="#8fd19e" stroke="#2d2b4e" stroke-width="2.2" stroke-linejoin="round"/><path d="M378 415 L360.6 413 M378 415 L395.4 412 M378 415 L378 405.9" fill="none" stroke="#2c9a68" stroke-width="1.4" stroke-linecap="round" opacity=".75"/></g>
+      <g class="sway b"><path d="M316 490 Q311 446 317 402" fill="none" stroke="#2c9a68" stroke-width="3" stroke-linecap="round"/><use href="#lotus" x="302.0" y="378.6" width="30" height="34.5"/></g>
+      <g class="sway b"><path d="M294 488 Q298 463 294 438" fill="none" stroke="#2c9a68" stroke-width="2.6" stroke-linecap="round"/><path d="M294 441 C285 434 290 422 294 418 C298 422 303 434 294 441 Z" fill="#f4a6b6" stroke="#2d2b4e" stroke-width="2"/></g>
+      <g class="sway"><path d="M346 488 Q342 462 346 436" fill="none" stroke="#2c9a68" stroke-width="2.6" stroke-linecap="round"/><path d="M336 424 L356 424 L351 438 L341 438 Z" fill="#cfe08f" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><ellipse cx="346" cy="424" rx="10" ry="3.4" fill="#e3eda9" stroke="#2d2b4e" stroke-width="1.8"/><g fill="#2c9a68"><circle cx="341.5" cy="424" r="1.1"/><circle cx="346" cy="424.6" r="1.1"/><circle cx="350.5" cy="424" r="1.1"/></g></g>
+      <g class="sway"><path d="M440 492 Q435 458 441 424" fill="none" stroke="#2c9a68" stroke-width="3" stroke-linecap="round"/><use href="#lotus" x="427.0" y="402.2" width="28" height="32.2"/></g>
+      <g class="sway b"><path d="M500 492 Q504 462 500 432" fill="none" stroke="#2c9a68" stroke-width="3" stroke-linecap="round"/><path d="M473.0 432 Q500 412.6 527.0 430 Q502 446.0 473.0 432 Z" fill="#8fd19e" stroke="#2d2b4e" stroke-width="2.2" stroke-linejoin="round"/><path d="M500 433 L483.8 431 M500 433 L516.2 430 M500 433 L500 424.4" fill="none" stroke="#2c9a68" stroke-width="1.4" stroke-linecap="round" opacity=".75"/></g>
+      <g transform="translate(52 484)"><path d="M0 0 L21.2 -4.6 A23.0 8.3 0 1 0 22.1 3.3 Z" fill="#8fd19e" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-16.6 -2.0 M0 0 L-9.2 5.0 M0 0 L4.6 -6.0" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <g transform="translate(112 490) scale(-1 1)"><path d="M0 0 L16.6 -3.6 A18.0 6.5 0 1 0 17.3 2.6 Z" fill="#7cc38c" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-13.0 -1.6 M0 0 L-7.2 3.9 M0 0 L3.6 -4.7" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <g transform="translate(292 490)"><path d="M0 0 L17.5 -3.8 A19.0 6.8 0 1 0 18.2 2.7 Z" fill="#8fd19e" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-13.7 -1.6 M0 0 L-7.6 4.1 M0 0 L3.8 -4.9" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <g transform="translate(352 484) scale(-1 1)"><path d="M0 0 L22.1 -4.8 A24.0 8.6 0 1 0 23.0 3.5 Z" fill="#7cc38c" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-17.3 -2.1 M0 0 L-9.6 5.2 M0 0 L4.8 -6.2" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <g transform="translate(-30 488) scale(-1 1)"><path d="M0 0 L22.1 -4.8 A24.0 8.6 0 1 0 23.0 3.5 Z" fill="#7cc38c" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-17.3 -2.1 M0 0 L-9.6 5.2 M0 0 L4.8 -6.2" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <g transform="translate(430 488)"><path d="M0 0 L22.1 -4.8 A24.0 8.6 0 1 0 23.0 3.5 Z" fill="#8fd19e" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-17.3 -2.1 M0 0 L-9.6 5.2 M0 0 L4.8 -6.2" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <g transform="translate(-130 490)"><path d="M0 0 L23.0 -5.0 A25.0 9.0 0 1 0 24.0 3.6 Z" fill="#8fd19e" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-18.0 -2.2 M0 0 L-10.0 5.4 M0 0 L5.0 -6.5" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <g transform="translate(540 492) scale(-1 1)"><path d="M0 0 L23.0 -5.0 A25.0 9.0 0 1 0 24.0 3.6 Z" fill="#7cc38c" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-18.0 -2.2 M0 0 L-10.0 5.4 M0 0 L5.0 -6.5" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <use href="#lotus" x="48.0" y="458.4" width="24" height="27.6"/>
+      <use href="#lotus" x="332.0" y="458.4" width="24" height="27.6"/>
+      <g stroke="#2d2b4e" stroke-width="1.6"><ellipse cx="296" cy="484" rx="8" ry="5.5" fill="#9bd8a4"/><circle cx="292" cy="479" r="3" fill="#9bd8a4"/><circle cx="300" cy="479" r="3" fill="#9bd8a4"/></g><circle cx="292" cy="479" r="1.1" fill="#2d2b4e"/><circle cx="300" cy="479" r="1.1" fill="#2d2b4e"/>
+      <path d="M-700 502 Q200 484 1100 502 L1100 1400 L-700 1400 Z" fill="#a9dc8e" stroke="#2d2b4e" stroke-width="2.6"/>
+      <path d="M-700 548 Q200 528 1100 548 L1100 1400 L-700 1400 Z" fill="#9ad27f"/>
+      <g fill="none" stroke="#2c9a68" stroke-width="2.4" stroke-linecap="round"><path d="M4 506 q-4 -22 -10 -34 M10 506 q0 -24 2 -40 M16 506 q4 -18 10 -28"/><path d="M384 506 q-4 -20 -10 -30 M390 506 q0 -24 -2 -42 M396 506 q4 -20 10 -32"/></g>
+      <g fill="#a0703c" stroke="#2d2b4e" stroke-width="1.6"><rect x="9.5" y="452" width="5" height="16" rx="2.5"/><rect x="385.5" y="450" width="5" height="16" rx="2.5"/></g>
+      <g stroke="#2d2b4e" stroke-width="2.2" stroke-linejoin="round">
+  <ellipse cx="352" cy="538" rx="18" ry="5" fill="#2d2b4e" opacity=".14" stroke="none"/>
+  <rect x="338" y="528" width="28" height="8" rx="2" fill="#ece6d6"/><rect x="347" y="508" width="10" height="20" fill="#ece6d6"/>
+  <rect x="339" y="490" width="26" height="18" rx="2" fill="#ece6d6"/><rect x="346" y="494" width="12" height="10" rx="1.5" fill="#ffe08a"/>
+  <path d="M332 490 Q352 472 372 490 Z" fill="#d9d2bf"/><circle cx="352" cy="476" r="3" fill="#ece6d6"/>
+</g>
+      <ellipse cx="34" cy="566" rx="20" ry="7" fill="#ece6d6" stroke="#2d2b4e" stroke-width="2.2"/><path d="M24 564 q6 -3 12 0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+      <ellipse cx="78" cy="588" rx="22" ry="8" fill="#ece6d6" stroke="#2d2b4e" stroke-width="2.2"/><path d="M67 586 q7 -3 13 0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+      <ellipse cx="322" cy="590" rx="22" ry="8" fill="#ece6d6" stroke="#2d2b4e" stroke-width="2.2"/><path d="M311 588 q7 -3 13 0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+      <ellipse cx="370" cy="570" rx="20" ry="7" fill="#ece6d6" stroke="#2d2b4e" stroke-width="2.2"/><path d="M360 568 q6 -3 12 0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+      <ellipse cx="200" cy="596" rx="24" ry="8" fill="#ece6d6" stroke="#2d2b4e" stroke-width="2.2"/><path d="M188 594 q7 -3 14 0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M54 528 l-4 -10 M60 528 l0 -13 M66 528 l4 -10" fill="none" stroke="#2c9a68" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M118 548 l-4 -10 M124 548 l0 -13 M130 548 l4 -10" fill="none" stroke="#2c9a68" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M286 534 l-4 -10 M292 534 l0 -13 M298 534 l4 -10" fill="none" stroke="#2c9a68" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M380 606 l-4 -10 M386 606 l0 -13 M392 606 l4 -10" fill="none" stroke="#2c9a68" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M14 606 l-4 -10 M20 606 l0 -13 M26 606 l4 -10" fill="none" stroke="#2c9a68" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M244 612 l-4 -10 M250 612 l0 -13 M256 612 l4 -10" fill="none" stroke="#2c9a68" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M-86 540 l-4 -10 M-80 540 l0 -13 M-74 540 l4 -10" fill="none" stroke="#2c9a68" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M464 548 l-4 -10 M470 548 l0 -13 M476 548 l4 -10" fill="none" stroke="#2c9a68" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M534 600 l-4 -10 M540 600 l0 -13 M546 600 l4 -10" fill="none" stroke="#2c9a68" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M-166 590 l-4 -10 M-160 590 l0 -13 M-154 590 l4 -10" fill="none" stroke="#2c9a68" stroke-width="2.2" stroke-linecap="round"/>
+      <circle cx="150" cy="526" r="4" fill="#fff" stroke="#2d2b4e" stroke-width="1.6"/><circle cx="150" cy="526" r="1.4" fill="#f5d27b"/>
+      <circle cx="300" cy="566" r="4.5" fill="#fff" stroke="#2d2b4e" stroke-width="1.6"/><circle cx="300" cy="566" r="1.6" fill="#f5d27b"/>
+      <circle cx="388" cy="538" r="4.5" fill="#fbc9d3" stroke="#2d2b4e" stroke-width="1.6"/><circle cx="388" cy="538" r="1.6" fill="#f5d27b"/>
+      <circle cx="18" cy="538" r="4.5" fill="#fbc9d3" stroke="#2d2b4e" stroke-width="1.6"/><circle cx="18" cy="538" r="1.6" fill="#f5d27b"/>
+      <circle cx="104" cy="612" r="4.5" fill="#fff" stroke="#2d2b4e" stroke-width="1.6"/><circle cx="104" cy="612" r="1.6" fill="#f5d27b"/>
+      <circle cx="262" cy="540" r="3.6" fill="#fbc9d3" stroke="#2d2b4e" stroke-width="1.6"/><circle cx="262" cy="540" r="1.3" fill="#f5d27b"/>
+      <circle cx="450" cy="580" r="4.5" fill="#fff" stroke="#2d2b4e" stroke-width="1.6"/><circle cx="450" cy="580" r="1.6" fill="#f5d27b"/>
+      <circle cx="-50" cy="580" r="4.5" fill="#fff" stroke="#2d2b4e" stroke-width="1.6"/><circle cx="-50" cy="580" r="1.6" fill="#f5d27b"/>
+      <g transform="translate(-6 622) scale(-1 1)"><path d="M0 0 L44.2 -9.7 A48.0 17.3 0 1 0 46.1 6.9 Z" fill="#7cc38c" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-34.6 -4.1 M0 0 L-19.2 10.4 M0 0 L9.6 -12.4" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <g transform="translate(410 626)"><path d="M0 0 L46.0 -10.1 A50.0 18.0 0 1 0 48.0 7.2 Z" fill="#8fd19e" stroke="#2d2b4e" stroke-width="2" stroke-linejoin="round"/><path d="M0 0 L-36.0 -4.3 M0 0 L-20.0 10.8 M0 0 L10.0 -13.0" fill="none" stroke="#2c9a68" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></g>
+      <use href="#lotus" x="5.0" y="578.9" width="34" height="39.1"/>
+      <use href="#lotus" x="367.0" y="582.9" width="34" height="39.1"/>
+      <g transform="translate(300 352)"><g class="dfly"><g fill="#dff3fb" stroke="#2d2b4e" stroke-width="1.3" opacity=".9"><ellipse class="wing" cx="-7" cy="-5" rx="9" ry="3.4" transform="rotate(20 -7 -5)"/><ellipse class="wing" cx="7" cy="-5" rx="9" ry="3.4" transform="rotate(-20 7 -5)"/><ellipse cx="-6" cy="1" rx="7" ry="2.8" transform="rotate(-12 -6 1)"/><ellipse cx="6" cy="1" rx="7" ry="2.8" transform="rotate(12 6 1)"/></g><path d="M0 -6 V14" stroke="#3b82d6" stroke-width="3" stroke-linecap="round"/><circle cy="-7" r="3" fill="#3b82d6" stroke="#2d2b4e" stroke-width="1.3"/></g></g>
+      <g transform="translate(96 356)"><g class="bfly"><path d="M0 0 C-12 -14 -18 -2 -8 4 C-14 10 -4 12 0 4 Z" fill="#fbc9d3" stroke="#2d2b4e" stroke-width="1.4"/><path d="M0 0 C12 -14 18 -2 8 4 C14 10 4 12 0 4 Z" fill="#f4a6b6" stroke="#2d2b4e" stroke-width="1.4"/><path d="M0 -3 V6" stroke="#2d2b4e" stroke-width="2" stroke-linecap="round"/></g></g>
+      <!-- shadow -->
+      <ellipse cx="200" cy="514" rx="92" ry="12" fill="#2d2b4e" opacity=".14"/>
+      <circle id="aura" cx="200" cy="300" r="160" fill="url(#auraG)" opacity="0"/>
+
+      <!-- the urn -->
+      <g id="urn">
+        <g id="sticks"></g>
+        <rect x="112" y="296" width="176" height="36" rx="3" fill="#e2574c" stroke="#2d2b4e" stroke-width="3"/>
+        <path d="M118 306 H282" stroke="#b83c35" stroke-width="2"/>
+        <path d="M124 332 L276 332 L270 512 L130 512 Z" fill="#e2574c" stroke="#2d2b4e" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M134 344 L266 344 L261 502 L139 502 Z" fill="none" stroke="#f5d27b" stroke-width="1.6" opacity=".8"/>
+        <text id="urnLabel" x="200" y="372" text-anchor="middle" font-family="Itim, Mitr, sans-serif" font-size="15" fill="#ffe7a3">ศาลสวนบัว</text>
+        <use href="#lotus" x="134" y="372" width="22" height="26"/>
+        <use href="#lotus" x="244" y="372" width="22" height="26"/>
+        <g fill="#fff" stroke="#2d2b4e" stroke-width="1.4"><circle cx="160" cy="352" r="2.8"/><circle cx="240" cy="352" r="2.8"/><circle cx="146" cy="420" r="2.8"/><circle cx="254" cy="420" r="2.8"/></g>
+        <path d="M146 432 v52 M254 432 v52" stroke="#b83c35" stroke-width="2.4" stroke-linecap="round"/>
+        <!-- round window with frog -->
+        <g clip-path="url(#win)">
+          <rect x="150" y="390" width="100" height="100" fill="#9fd0ee"/>
+          <use href="#cloud" x="168" y="398" width="40" height="20"/>
+          <use href="#cloud" x="214" y="418" width="30" height="15"/>
+          <ellipse cx="200" cy="482" rx="46" ry="14" fill="#7cc38c" stroke="#2d2b4e" stroke-width="2"/>
+          <ellipse cx="200" cy="462" rx="27" ry="21" fill="#9bd8a4" stroke="#2d2b4e" stroke-width="2.2"/>
+          <circle cx="187" cy="443" r="9" fill="#9bd8a4" stroke="#2d2b4e" stroke-width="2.2"/>
+          <circle cx="213" cy="443" r="9" fill="#9bd8a4" stroke="#2d2b4e" stroke-width="2.2"/>
+          <ellipse cx="200" cy="462" rx="25" ry="18" fill="#9bd8a4"/>
+          <circle cx="187" cy="443" r="3.6" fill="#2d2b4e"/><circle cx="213" cy="443" r="3.6" fill="#2d2b4e"/>
+          <circle cx="188.2" cy="441.8" r="1.1" fill="#fff"/><circle cx="214.2" cy="441.8" r="1.1" fill="#fff"/>
+          <ellipse cx="183" cy="459" rx="4.5" ry="2.6" fill="#f4a6b6"/><ellipse cx="217" cy="459" rx="4.5" ry="2.6" fill="#f4a6b6"/>
+          <path d="M193 459 q7 6 14 0" fill="none" stroke="#2d2b4e" stroke-width="2" stroke-linecap="round"/>
+          <path d="M190 476 q10 5 20 0" fill="none" stroke="#2d2b4e" stroke-width="1.8" stroke-linecap="round"/>
+          <use href="#lotus" x="222" y="452" width="16" height="18"/>
+        </g>
+        <circle cx="200" cy="440" r="44.5" fill="none" stroke="#f5d27b" stroke-width="6"/>
+        <circle cx="200" cy="440" r="48" fill="none" stroke="#2d2b4e" stroke-width="2.4"/>
+        <circle cx="200" cy="440" r="41" fill="none" stroke="#2d2b4e" stroke-width="2"/>
+      </g>
+
+      <!-- the stick that falls out -->
+      <g id="drop" visibility="hidden" role="button" aria-label="ไม้เซียมซี แตะเพื่อเปิดคำทำนาย">
+        <g id="dropRot">
+          <path class="glow" d="M-13 -90 L0 -104 L13 -90 L13 102 L-13 102 Z" fill="none" stroke="#ffe08a" stroke-width="10" stroke-linejoin="round"/>
+          <path d="M-11 -88 L0 -100 L11 -88 L11 100 L-11 100 Z" fill="#47c086" stroke="#2d2b4e" stroke-width="2.6" stroke-linejoin="round"/>
+          <rect x="-3" y="-84" width="6" height="180" fill="#2c9a68" opacity=".55"/>
+          <g id="badge" transform="translate(0,-66)">
+            <circle r="13" fill="#3b82d6" stroke="#2d2b4e" stroke-width="2.2"/>
+            <text id="badgeTxt" y="5" text-anchor="middle" font-family="Mitr, sans-serif" font-size="13" font-weight="600" fill="#fff"></text>
+          </g>
+        </g>
+      </g>
+    </svg>
+    <canvas id="fx" aria-hidden="true"></canvas>
+  </div>
+
+  <footer class="controls">
+    <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+    <button class="main-btn" id="mainBtn" type="button">เขย่าเซียมซี</button>
+    <div class="hint" id="hint"></div>
+  </footer>
+</div>
+
+<button class="icon-btn" id="btnSound" type="button" aria-label="ปิดเสียง"></button>
+<button class="icon-btn" id="btnMusic" type="button" aria-label="ปิดเพลง"></button>
+<button class="icon-btn" id="btnGear" type="button" aria-label="ตั้งค่าเกม (สำหรับผู้สร้าง)">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#2d2b4e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+</button>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="flash" id="flash" aria-hidden="true"></div>
+
+<!-- Fortune slip -->
+<div class="overlay" id="overlay" hidden>
+  <div class="slip-wrap">
+    <article class="slip" id="slip">
+      <div class="slip-frame">
+        <span class="corner c-tl"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M2 20V2h18M7 15V7h8v5h-4"/></svg></span>
+        <span class="corner c-tr"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M2 20V2h18M7 15V7h8v5h-4"/></svg></span>
+        <span class="corner c-bl"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M2 20V2h18M7 15V7h8v5h-4"/></svg></span>
+        <span class="corner c-br"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M2 20V2h18M7 15V7h8v5h-4"/></svg></span>
+        <div class="slip-head">
+          <div class="slip-no" id="sNo">๒๔</div>
+          <div class="slip-no-meta"><b id="sNoText">ใบที่ 24</b><span id="sShrine">ศาลสวนบัว</span></div>
+          <div class="seal" id="sSeal">ดีเลิศ</div>
+        </div>
+        <h2 class="slip-title" id="sTitle"></h2>
+        <span class="slip-badge" id="sBadge"></span>
+        <p class="slip-head-text" id="sHead"></p>
+        <div class="slip-grid" id="sGrid"></div>
+        <div class="slip-extra" id="sExtra"></div>
+        <div class="slip-tags" id="sTags"></div>
+        <div class="gloss" id="sGloss" hidden></div>
+        <div class="slip-prize" id="sPrize" hidden>
+          <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="6" y="17" width="28" height="19" rx="2" fill="#e2574c" stroke="#2d2b4e" stroke-width="2.2"/><rect x="4" y="12" width="32" height="7" rx="2" fill="#f5d27b" stroke="#2d2b4e" stroke-width="2.2"/><path d="M20 12v24" stroke="#f5d27b" stroke-width="4"/><path d="M20 12v24" stroke="#2d2b4e" stroke-width="1.2" opacity=".35"/><path d="M20 12c-3-7-11-7-9-2 1 2 5 2 9 2zM20 12c3-7 11-7 9-2-1 2-5 2-9 2z" fill="#f4a6b6" stroke="#2d2b4e" stroke-width="2"/></svg>
+          <div><h3>ของรางวัล</h3><p id="sPrizeText"></p></div>
+        </div>
+        <div class="slip-foot" id="sFoot">เซียมซี ๑๐๐ ใบ</div>
+      </div>
+    </article>
+    <div class="slip-actions">
+      <button class="btn primary" id="againBtn" type="button">เสี่ยงอีกครั้ง</button>
+      <button class="btn gold" id="speakBtn" type="button">ฟังคำทำนาย</button>
+      <button class="btn" id="copyBtn" type="button">คัดลอกคำทำนาย</button>
+    </div>
+  </div>
+</div>
+
+<!-- Creator settings -->
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-in">
+    <div class="sheet-bar">
+      <h2>ตั้งค่าเกม</h2>
+      <button class="btn sm" id="closeSheet" type="button">กลับไปเล่น</button>
+    </div>
+
+    <div id="gateView" class="gate">
+      <div class="card">
+        <h3>สำหรับผู้สร้างเกม</h3>
+        <p class="note">ใส่รหัสเพื่อเข้าหน้าตั้งค่า รหัสเริ่มต้นคือ <code>1234</code> เปลี่ยนได้ในหน้าตั้งค่า</p>
+        <form id="gateForm" class="row-flex">
+          <label class="field"><span>รหัส</span><input id="pinIn" type="password" inputmode="numeric" autocomplete="off"></label>
+          <button class="btn primary" type="submit">เข้าสู่การตั้งค่า</button>
+        </form>
+        <div class="err" id="pinErr"></div>
+      </div>
+    </div>
+
+    <div id="adminView" hidden style="display:contents">
+      <section class="card">
+        <h3>ภาพรวม</h3>
+        <div class="stats">
+          <div class="stat"><b id="stEligible">100</b><span>เลขที่ยังออกได้</span></div>
+          <div class="stat"><b id="stUsed">0</b><span>สุ่มไปแล้ว (ครั้ง)</span></div>
+          <div class="stat"><b id="stLeft">ไม่จำกัด</b><span>เหลือให้สุ่มอีก</span></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3>อัตราการดรอปและจำนวนครั้ง</h3>
+        <p class="note"><b>น้ำหนัก</b> คือโอกาสออกเทียบกับเลขอื่น เลขที่น้ำหนัก 2 ออกง่ายกว่าเลขที่น้ำหนัก 1 สองเท่า ใส่ 0 เพื่อไม่ให้ออกเลย ระบบคำนวณเป็น % ให้ <b>ออกได้สูงสุด</b> คือจำนวนครั้งที่เลขนั้นออกได้ เมื่อครบแล้วจะไม่ออกอีก เว้นว่างไว้ = ไม่จำกัด</p>
+        <div class="row-flex">
+          <label class="field"><span>น้ำหนักทุกเลข</span><input id="allW" type="number" min="0" step="any" value="1"></label>
+          <button class="btn sm" id="applyW" type="button">ใช้กับทุกเลข</button>
+          <label class="field"><span>ออกได้สูงสุดทุกเลข</span><input id="allL" type="number" min="0" step="1" placeholder="ไม่จำกัด"></label>
+          <button class="btn sm" id="applyL" type="button">ใช้กับทุกเลข</button>
+        </div>
+        <div class="row-flex">
+          <label class="field"><span>ตั้งน้ำหนักตามระดับคำทำนาย</span>
+            <select id="preset">
+              <option value="">เลือกรูปแบบ…</option>
+              <option value="rare">ดีเลิศหายาก (ดีเลิศ 1 · ดี 4 · ปานกลาง 4 · ควรระวัง 2)</option>
+              <option value="kind">ใจดี (ดีเลิศ 3 · ดี 4 · ปานกลาง 2 · ควรระวัง 1)</option>
+              <option value="equal">เท่ากันทุกเลข (1)</option>
+            </select></label>
+          <button class="btn sm" id="applyPreset" type="button">ใช้รูปแบบนี้</button>
+          <button class="btn sm danger" id="resetUsed" type="button">ล้างจำนวนที่ออกไปแล้ว</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3>ชุดคำทำนายตั้งต้น</h3>
+        <p class="note">ใบที่แก้ข้อความเองไว้จะใช้ข้อความของคุณเสมอ ไม่ว่าจะเลือกชุดไหน</p>
+        <label class="field"><span>ชุดคำทำนาย</span>
+          <select id="deckSel">
+            <option value="ga">กลอนคล้องจองสแลง Gen Alpha (100 ใบ)</option>
+            <option value="garden">สวนบัว คำทำนายสั้น (100 ใบ)</option>
+          </select></label>
+      </section>
+
+      <section class="card">
+        <h3>กระดาษคำทำนายทั้ง 100 ใบ</h3>
+        <p class="note">กด <b>แก้ข้อความ</b> เพื่อเขียนคำทำนายของแต่ละใบเอง จุดสีทองหลังเลขแปลว่าใบนั้นแก้ข้อความแล้ว</p>
+        <div class="row-flex">
+          <label class="field"><span>ค้นหาเลข</span><input id="search" type="text" inputmode="numeric" placeholder="เช่น 24"></label>
+        </div>
+        <div class="filters" id="filters"></div>
+        <div class="table" id="table"></div>
+      </section>
+
+      <section class="card">
+        <h3>แก้ข้อความหลายใบพร้อมกัน</h3>
+        <p class="note">หนึ่งบรรทัดต่อหนึ่งใบ คั่นแต่ละช่องด้วย <code>|</code> หรือวางจากสเปรดชีตได้เลย (คั่นด้วยแท็บ)<br>
+        ลำดับช่อง: <code>เลข | กลุ่มระดับ | ข้อความบนตรา | ชื่อใบ | ป้ายเล็ก | กลอน | ภาพรวม | การงาน | การเงิน | ความรัก | สุขภาพ | ของหาย | สีมงคล | เลขนำโชค | คำศัพท์ | ของรางวัล</code><br>
+        กลุ่มระดับใส่ ดีเลิศ / ดี / ปานกลาง / ควรระวัง ช่องที่เว้นว่างจะไม่แสดงบนกระดาษ ใช้ <code>\n</code> เพื่อขึ้นบรรทัดใหม่ในช่องเดียวกัน</p>
+        <textarea id="bulkText" rows="8" spellcheck="false" placeholder="1 | ดีเลิศ | ดีเลิศ | สกิบิดี้มหาลาภ | GOATED | เสี่ยงได้ใบที่หนึ่ง…\nออร่าพุ่ง… | ดวงพุ่ง… | งานปัง | เงินมา | สมหวัง | แข็งแรง"></textarea>
+        <div class="row-flex">
+          <button class="btn sm" id="bulkLoad" type="button">ดึงข้อความปัจจุบันทั้ง 100 ใบ</button>
+          <button class="btn sm gold" id="bulkSave" type="button">บันทึกข้อความ</button>
+          <button class="btn sm danger" id="bulkReset" type="button">คืนข้อความตั้งต้นทุกใบ</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3>ป้ายและชื่อศาล</h3>
+        <div class="grid2">
+          <label class="field"><span>ชื่อเกม (ป้ายด้านบน)</span><input id="cfgTitle" type="text"></label>
+          <label class="field"><span>ชื่อศาล (บนกระบอกและกระดาษ)</span><input id="cfgShrine" type="text"></label>
+        </div>
+        <label class="field"><span>ข้อความใต้ป้าย</span><input id="cfgSub" type="text"></label>
+        <label style="display:flex;gap:8px;align-items:center;font-size:14px"><input id="cfgRead" type="checkbox" style="width:18px;height:18px"> อ่านคำทำนายออกเสียงอัตโนมัติเมื่อเปิดกระดาษ</label>
+      </section>
+
+      <section class="card">
+        <h3>สำรองและย้ายการตั้งค่า</h3>
+        <p class="note">การตั้งค่าเก็บไว้ในเบราว์เซอร์ของเครื่องนี้ ถ้าจะใช้เครื่องอื่น ให้คัดลอกโค้ดด้านล่างไปวางที่เครื่องนั้นแล้วกดนำเข้า</p>
+        <textarea id="cfgCode" rows="4" spellcheck="false"></textarea>
+        <div class="row-flex">
+          <button class="btn sm" id="exportBtn" type="button">สร้างโค้ดและคัดลอก</button>
+          <button class="btn sm gold" id="importBtn" type="button">นำเข้าโค้ดนี้</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3>ประวัติการสุ่มล่าสุด</h3>
+        <div class="hist" id="hist"></div>
+      </section>
+
+      <section class="card">
+        <h3>เปลี่ยนรหัสผู้สร้าง</h3>
+        <div class="row-flex">
+          <label class="field"><span>รหัสใหม่</span><input id="newPin" type="text" inputmode="numeric" autocomplete="off"></label>
+          <button class="btn sm" id="savePin" type="button">บันทึกรหัส</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- Single-slip editor -->
+<div class="modal" id="editor" hidden>
+  <form class="card" id="edForm">
+    <div class="sheet-bar"><h2 id="edTitle" style="font-size:20px">แก้ข้อความใบที่ 1</h2></div>
+    <div class="grid2">
+      <label class="field"><span>กลุ่มระดับ (สีตราและการตั้งน้ำหนัก)</span>
+        <select id="edLevel"><option value="0">ดีเลิศ</option><option value="1">ดี</option><option value="2">ปานกลาง</option><option value="3">ควรระวัง</option></select></label>
+      <label class="field"><span>ข้อความบนตรา</span><input id="edLabel" type="text" placeholder="เช่น ดีเลิศ"></label>
+      <label class="field"><span>ชื่อใบ</span><input id="edTitle2" type="text"></label>
+      <label class="field"><span>ป้ายเล็กใต้ชื่อ</span><input id="edBadge" type="text"></label>
+    </div>
+    <label class="field"><span>กลอน / คำทำนายหลัก</span><textarea id="edHead" rows="4"></textarea></label>
+    <label class="field"><span>ภาพรวม</span><textarea id="edOverview" rows="2"></textarea></label>
+    <div class="grid2">
+      <label class="field"><span>การงาน</span><textarea id="edWork" rows="2"></textarea></label>
+      <label class="field"><span>การเงิน</span><textarea id="edMoney" rows="2"></textarea></label>
+      <label class="field"><span>ความรัก</span><textarea id="edLove" rows="2"></textarea></label>
+      <label class="field"><span>สุขภาพ</span><textarea id="edHealth" rows="2"></textarea></label>
+      <label class="field"><span>ของหาย</span><input id="edLost" type="text"></label>
+      <label class="field"><span>สีมงคล</span><input id="edColor" type="text"></label>
+      <label class="field"><span>เลขนำโชค</span><input id="edLucky" type="text"></label>
+      <label class="field"><span>คำศัพท์ (คั่นด้วย , )</span><input id="edTags" type="text"></label>
+    </div>
+    <label class="field"><span>ของรางวัล (หัวข้อสุดท้ายบนกระดาษ)</span><textarea id="edPrize" rows="2" placeholder="เช่น ขนมไหว้พระจันทร์ 1 ชิ้น · รับที่โต๊ะลงทะเบียน"></textarea></label>
+    <p class="note">ช่องที่เว้นว่างจะไม่แสดงบนกระดาษ</p>
+    <div class="row-flex">
+      <button class="btn primary" type="submit">บันทึก</button>
+      <button class="btn" id="edPreview" type="button">ดูตัวอย่างกระดาษ</button>
+      <button class="btn danger" id="edReset" type="button">คืนข้อความตั้งต้น</button>
+      <button class="btn" id="edCancel" type="button">ยกเลิก</button>
+    </div>
+  </form>
+</div>
+
+<script type="application/json" id="deckGA">{"deck":[{"title":"สกิบิดี้มหาลาภ ซิกม่าเรืองรอง","label":"ดีเลิศ","badge":"GOATED / Aura +10,000","level":0,"head":"เสี่ยงได้ใบที่หนึ่งพึงสมหวัง\nออร่าพุ่งพลังดั่งซิกม่า\nริซซ์สะบัดจัดเต็มเปี่ยมปัญญา\nไร้คนม็อกต่อหน้า...โนแคปเอย","overview":"ดวงชะตาพุ่งทะยานสู่จุดสูงสุด มีพลังดึงดูดสิ่งดีงามรอบด้าน ศัตรูพ่ายแพ้ บารมีเปล่งประกาย","work":"ผลงานปังระดับ Main Character ทำอะไรก็เข้าตาผู้ใหญ่ เลื่อนขั้น เลื่อนตำแหน่ง หรือสอบผ่านฉลุย","money":"โรบักซ์และเงินตราไหลมาเทมา ปิดดีลสำเร็จ ไม่มีใครมาฟานัมแท็กซ์ส่วนแบ่ง","love":"W Rizz ทำงานเต็มพิกัด เสน่ห์ล้นเหลือ มีคนเข้ามาติดแกลมจนหัวบันไดไม่แห้ง","health":"พลังกายเต็มร้อย ไร้อาการเบรนร็อต สมองแล่น สุขภาพแข็งแกร่งดั่งกิกะแชด","tags":"Skibidi, Sigma, Rizz, Mog, No cap, Main Character, Fanum Tax, Gigachad"},{"title":"มิวอิ้งนิ่งสงบ สยบโอไฮโอ","label":"ดีมาก","badge":"Sigma Grindset / Aura +5,000","level":1,"head":"ใบที่สองจงนิ่งตั้งสติ\nอย่าริกริ่นบ่นยัปให้มัวหมอง\nมิวอิ้งไว้กรามชัดตามครรลอง\nโอไฮโอทั้งผอง...ย่อมล่าถอย","overview":"ความเงียบและความสุขุมคืออาวุธที่ทรงพลังที่สุด อย่าเพิ่งเปิดเผยแผนการให้ใครล่วงรู้","work":"ทำงานเงียบๆ ฟาร์มเลเวลไปเรื่อยๆ แล้วค่อยปล่อยผลงานฟาดทีเดียว ชนะคู่แข่งขาดลอย","money":"เก็บหอมรอมริบดี เงินไม่รั่วไหล อย่าเพิ่งลงทุนในสิ่งแปลกประหลาดสไตล์โอไฮโอ","love":"เสน่ห์ลึกลับกำลังทำงาน คนแอบมองความเท่ความนิ่ง อยู่เฉยๆ เขาก็ทักมาก่อน","health":"ระวังเกร็งกรามจากการมิวอิ้งนานเกินไป ผ่อนคลายกล้ามเนื้อใบหน้าและนอนหลับให้พอ","tags":"Mewing, Yap, Ohio, Sigma Grindset"},{"title":"กียัตต์สะบัดชัย ดาเมจทะลุจอ","label":"ดีเลิศ","badge":"Level 10 Gyatt / Slay","level":0,"head":"ใบที่สามความปังประจักษ์แจ้ง\nกียัตต์แรงโดดเด่นเป็นสง่า\nใครแลเห็นตะลึงทึ่งตรึงตรา\nสเลย์หมดทุกพารา...ไม่อ่อมเลย","overview":"ความโดดเด่นสะดุดตาพาให้พบโอกาสทอง เป็นช่วงเวลาที่สปอตไลต์ส่องลงมาที่คุณ","work":"พรีเซนต์งานโดนใจ ขายไอเดียผ่านฉลุย บอสชมเปาะ ผลงานกินรอบวงไม่เหลือเศษ","money":"รายรับสะพัด เงินเข้ากระเป๋าตุง ช้อปปิ้งของที่อยากได้โดยไม่สะเทือนกระเป๋า","love":"ความสวยความหล่อดาเมจแรงระเบิด คนรุมจีบจนตอบแชตแทบไม่ทัน เลือกรักแท้ได้สบาย","health":"ระวังปวดหลังจากการแอ่นโพสท่า นอกนั้นสมบูรณ์แข็งแรง มีชีวิตชีวา","tags":"Gyatt, Slay, อ่อม, Left no crumbs"},{"title":"อย่ามัวแต่เดลูลู ก้าวสู่ทัชแกรส","label":"เตือนสติ","badge":"Reality Check / Reset Aura","level":3,"head":"ใบที่สี่เตือนใจอย่าเพ้อฝัน\nเดลูลูไปวันวันมิเกิดผล\nจงออกไปทัชแกรสฝึกอดทน\nโลกความจริงสร้างตน...พ้นมัวเมา","overview":"อย่าติดอยู่ในโลกจินตนาการหรือภาพลวงตาในโซเชียล ลงมือทำจริงจึงจะประสบความสำเร็จ","work":"เลิกผัดวันประกันพรุ่ง โครงการในหัวมีเยอะแต่ต้องเริ่มเขียนร่างแรก อย่ามัวแต่คิดไปเอง","money":"อย่าหลงเชื่อการลงทุนที่การันตีผลตอบแทนเกินจริง เช็กข้อมูลให้ดีก่อนโอน","love":"คนที่คิดว่าเขามีใจ อาจแค่เป็นมิตร เช็กฟีดแบ็กดีๆ อย่าเพิ่งคิดชื่อลูกรอ","health":"สายตาล้าจากหน้าจอคอมและมือถือ ควรวางโทรศัพท์แล้วออกไปเดินรับลมธรรมชาติ","tags":"Delulu, Touch grass"},{"title":"ฟานัมแท็กซ์เตือนภัย ระวังโดนฮุบ","label":"เคราะห์เบา","badge":"Caution / Aura -500","level":3,"head":"ใบที่ห้าหวาดเสียวเพื่อนจ้องงาบ\nเหมือนโดนสาปฟานัมแท็กซ์เข้าหักส่วน\nแบ่งปันได้แต่อย่าให้เกินกระบวน\nมิเช่นนั้นจะครวญ...หมดเกลี้ยงจาน","overview":"ช่วงนี้มีเกณฑ์ถูกเอาเปรียบ หรือถูกแบ่งปันผลประโยชน์โดยไม่เต็มใจ ต้องรักษาสิทธิ์ของตน","work":"ระวังเพื่อนร่วมงานชุบมือเปิบ เคลมผลงานที่คุณทุ่มเททำมาคนเดียว ทำเอกสารหลักฐานให้ชัดเจน","money":"มีรายจ่ายแฝง ถูกยืมเงินแล้วทวงยาก หรือเพื่อนพาไปกินบุฟเฟต์แล้วช่วยหารไม่เท่ากัน","love":"ระวังมีมือที่สามเข้ามาแย่งซีน หรือคนคุยปันใจให้คนอื่นแบบเนียนๆ","health":"ระวังเรื่องทางเดินอาหาร อาหารเป็นพิษ หรือเพื่อนแย่งกินจนตัวเองไม่อิ่ม","tags":"Fanum Tax"},{"title":"เล็ทฮิมคุกเต็มสูบ ปล่อยของประลองยุทธ์","label":"ดีเยี่ยม","badge":"Let Him Cook / Bussing","level":0,"head":"ใบที่หกฤกษ์ดีมีจังหวะ\nปล่อยให้คุกเต็มที่จะเฉิดฉาย\nฝีมือเก่งกาจไม่แพ้ใคร\nไฟสร้างสรรค์กระจาย...ผลลัพธ์ปัง","overview":"ถึงเวลาโชว์ศักยภาพที่ซุ่มซ้อมมานาน อย่ากลัวที่จะริเริ่มสิ่งใหม่ โลกกำลังรอชมฝีมือ","work":"โปรเจกต์ใหญ่ที่คิดค้นไว้จะได้เปิดตัว ได้รับเสียงตอบรับล้นหลาม ชัยชนะเป็นของคุณ","money":"การลงทุนต่อยอดเริ่มออกดอกออกผล มีลู่ทางหาเงินเพิ่มแบบ Passive income","love":"ลงมือจีบหรือแสดงความจริงใจได้เลย ความใส่ใจของคุณจะละลายใจเขาได้แน่นอน","health":"ไฟแรง แอ็กทีฟสูง แต่อย่าลืมดื่มน้ำให้เพียงพอระหว่างลุยงานหนัก","tags":"Let him cook, Bussing"},{"title":"เฉียดกริมเมซเชก เคราะห์พ้นภัยผ่าน","label":"พ้นเคราะห์","badge":"Survival / Aura +1,500","level":1,"head":"ใบที่เจ็ดเกือบเปื่อยเฉียดเคราะห์ร้าย\nดั่งกริมเมซเชกคล้ายวางยาหนา\nแต่บุญหนุนนำรอดพ้นมา\nฟื้นคืนชีวา...แกร่งกว่าเดิม","overview":"เรื่องแย่ๆ หรือความซวยที่ผ่านมาได้ผ่านพ้นจุดวิกฤตแล้ว ต่อจากนี้จะมีแต่เรื่องฟื้นตัว","work":"ปัญหาติดขัดหรือข้อผิดพลาดในงานได้รับการแก้ไข ได้รับโอกาสแก้ตัวใหม่และทำได้ดีกว่าเดิม","money":"รายจ่ายก้อนโตที่กังวลเริ่มคลี่คลาย มีคนยื่นมือเข้ามาช่วยเหลือเรื่องหนี้สิน","love":"ความสัมพันธ์ท็อกซิกจบลง ได้ปลดปล่อยตัวเองเพื่อไปเจอคนใหม่ที่ดีต่อใจ","health":"ร่างกายที่เคยเจ็บป่วยหรืออ่อนเพลียจะกลับมาสดชื่น แข็งแรงเหมือนชาร์จแบตเต็มร้อย","tags":"Grimace Shake, Brainrot"},{"title":"ลุคส์แม็กซิ่งเฉิดฉาย อัปเกรดออร่า","label":"ดีมาก","badge":"Looksmaxxing / Glow Up","level":1,"head":"ใบที่แปดโกลว์อัปปรับโฉมใหม่\nลุคส์แม็กซิ่งไฉไลคนใหลหลง\nบุคลิกมาดมั่นดั่งหงส์ลง\nเสน่ห์ส่งพุ่งทะลุ...เพดานใจ","overview":"ช่วงเวลาแห่งการพัฒนาตัวเอง ยิ่งดูแลตัวเองทั้งรูปลักษณ์และความคิด ยิ่งเปิดประตูรับโชค","work":"การปรับลุค บุคลิกภาพ และความมั่นใจช่วยให้การเจรจา การสัมภาษณ์งานผ่านฉลุย","money":"มีโชคจากการพบปะผู้คน การแต่งตัวดีเสริมดวงเจรจาค้าขายกำไรดี","love":"ออร่าเปล่งประกายจนคนรอบข้างทัก มีคนเข้ามาขายขนมจีบเพียบ","health":"ผิวพรรณสดใส รูปร่างดีขึ้นจากการออกกำลังกายและเลือกกินอาหารที่มีประโยชน์","tags":"Looksmaxxing, Glow up, Aura"},{"title":"ยัปเปอร์พูดมาก ลาภปากหลุดลอย","label":"เตือนสติ","badge":"Shut Up / L Yap","level":3,"head":"ใบที่เก้าระวังปากจักพาเสีย\nพูดมากจนคนเพลียยัปไม่หยุด\nความลับรั่วไหลใจสะดุด\nจงเร่งหยุดยั้งปาก...ฟังสักนิด","overview":"ระวังการพูดไม่คิด นินทา หรือพูดล้นเกินจนสร้างศัตรู ฟังให้มากกว่าพูดแล้วจะปลอดภัย","work":"การประชุมอย่าแย่งพูดคนเดียว รับฟังความคิดเห็นของทีมเพื่อป้องกันความขัดแย้ง","money":"อย่าโอ้อวดทรัพย์สินหรือแผนการเงินให้ใครรู้ เดี๋ยวมีคนมาเบียดเบียนขอส่วนบุญ","love":"แฟนบ่นว่าไม่ฟังเขาเลย วางมือถือแล้วตั้งใจสบตา คุยกันด้วยความเข้าใจ","health":"ระวังเจ็บคอ เสียงแหบ หรือสำลักน้ำเพราะพูดเร็วเกินไป","tags":"Yap, Yapper, L Rizz"},{"title":"บัสซิ่งอร่อยเหาะ สุขล้นเปรมปรีดิ์","label":"ดีเลิศ","badge":"Bussing / Top Tier","level":0,"head":"ใบที่สิบแสนสบายสุขเกษม\nรสชาติชีวิตอิ่มเอมบัสซิ่งแท้\nโชคชะตาเข้าข้างไร้พ่ายแพ้\nทุกข์ใดไม่แยแส...สุขเปรมปรีดิ์","overview":"ชีวิตราบรื่น มีแต่เรื่องน่ายินดี อาหารการกินอุดมสมบูรณ์ ครอบครัวและเพื่อนฝูงอบอุ่น","work":"งานราบรื่น ไม่มีดราม่า ได้รับคำชมและรางวัลตอบแทนความเหน็ดเหนื่อย","money":"มีเงินกินของอร่อย ได้ใช้ชีวิตตามใจอยาก การเงินคล่องตัวไร้อุปสรรค","love":"คู่รักหวานชื่น พากันไปกินของอร่อย คนโสดอาจพบรักในคาเฟ่หรือร้านอาหารชื่อดัง","health":"ระวังน้ำหนักขึ้นเพราะกินเพลิน หมั่นออกกำลังกายควบคู่ไปด้วย","tags":"Bussing, Top Tier"},{"title":"อย่าเพิ่งเครชเอาท์ สงบใจไว้ก่อน","label":"เตือนภัย","badge":"Crash Out Alert / Aura -2,000","level":3,"head":"ใบสิบเอ็ดเตือนใจอย่าโมโห\nอย่าเครชเอาท์พาลโลโทสะหนา\nนับหนึ่งถึงสิบพลันผ่อนอุรา\nฟิวส์ขาดมาพังยับ...อับจนใจ","overview":"อารมณ์ร้อนจะพาเสียเรื่องใหญ่ มีเกณฑ์ปะทะคารมหรือสติแตกจนกู่ไม่กลับ ต้องมีสติ","work":"อย่าเพิ่งตอบอีเมลหรือพิมพ์ด่าในแชตกลุ่มตอนกำลังเดือด ดึงสติก่อนจะโดนเด้ง","money":"ระวังใช้เงินประชดชีวิต หรือกดสั่งของตอนเครียดจนกระเป๋าแฟบ","love":"ทะเลาะกันเรื่องขี้ผง อย่ายกเรื่องเก่ามาตอกย้ำ ถอยคนละก้าวแล้วค่อยคุย","health":"ระวังความดันขึ้น ไมเกรน ปวดหัวตุบๆ หาเวลานั่งสมาธิหรือฟังเพลงสบายๆ","tags":"Crash out, Aura"},{"title":"โนแคปของแท้ วาจาศักดิ์สิทธิ์","label":"ดีมาก","badge":"No Cap / High Trust","level":1,"head":"ใบสิบสองของแท้ไม่จกตา\nโนแคปเปี่ยมศรัทธาพาสว่าง\nความจริงใจชี้ทิศเปิดนำทาง\nไร้เสแสร้งกีดขวาง...สร้างบารมี","overview":"ความซื่อสัตย์และความจริงใจคือแต้มบุญสูงสุด พูดคำไหนคำนั้น มีคนเชื่อถือและสนับสนุน","work":"ความจริงใจในการทำงานทำให้ผู้ใหญ่เมตตา ลูกค้าไว้ใจ ปิดการขายได้เพราะความโปร่งใส","money":"ได้เงินมาอย่างสุจริต มีโชคจากความซื่อตรง ทำสัญญาตกลงกันราบรื่น","love":"เปิดใจคุยกันอย่างตรงไปตรงมา ไม่มีความลับ ความสัมพันธ์จะมั่นคงยืนยาว","health":"จิตใจแจ่มใส ไร้ความกังวลเพราะไม่ต้องคอยจำว่าโกหกอะไรไว้ นอนหลับสนิท","tags":"No cap, จกตา"},{"title":"เมนคาแรคเตอร์ บทเอกของชีวิต","label":"ดีเลิศ","badge":"Main Character Energy","level":0,"head":"ใบสิบสามยืนหนึ่งบนเวที\nเมนคาแรคเตอร์ฤดีมีสง่า\nบทพระเอกนางเอกเด่นตรึงตรา\nใครก็ไม่อาจล้ำหน้า...ท้าประลอง","overview":"ถึงเวลาที่คุณต้องลุกขึ้นมานำชีวิตตัวเอง เลิกทำตัวเป็นตัวประกอบ คุณคือดวงดาวของเรื่องนี้","work":"ได้รับมอบหมายให้เป็นหัวหน้าโปรเจกต์ นำทีมสู่ความสำเร็จ โดดเด่นในสายอาชีพ","money":"การเงินคล่องมือ จัดการรายรับรายจ่ายได้เฉียบขาด มีเงินเก็บเป็นกอบเป็นกำ","love":"เป็นที่หมายปอง มีคนมองว่าคุณมีเสน่ห์ดึงดูดใจ ใครเห็นก็อยากเข้ามาทำความรู้จัก","health":"สุขภาพกายใจฟิตเปรี๊ยะ มีออร่าความมั่นใจเปล่งประกายจากภายใน","tags":"Main Character Energy, NPC"},{"title":"สลัดคราบเอ็นพีซี สร้างเส้นทางตน","label":"ปานกลาง","badge":"Break the Matrix / Level Up","level":2,"head":"ใบสิบสี่ตื่นเถิดอย่าทำนิ่ง\nเป็นเอ็นพีซีทิ้งสิ่งสดใส\nจงก้าวข้ามลูปเดิมที่คุ้นเคยไป\nกดเริ่มเกมบทใหม่...ใจนำทาง","overview":"อย่าใช้ชีวิตแบบหุ่นยนต์ทำตามคำสั่งไปวันๆ ถึงเวลาค้นหาแพชชันและสร้างความแตกต่าง","work":"อย่านั่งรอคำสั่ง จงเสนอไอเดียเชิงรุก พัฒนาทักษะใหม่ๆ เพื่อไม่ให้ถูกแทนที่","money":"หารายได้เสริมจากงานอดิเรก อย่าพึ่งพารายได้ทางเดียว ฟาร์มเงินเพิ่มหลายช่องทาง","love":"อย่าทำตัวน่าเบื่อในความสัมพันธ์ ลองชวนแฟนไปทำกิจกรรมแปลกใหม่ เติมความหวาน","health":"ระวังอาการเมื่อยล้าจากการนั่งทำงานท่าเดิมทั้งวัน ขยับร่างกาย ยืดเส้นยืดสายบ้าง","tags":"NPC, Matrix, Level Up"},{"title":"อาถรรพ์โอไฮโอ สิ่งแปลกโผล่กวน","label":"แปลกประหลาด","badge":"Only in Ohio / Mid","level":2,"head":"ใบสิบห้าเจอเรื่องสุดพิลึก\nฟีลโอไฮโอสับสนดึกดื่นหนา\nเหตุการณ์แปลกโผล่มาตรงหน้าตา\nจงตั้งรับปัญญา...อย่าตื่นกลัว","overview":"ช่วงนี้จะพบเจอเรื่องไม่คาดฝัน หรือคนแปลกๆ เข้ามาในชีวิต อย่าเพิ่งตระหนก ใช้ไหวพริบแก้ปัญหา","work":"งานอาจมีบรีฟประหลาด หรือลูกค้ารีเควสต์ของที่ไม่น่าเป็นไปได้ ต้องใจเย็นและอธิบายด้วยเหตุผล","money":"ระวังของเสียกะทันหัน หรือต้องจ่ายเงินกับเรื่องงงๆ ที่ไม่ได้วางแผนไว้","love":"คนที่เข้ามาอาจมีไลฟ์สไตล์แปลกแหวกแนว ค่อยๆ ศึกษานิสัย อย่าเพิ่งตัดสินจากภายนอก","health":"ระวังฝันประหลาด นอนละเมอ หรือนอนไม่ค่อยหลับเพราะคิดมาก","tags":"Ohio, Only in Ohio, Brainrot"},{"title":"เอดจิ้งสะสมพลัง รอจังหวะสไตรก์","label":"ดี","badge":"Patience & Timing / Edgework","level":1,"head":"ใบสิบหกใจเย็นรอจังหวะ\nเอดจิ้งกักมานะอย่าเพิ่งปล่อย\nสะสมพลังไว้มิหลงลอย\nจังหวะทองไม่คอย...ฟาดเปรี้ยงดัง","overview":"ความอดทนคือเคล็ดลับแห่งชัยชนะ อย่าเพิ่งรีบร้อนเปิดตัว รอให้ทุกอย่างสุกงอมแล้วค่อยลงมือ","work":"เตรียมข้อมูลและโปรไฟล์ให้พร้อม รอจังหวะจังหวะที่เหมาะสมในการยื่นข้อเสนอ จะสำเร็จงดงาม","money":"ชะลอการซื้อของชิ้นใหญ่ รอช่วงลดราคาหรือจังหวะตลาดปรับฐาน จะได้ของดีราคาคุ้มค่า","love":"อย่าเพิ่งรีบรุกจนเขากลัว ค่อยๆ หยอด ค่อยๆ คุย รักษาระยะห่างที่ชวนค้นหา","health":"ฝึกการควบคุมการหายใจและฝึกสมาธิ ช่วยลดความเครียดสะสมได้ดีเยี่ยม","tags":"Edging, Lock in"},{"title":"ออร่าบวกหนึ่งหมื่น บารมีสะท้านฟ้า","label":"ดีเลิศ","badge":"+10,000 Aura / Divine Grace","level":0,"head":"ใบสิบเจ็ดออร่ามหาศาล\nบวกหนึ่งหมื่นตระการสะท้านหล้า\nคนนับถือเลื่องลือเกริกเกรียงไกร\nความมงคลหลั่งไหล...ไร้ราคี","overview":"แต้มบุญสูงลิบ บุญกุศลที่เคยทำส่งผลหนุนนำ ทำสิ่งใดก็มีคนเกรงใจและให้เกียรติ","work":"ผู้ใหญ่ผลักดัน ได้รับความไว้วางใจให้คุมงานสำคัญ ชื่อเสียงเป็นที่ประจักษ์","money":"มีโชคลาภลอย หรือได้รับของขวัญของกำนัลมีมูลค่า การเงินคล่องตัวไร้กังวล","love":"คู่ครองหนุนดวง เสริมบารมีซึ่งกันและกัน คนโสดมีคนโปรไฟล์ดีเข้ามาขายขนมจีบ","health":"สุขภาพดีเยี่ยม จิตใจเบิกบาน ผิวพรรณเปล่งปลั่งมีราศีจับ","tags":"+10,000 Aura, W Rizz"},{"title":"รักษาสตรีคไว้ วินัยสร้างเซียน","label":"ดีมาก","badge":"Streak Master / Consistent","level":1,"head":"ใบสิบแปดสตรีคยาวอย่าให้ขาด\nมุ่งมั่นสร้างโอกาสด้วยวินัย\nทำทีละนิดสะสมไป\nความสำเร็จยิ่งใหญ่...อยู่ไม่ไกล","overview":"ผลลัพธ์ที่ยิ่งใหญ่เกิดจากความสม่ำเสมอ รักษาวินัยในสิ่งเล็กๆ ทุกวัน แล้วผลลัพธ์จะมหัศจรรย์","work":"ส่งงานตรงเวลา สม่ำเสมอ เจ้านายและเพื่อนร่วมงานชื่นชมในความเป็นมืออาชีพ","money":"ออมเงินทุกวันหรือลงทุนแบบ DCA สม่ำเสมอ พอร์ตการเงินเติบโตอย่างมั่นคง","love":"ความใส่ใจสม่ำเสมอ ทักทาย อรุณสวัสดิ์-ฝันดี ไม่เคยขาด มัดใจคนรักได้อยู่หมัด","health":"ออกกำลังกายวันละนิด ดื่มน้ำให้เพียงพอต่อเนื่อง สุขภาพแข็งแรงอย่างยั่งยืน","tags":"Streak, Grindset, Daily Quest"},{"title":"หลุดเข้าแบครูมส์ จงหาทางออก","label":"เคราะห์ระวัง","badge":"Stuck in Backrooms / Lost","level":3,"head":"ใบสิบเก้าเหมือนหลงในแบครูมส์\nความสับสนรุมล้อมทางตันหนา\nอย่าลนลานค่อยคิดพิจารณา\nแสงสว่างเบื้องหน้า...จักนำทาง","overview":"รู้สึกเคว้งคว้าง สับสน หรือเหมือนชีวิตวนอยู่ในอ่าง อย่าตระหนก ให้หยุดพักแล้วค่อยๆ ทบทวน","work":"งานติดขัด หาทางออกไม่เจอ ลองปรึกษาพี่เลี้ยงหรือผู้มีประสบการณ์เพื่อขอคำแนะนำ","money":"ระวังเงินฝืดชั่วคราว งดสร้างหนี้ก้อนใหม่ รัดเข็มขัดแล้วจะผ่านพ้นไปได้","love":"รู้สึกว่าความสัมพันธ์ไม่พัฒนา หรือพูดคุยไม่เข้าใจกัน ลองถอยออกมามองภาพกว้าง","health":"ระวังความเครียดสะสม สมองตื้อ ลองออกไปเปลี่ยนบรรยากาศ สูดอากาศบริสุทธิ์","tags":"Backrooms, Cooked, Reset"},{"title":"กิกะแชดผู้เกรียงไกร จิตใจเข้มแข็ง","label":"ดีเลิศ","badge":"Gigachad / Unstoppable","level":0,"head":"ใบยี่สิบแกร่งกล้าดั่งกิกะแชด\nใจมุ่งมั่นไม่ยอมแพ้ต่อปัญหา\nกรามคมชัดวินัยเปี่ยมปรีดา\nชัยชนะตรงหน้า...คว้าแน่นอน","overview":"จิตใจเข้มแข็งดั่งหินผา อุปสรรคใดๆ ก็ไม่อาจขวางกั้นความตั้งใจของคุณได้ เป็นผู้นำที่แท้จริง","work":"แก้ไขวิกฤตได้เด็ดขาด เป็นที่พึ่งของทีม ผลงานโดดเด่นจนทุกคนต้องยอมรับ","money":"หาเงินเก่ง ลงทุนเฉียบคม มีวินัยทางการเงินสูง ทรัพย์สินงอกเงย","love":"มีความเป็นผู้นำ อบอุ่น ปกป้องดูแลคนรักได้ดี คนรักรู้สึกปลอดภัยและภาคภูมิใจ","health":"ร่างกายกำยำ แข็งแรง พลังงานล้นเหลือ พร้อมลุยทุกกิจกรรม","tags":"Gigachad, Sigma, Lock in"},{"title":"เกลซซิ่งอวยไส้แตก ระวังภาพลวง","label":"เตือนสติ","badge":"Glazing Alert / Fake Love","level":3,"head":"ใบยี่สิบเอ็ดระวังคำหวานฉ่ำ\nเกลซซิ่งพร่ำอวยเกินจริงไม่เข้าท่า\nฟังแล้วเคลิ้มอาจเสียท่าเสียที\nจงดูที่การกระทำ...นำความจริง","overview":"ระวังคนปากหวานก้นเปรี้ยว หรือคนที่เข้ามาตีสนิทเพื่อหวังผลประโยชน์ อย่าหลงไปกับคำเยินยอ","work":"มีคนมาชื่นชมประจบประแจง แต่อาจทิ้งภาระงานมาให้คุณแบก ตรวจสอบรายละเอียดให้รอบคอบ","money":"ระวังคนมาชวนลงทุนโดยใช้คำพูดหว่านล้อมสวยหรู อย่าเพิ่งรีบควักกระเป๋า","love":"คนที่เข้ามาจีบอาจพูดหวานเกินเบอร์ ดูความสม่ำเสมอและการกระทำเป็นหลัก","health":"ระวังเบาหวาน น้ำตาลขึ้น เพราะกินของหวานหรือชานมไข่มุกมากเกินไป","tags":"Glazing, Fake, Cap"},{"title":"อย่าหลงไซด์เควสต์ มุ่งสู่เมนโกล","label":"ปานกลาง","badge":"Focus / Side Quest Trap","level":2,"head":"ใบยี่สิบสองอย่ามัวเล่นไซด์เควสต์\nเป้าหมายหลักอย่าละทิ้งให้เหือดหาย\nเรื่องหยุมหยิมกวนใจให้วางวาย\nมุ่งสู่ชัยเส้นชัย...คว้าแชมป์เอย","overview":"กำลังเสียเวลากับเรื่องไม่เป็นเรื่อง ดึงสมาธิกลับมาที่เป้าหมายหลักของชีวิต แล้วจะก้าวหน้าเร็ว","work":"งานสำคัญยังไม่เสร็จ อย่ามัวแต่จัดโต๊ะหรือตอบแชตที่ไม่จำเป็น จัดลำดับความสำคัญให้ดี","money":"ระวังเสียเงินยิบย่อยกับของสะสมหรือโปรโมชันป้ายยา ควบคุมงบประมาณให้รัดกุม","love":"อย่าเอาเรื่องเล็กน้อยมาเป็นประเด็นทะเลาะ โฟกัสที่ความรู้สึกดีๆ ที่มีให้กัน","health":"จัดตารางเวลานอนให้ตรงเวลา อย่าไถฟีดเพลินจนดึกดื่น","tags":"Side quest, Main goal, Lock in"},{"title":"แคนอนอีเวนต์ บทเรียนสร้างคน","label":"ปานกลาง","badge":"Canon Event / Growth","level":2,"head":"ใบยี่สิบสามเจอแคนอนอีเวนต์\nบทเรียนเด่นจำเป็นต้องก้าวผ่าน\nแม้ยากลำบากใจเจ็บทรมาน\nจักเติบใหญ่ตระการ...พ้นวัยเยาว์","overview":"สิ่งที่กำลังเจอคือบททดสอบชีวิตที่ต้องเผชิญ อย่าหนีปัญหา เมื่อผ่านมันไปได้คุณจะเติบโตขึ้นมาก","work":"อาจเจอโจทย์ยากหรือโดนตำหนิ แต่นี่คือจุดเปลี่ยนที่จะขัดเกลาฝีมือคุณให้เป็นมืออาชีพ","money":"มีบทเรียนเรื่องการเงิน ทำให้รอบคอบและรู้จักบริหารเงินออมได้ฉลาดขึ้นกว่าเดิม","love":"อกหักหรือผิดหวังคือเรื่องธรรมดาเพื่อเปิดทางให้คนที่ดีและเหมาะสมกว่าเข้ามาในอนาคต","health":"ดูแลสุขภาพใจให้ดี พักผ่อนให้พอ รอยแผลในใจจะค่อยๆ สมานตัว","tags":"Canon event, Character development"},{"title":"สเลย์เรียบกินรอบวง ปังไม่มีแผ่ว","label":"ดีเลิศ","badge":"Slay Queen / Ate & Left No Crumbs","level":0,"head":"ใบยี่สิบสี่สเลย์สุดหยุดไม่อยู่\nกินรอบวงเชิดชูความเก่งกล้า\nไม่เหลือเศษความพ่ายแพ้ในสายตา\nคว้าชัยชนะมา...สมใจปอง","overview":"พลังงานความปังเต็มเปี่ยม ทำอะไรก็ชนะ ทำอะไรก็เด่น ไร้คู่ต่อสู้เทียบเคียง","work":"โปรเจกต์ประสบความสำเร็จถล่มทลาย ผลงานโดดเด่นจนได้รับรางวัลหรือคำชมเชยระดับท็อป","money":"กำไรพุ่งทะลุเป้า เงินทองไหลมาเทมา ค้าขายคล่องตัวสุดขีด","love":"มีเสน่ห์ดึงดูดขั้นสุด คนรักหลงใหล คนโสดเลือกได้ตามใจปรารถนา","health":"สุขภาพกายใจแข็งแรง ร่าเริง สดใส มีพลังสร้างสรรค์ล้นปรี่","tags":"Slay, Ate, Left no crumbs"},{"title":"โกทตัวจริง เสียงจริง ยืนหนึ่งในรุ่น","label":"ดีเลิศ","badge":"G.O.A.T. / Undisputed","level":0,"head":"ใบยี่สิบห้าโกทแท้แห่งยุคสมัย\nความสามารถเกริกไกรไร้กังขา\nยืนหนึ่งในปฐพีเปี่ยมปรีดา\nเกียรติยศก้องหล้า...ตราบนานเนา","overview":"เป็นช่วงเวลาแห่งความภาคภูมิใจ ผลงานและการกระทำที่ผ่านมาพิสูจน์แล้วว่าคุณคือของจริง","work":"ได้รับการยอมรับในฐานะผู้เชี่ยวชาญ เป็นตัวตึงในสายงานที่ใครๆ ก็ต้องขอคำปรึกษา","money":"ความมั่นคงทางการเงินสูง มีรายรับเข้ามาอย่างต่อเนื่อง ฐานะมั่นคง","love":"เป็นคู่รักตัวอย่างที่ใครๆ ก็อิจฉา ความสัมพันธ์ราบรื่นและมั่นคงดั่งขุนเขา","health":"สุขภาพแข็งแรง สมบูรณ์ทั้งร่างกายและจิตใจ ไร้โรคภัยเบียดเบียน","tags":"G.O.A.T., ตัวตึง, ยืนหนึ่ง"},{"title":"โรบักซ์เต็มคลัง ทรัพย์สินงอกเงย","label":"ดีมาก","badge":"Rich in Robux / Wealth","level":1,"head":"ใบยี่สิบหกโรบักซ์หลั่งไหลมา\nทรัพย์สินมีราคางอกเงยหลาย\nกระเป๋าตุงเงินทองไม่ขาดสาย\nสุขสบายไร้หนี้...มีอันจะกิน","overview":"ดวงการเงินโดดเด่นเป็นพิเศษ มีเกณฑ์ได้รับทรัพย์สิน ผลตอบแทน หรือของรางวัลล้ำค่า","work":"งานสร้างรายได้งดงาม มีช่องทางทำเงินใหม่ๆ ที่ให้ผลตอบแทนคุ้มค่าเหนื่อย","money":"สภาพคล่องสูงมาก เงินเข้าบัญชีต่อเนื่อง มีโชคลาภจากการลงทุนหรือการค้าขาย","love":"ความพร้อมด้านการเงินช่วยให้ชีวิตคู่ราบรื่น สามารถพากันไปเที่ยวพักผ่อนได้อย่างสบายใจ","health":"สุขภาพดี กินอิ่มนอนหลับ แต่อย่าลืมแบ่งปันทำบุญเสริมบารมี","tags":"Robux, Passive Income, Flex"},{"title":"ซัสมีพิรุธ อย่าเพิ่งไว้ใจ","label":"เตือนภัย","badge":"Sus Alert / Impostor","level":3,"head":"ใบยี่สิบเจ็ดคนรอบข้างดูมีซัส\nทำตัวขัดหูตาอย่าวางใจ\nอาจมีหนอนบ่อนไส้อยู่ไม่ไกล\nระวังภัยหักหลัง...พังไม่รู้ตัว","overview":"มีสัญญาณเตือนถึงความไม่จริงใจจากคนใกล้ตัว อย่าเพิ่งรีบเชื่อใจใครง่ายๆ คอยสังเกตพฤติกรรม","work":"ระวังมีคนแอบขโมยข้อมูลหรือแทงข้างหลังในที่ทำงาน ตรวจสอบเอกสารและหลักฐานให้รอบคอบ","money":"อย่าเพิ่งให้ใครยืมเงิน หรือเซ็นค้ำประกันให้ใครเด็ดขาด มีเกณฑ์สูญหายไม่ได้คืน","love":"คนคุยหรือคนรักมีท่าทีแปลกๆ แอบซ่อนอะไรบางอย่างไว้ ลองสืบดูอย่างมีสติ อย่าเพิ่งโวยวาย","health":"ระวังเรื่องความระแวงจนวิตกกังวล นอนไม่หลับ ทำใจให้สงบและเชื่อในสัญชาตญาณตนเอง","tags":"Sus, Impostor, Among Us"},{"title":"ชิลกวายสบายใจ ไร้เรื่องร้อนรน","label":"ดี","badge":"Chill Guy / Inner Peace","level":1,"head":"ใบยี่สิบแปดเป็นชิลกวายสบายจิต\nไม่ยึดติดเรื่องวุ่นวายในโลกหล้า\nยิ้มรับทุกสถานการณ์ที่ผ่านเข้ามา\nปล่อยเวลาคลี่คลาย...สบายใจ","overview":"ความสงบในจิตใจคือความสุขที่แท้จริง ไม่จำเป็นต้องรีบร้อนแข่งขันกับใคร เดินตามจังหวะชีวิตตนเอง","work":"งานราบรื่นเพราะไม่เอาเรื่องหยุมหยิมมาใส่ใจ แก้ไขปัญหาด้วยความสุขุม เยือกเย็น","money":"พอมีพอกิน ใช้จ่ายตามกำลัง ไม่สร้างหนี้สินเพิ่ม มีความสุขกับสิ่งที่มี","love":"ความรักเรียบง่าย ไม่หวือหวาแต่สบายใจ อยู่ด้วยกันแล้วอบอุ่นเหมือนบ้าน","health":"สุขภาพจิตดีเยี่ยม ไร้ความเครียด ร่างกายผ่อนคลาย พักผ่อนเพียงพอ","tags":"Chill Guy, Just a Chill Guy, Good Vibes"},{"title":"ฟาร์มบล็อกซ์ฟรุต ความเพียรย่อมเห็นผล","label":"ดีมาก","badge":"Grinding / Mastery","level":1,"head":"ใบยี่สิบเก้าขยันฟาร์มตามเป้าหมาย\nบล็อกซ์ฟรุตพากายใจไม่ท้อถอย\nเลเวลอัปตามลำดับไม่หลงลอย\nความสำเร็จรอคอย...อยู่ปลายทาง","overview":"ความพยายามไม่เคยทรยศใคร การหมั่นฝึกฝนและทุ่มเทอย่างต่อเนื่องจะนำมาซึ่งความสำเร็จที่ยิ่งใหญ่","work":"การสั่งสมประสบการณ์และความรู้ทำให้คุณเชี่ยวชาญ เป็นที่ยอมรับในสายงาน","money":"เงินทองค่อยๆ เพิ่มพูนจากการลงแรงอย่างต่อเนื่อง ยิ่งขยันยิ่งมีเงินเก็บ","love":"ความสัมพันธ์ต้องการการดูแลเอาใจใส่สม่ำเสมอ ความอดทนจะทำให้ความรักสุกงอมงดงาม","health":"ระวังออฟฟิศซินโดรมจากการนั่งทำงานหรือเล่นเกมนานเกินไป ลุกขึ้นมายืดเส้นยืดสายบ้าง","tags":"Blox Fruits, Grinding, Level Up"},{"title":"เบรนร็อตครอบงำ จงพักฟื้นสมอง","label":"เตือนสติ","badge":"Brainrot Detox / Mental Care","level":3,"head":"ใบสามสิบสมองล้าเบรนร็อตจัด\nความคิดขัดสับสนฟุ้งซ่านหนา\nไถมือถือจนมึนตึ้บเสียเวลา\nวางลงหนาพักจิต...พิชิตใจ","overview":"สมองเหนื่อยล้าจากการรับข้อมูลข่าวสารมากเกินไป จิตใจฟุ้งซ่านและขาดสมาธิ ต้องดีท็อกซ์ด่วน","work":"สมาธิสั้น ทำงานไม่ค่อยเสร็จ ลองใช้เทคนิค Pomodoro หรือปิดการแจ้งเตือนขณะทำงาน","money":"ระวังช้อปปิ้งออนไลน์ช่วงดึกเพราะความเหงาหรือเบลอ สติจะช่วยรักษาเงินในกระเป๋า","love":"อย่าเอาความสัมพันธ์ของตัวเองไปเปรียบเทียบกับคู่รักในโซเชียล ความจริงไม่ได้สวยหรูเหมือนในคลิป","health":"พักสายตา นอนให้เร็วขึ้น ลดการเล่นมือถือก่อนนอน สมองจะสดชื่นขึ้นอย่างเห็นได้ชัด","tags":"Brainrot, Digital Detox, Doomscrolling"},{"title":"ม็อกคู่แข่งกระจุย รัศมีข่มมิด","label":"ดีเลิศ","badge":"Mogging / Supreme Leader","level":0,"head":"ใบสามสิบเอ็ดรัศมีข่มมิดหมด\nม็อกทุกบทบาทเด่นเหนือใครเขา\nเสน่ห์ล้ำปัญญาเลิศมิใช่เบา\nคู่แข่งเฉาพ่ายแพ้...แก่บารมี","overview":"ออร่าและความสามารถของคุณบดบังคู่แข่งจนมิด ได้รับชัยชนะในการแข่งขันหรือการคัดเลือก","work":"ในการแข่งขัน การสอบชิงทุน หรือการประกวด คุณโดดเด่นเหนือทุกคน กรรมการเทคะแนนให้","money":"มีความได้เปรียบทางการค้า สามารถแย่งส่วนแบ่งการตลาดหรือปิดลูกค้ารายใหญ่ได้","love":"ความโดดเด่นทำให้คุณเป็นตัวเลือกอันดับหนึ่งในใจเขา คู่แข่งหลบทางให้หมด","health":"สุขภาพกายและใจยอดเยี่ยม มีความมั่นใจเต็มเปี่ยม บุคลิกภาพสง่างาม","tags":"Mog, Mogging, Aura"},{"title":"ฟิตเช็กพร้อมลุย มั่นใจเต็มร้อย","label":"ดีมาก","badge":"Fit Check / Slaying","level":1,"head":"ใบสามสิบสองฟิตเช็กพร้อมก้าวหน้า\nเสื้อผ้าหน้าผมเป๊ะสง่าราศี\nความมั่นใจเต็มร้อยพาโชคดี\nโอกาสมีเข้ามา...ไม่ขาดสาย","overview":"ความมั่นใจและการเตรียมตัวที่ดีพร้อมจะเปิดรับโอกาสใหม่ๆ ที่ยอดเยี่ยม จงกล้าแสดงออก","work":"การนำเสนองานและการสัมภาษณ์เป็นไปด้วยดี ความน่าเชื่อถือช่วยผลักดันให้สำเร็จ","money":"การแต่งกายและการวางตัวช่วยเสริมดวงการเจรจา มีโชคลาภจากการติดต่อธุรกิจ","love":"รูปลักษณ์ที่ดูดีมีเสน่ห์ดึงดูดคนให้เข้าหา มีโอกาสพบคนถูกใจในงานเลี้ยงหรืองานสัมมนา","health":"ดูแลตัวเองเป็นอย่างดี ผิวพรรณสดใส สุขภาพกายแข็งแรงพร้อมลุยทุกสถานการณ์","tags":"Fit check, Slay, Drip"},{"title":"ลาสต์บอสรออยู่ รวมพลังฝ่าฟัน","label":"ท้าทาย","badge":"Final Boss / Breakthrough","level":2,"head":"ใบสามสิบสามด่านสุดท้ายใกล้จะถึง\nลาสต์บอสขึงขังรอท้าทายหนา\nรวบรวมทักษะความรู้และปัญญา\nฟันฝ่ามาพิชิต...ปลดล็อกชัย","overview":"กำลังเผชิญหน้ากับอุปสรรคชิ้นใหญ่ที่สุดของปี หากก้าวข้ามไปได้ ชีวิตจะก้าวสู่บทใหม่ที่รุ่งโรจน์","work":"ช่วงสอบใหญ่ ส่งโปรเจกต์จบ หรือปิดงบประจำปี ต้องทุ่มเทเต็มกำลัง ผลลัพธ์จะคุ้มค่า","money":"ต้องเคลียร์หนี้ก้อนใหญ่หรือจัดสรรงบประมาณให้ลงตัว แล้วภาระการเงินจะเบาบางลง","love":"ต้องเคลียร์ใจเรื่องค้างคาที่ใหญ่ที่สุด คุยกันด้วยเหตุผลแล้วจะเข้าใจกันลึกซึ้งขึ้น","health":"ระวังความเหนื่อยล้าสะสม พักผ่อนให้เพียงพอเพื่อเตรียมพลังกายไว้ลุยศึกใหญ่","tags":"Final Boss, Level Up, Breakthrough"},{"title":"สคิปข้ามดราม่า รักษาพลังงาน","label":"ดี","badge":"Skip Drama / Protect Peace","level":1,"head":"ใบสามสิบสี่อย่าไปยุ่งกับดราม่า\nกดสคิปข้ามพาใจให้ผาสุก\nเรื่องคนอื่นปล่อยผ่านอย่าไปคลุก\nชีวิตสุขไร้เรื่องกวน...ชวนรำคาญ","overview":"การไม่เอาตัวเข้าไปพัวพันกับความขัดแย้งของคนอื่นคือความฉลาด รักษาความสงบในใจไว้ดีที่สุด","work":"อย่าเลือกข้างในที่ทำงาน ไม่ร่วมวงนินทา มุ่งมั่นทำงานของตนเองแล้วจะปลอดภัย","money":"ไม่ต้องจ่ายเงินเพื่อเอาหน้า หรือตามกระแสดราม่าในเน็ต เก็บเงินไว้ทำสิ่งที่ตนเองรัก","love":"หลีกเลี่ยงการชวนทะเลาะในเรื่องไม่เป็นเรื่อง ยิ้มรับและปล่อยผ่าน ความรักจะราบรื่น","health":"สุขภาพจิตดีเยี่ยม ไร้ความเครียดจากเรื่องภายนอก จิตใจเบิกบานแจ่มใส","tags":"Skip, Drama, Protect My Peace"},{"title":"สปีดรันสำเร็จ ลัดสู่เป้าหมาย","label":"ดีเลิศ","badge":"Speedrun / High Efficiency","level":0,"head":"ใบสามสิบห้าคล่องแคล่วรวดเร็วรี่\nสปีดรันสู่ชัยมีความหมาย\nใช้ทางลัดปัญญาพาผ่อนคลาย\nเป้าหมายปลายทางถึง...สมใจปอง","overview":"ช่วงนี้ทำอะไรก็รวดเร็ว มีประสิทธิภาพ สามารถบรรลุเป้าหมายได้ไวกว่าที่คาดการณ์ไว้","work":"งานเสร็จก่อนกำหนดอย่างมีคุณภาพ ได้รับคำชมจากหัวหน้า มีเวลาเหลือไปทำสิ่งอื่น","money":"คืนทุนเร็ว การค้าขายหมุนเวียนคล่องตัว กำไรเข้ากระเป๋าเป็นกอบเป็นกำ","love":"ความสัมพันธ์พัฒนาอย่างรวดเร็ว ได้เรียนรู้และเข้าใจกันไว มีเกณฑ์ตกลงเป็นแฟนกัน","health":"ร่างกายฟื้นตัวจากอาการป่วยไข้ได้อย่างรวดเร็ว พลังงานกลับมาเต็มร้อย","tags":"Speedrun, Fast Track, W"},{"title":"ปลดล็อกสกินทอง รางวัลคนขยัน","label":"ดีเลิศ","badge":"Golden Skin / Master Rank","level":0,"head":"ใบสามสิบหกปลดล็อกสกินทอง\nความพากเพียรผุดผ่องเป็นผลหนา\nเกียรติยศชื่อเสียงเลื่องลือชา\nสมคุณค่าหยาดเหงื่อ...ที่ทุ่มเท","overview":"ความขยันและทุ่มเทในอดีตผลิดอกออกผล ได้รับรางวัลและการยกย่องอย่างสมเกียรติ","work":"ได้รับรางวัลพนักงานดีเด่น สอบได้คะแนนสูงสุด หรือได้รับใบประกาศเกียรติคุณ","money":"ได้รับเงินโบนัสพิเศษ เงินรางวัล หรือค่าตอบแทนที่สูงขึ้นตามความสามารถ","love":"คนรักเห็นคุณค่าในตัวคุณ เอาใจใส่และดูแลเป็นพิเศษ เหมือนได้เพชรน้ำงาม","health":"ร่างกายแข็งแรง ฟิตแอนด์เฟิร์มจากการดูแลตัวเองมาอย่างยาวนาน","tags":"Golden Skin, Unlock, Grind Paid Off"},{"title":"ตัวตึงจัดปลัดบอก แบกทีมคว้าชัย","label":"ดีมาก","badge":"Hard Carry / MVP","level":1,"head":"ใบสามสิบเจ็ดตัวตึงแห่งวงการ\nแบกทีมผ่านวิกฤตอันยิ่งใหญ่\nความสามารถรอบด้านเปี่ยมเกริกไกร\nพาคว้าชัยเอ็มวีพี...ที่หนึ่งเอย","overview":"คุณคือเสาหลักของครอบครัวหรือทีมงาน ความสามารถของคุณช่วยนำพาทุกคนให้รอดพ้นปัญหา","work":"เป็นหัวเรี่ยวหัวแรงในการทำงาน แก้ปัญหาเฉพาะหน้าได้ยอดเยี่ยมจนงานสำเร็จลุล่วง","money":"แม้ต้องรับภาระค่าใช้จ่ายหลายด้าน แต่ก็สามารถหาเงินเข้ามาหมุนเวียนได้ทันท่วงที","love":"เป็นที่พึ่งพาทางใจให้คนรักได้อย่างดีเยี่ยม คนรักรู้สึกอบอุ่นและมั่นคงเมื่ออยู่ใกล้","health":"ระวังเมื่อยล้ากล้ามเนื้อบ่าไหล่จากการทำงานหนัก หาเวลาไปนวดผ่อนคลายบ้าง","tags":"ตัวตึง, Hard Carry, MVP"},{"title":"ติดฟิลเตอร์ลวงตา มองให้ทะลุ","label":"เตือนสติ","badge":"No Filter / See Truth","level":3,"head":"ใบสามสิบแปดอย่าหลงฟิลเตอร์สวย\nภาพลวงตาฉาบฉวยช่วยปกปิด\nมองให้ลึกถึงเนื้อในความคิด\nค้นพบมิตรแท้จริง...พ้นเล่ห์กล","overview":"อย่าตัดสินคนหรือสิ่งของจากภาพลักษณ์ภายนอก สิ่งที่เห็นในโซเชียลอาจไม่ใช่ความจริงทั้งหมด","work":"ตรวจสอบข้อมูลและสัญญาอย่างละเอียด อย่าเชื่อเพียงคำนำเสนอที่ดูดีแต่ไร้สาระ","money":"ระวังซื้อของที่ไม่ตรงปกจากการดูรีวิวเกินจริง ตรวจสอบความคิดเห็นจากผู้ใช้จริงก่อนซื้อ","love":"อย่าเพิ่งหลงรักเพียงเพราะรูปโปรไฟล์สวยหล่อ พูดคุยและดูทัศนคติในการใช้ชีวิตเป็นสำคัญ","health":"ยอมรับในรูปร่างหน้าตาของตนเอง อย่ากดดันตัวเองตามมาตรฐานความงามในเน็ต","tags":"Filter, No Filter, Reality"},{"title":"อันแคนนี่หลอนจิต สลัดความกลัว","label":"เคราะห์ระวัง","badge":"Uncanny / Overcoming Fear","level":3,"head":"ใบสามสิบเก้าฟีลอันแคนนี่หลอน\nความกังวลรุมเร้าใจผวา\nจงดึงจิตกลับมาด้วยศรัทธา\nความกลัวหนาจักสลาย...มลายพลัน","overview":"ความกังวลและความกลัวไปเองกำลังบั่นทอนกำลังใจ มองทุกอย่างตามความเป็นจริงแล้วความกลัวจะหายไป","work":"อย่ากลัวการเปลี่ยนแปลงหรือเทคโนโลยีใหม่ๆ เปิดใจเรียนรู้แล้วจะพบว่าไม่ได้ยากอย่างที่คิด","money":"อย่าตื่นตระหนกกับข่าวลือทางเศรษฐกิจ บริหารเงินอย่างมีสติและรอบคอบ","love":"อย่าคิดมากไปเองว่าคนรักจะเปลี่ยนไป หากมีข้อสงสัยให้เปิดใจพูดคุยกันตรงๆ","health":"ระวังอาการแพนิคหรือใจสั่นจากการพักผ่อนน้อย ดื่มน้ำอุ่นและฝึกหายใจลึกๆ","tags":"Uncanny, Overthinking, Reset"},{"title":"กาชาเกลือสนิท อดทนรอเวลา","label":"เคราะห์เบา","badge":"Gacha Salt / Pity System","level":3,"head":"ใบที่สี่สิบสุ่มกาชาเกลือ\nโชคไม่เอื้อช่วงนี้จงหยุดก่อน\nอย่าทุ่มหมดหน้าตักให้ใจรอน\nพักผ่อนนอนรอการันตี...ดีกว่าเอย","overview":"ช่วงนี้ดวงเรื่องการเสี่ยงโชคยังไม่ขึ้น การลงทุนมีความเสี่ยงสูง ควรรอจังหวะที่เหมาะสมกว่านี้","work":"อย่าเพิ่งเปลี่ยนงานหรือริเริ่มโปรเจกต์เสี่ยงๆ ในช่วงนี้ ทำหน้าที่ปัจจุบันให้ดีที่สุดไปก่อน","money":"งดการพนัน การเสี่ยงโชค หรือซื้อหวย รัดเข็มขัดและเก็บเงินสดไว้จะปลอดภัยที่สุด","love":"คนที่ตามจีบยังไม่ให้คำตอบ อย่าเพิ่งทุ่มเทจนหมดใจ ควรรอดูท่าทีไปอีกสักระยะ","health":"ระวังเรื่องกระเพาะอาหาร หรือการกินอาหารรสเค็มจัดตามชื่อเกลือ","tags":"Gacha, เกลือ, Pity System"},{"title":"ลักกี้โรลออกทอง ลาภลอยหล่นทับ","label":"ดีเลิศ","badge":"Lucky Pull / SSR Jackpot","level":0,"head":"ใบสี่สิบเอ็ดลักกี้โรลเข้าเป้า\nแสงทองส่องทับเงาเปี่ยมสง่า\nดวงเสี่ยงโชคพุ่งแรงดั่งเทวา\nสมปรารถนา...ได้ของดี","overview":"โชคชะตาพลิกฟื้น มีเกณฑ์ได้รับโชคลาภที่ไม่คาดฝัน การสุ่มหรือการแข่งขันจะได้รับผลตอบแทนคุ้มค่า","work":"มีโอกาสได้รับมอบหมายงานดีๆ หรือได้งานใหม่ที่ดีกว่าเดิม มีผู้ใหญ่คอยอุปถัมภ์","money":"มีลาภลอย ได้เงินคืนจากลูกหนี้ หรือได้ผลตอบแทนจากการลงทุนก้อนโต","love":"คนโสดมีเกณฑ์พบรักดั่งพรหมลิขิต เจอคนตรงสเปกแบบคะแนนเต็มร้อย","health":"สุขภาพกายและใจสดชื่นแจ่มใส โรคภัยที่เคยมีจะบรรเทาเบาบางลง","tags":"Lucky Roll, SSR, Jackpot"},{"title":"ซิกม่าฟีลนิ่งสงบ รักในสันโดษ","label":"ดี","badge":"Lone Wolf / Self-Reliance","level":1,"head":"ใบสี่สิบสองรักในความสงบ\nไม่ชอบพบความวุ่นวายหลายกระแส\nพึ่งพาตนเองได้ไม่พ่ายแพ้\nจิตแน่วแน่ซิกม่าแท้...คือตัวจริง","overview":"การอยู่คนเดียวอย่างมีคุณภาพช่วยเสริมสร้างพลังสร้างสรรค์ พึ่งพาตัวเองได้อย่างภาคภูมิใจ","work":"งานเดี่ยวทำได้ยอดเยี่ยม ผลิตผลงานคุณภาพสูงโดยไม่ต้องพึ่งพาใครมากนัก","money":"บริหารการเงินด้วยตัวเองได้อย่างรอบคอบ ไม่ถูกชักจูงโดยค่านิยมของคนอื่น","love":"มีความสุขกับตัวเอง คนโสดแฮปปี้ คนมีคู่ต้องการพื้นที่ส่วนตัวซึ่งกันและกัน","health":"สุขภาพจิตสงบ นิ่ง มีสมาธิในการทำกิจกรรมต่างๆ อย่างลึกซึ้ง","tags":"Sigma, Lone Wolf, Peace"},{"title":"มิดธรรมดาแต่ปลอดภัย ไร้ภัยพาล","label":"ปานกลาง","badge":"Mid / Safe & Stable","level":2,"head":"ใบสี่สิบสามเรื่อยเรื่อยฟีลกลางกลาง\nไม่หวือหวาตามทางแต่ปลอดภัย\nไร้เรื่องร้ายกวนใจให้เหนื่อยใจ\nประคองไว้...ชีวิตสุขสมดุล","overview":"ดวงชะตาอยู่ในเกณฑ์ปานกลาง ไม่มีเรื่องตื่นเต้นหวือหวาแต่ก็ไม่มีเคราะห์ร้าย เหมาะแก่การใช้ชีวิตอย่างสมดุล","work":"งานเป็นไปตามแผน ไม่ติดขัดแต่ยังไม่มีการก้าวกระโดด รักษามาตรฐานเดิมไว้ได้ดี","money":"รายรับสมดุลกับรายจ่าย ไม่มีหนี้เพิ่ม การเงินมั่นคงในระดับที่น่าพอใจ","love":"ความรักราบเรียบ ดูแลกันไปเรื่อยๆ มีความเข้าใจและไว้เนื้อเชื่อใจกันดี","health":"ร่างกายแข็งแรงตามปกติ ไม่มีโรคร้ายแรง มีเพียงอาการเมื่อยล้าทั่วไป","tags":"Mid, Balanced, Safe"},{"title":"ดาเมจรุนแรง ระวังคำทิ่มแทง","label":"เตือนภัย","badge":"Emotional Damage / Caution","level":3,"head":"ใบสี่สิบสี่ระวังคำเสียดสี\nสร้างดาเมจย่ำยีให้เจ็บหนา\nอย่าเก็บเอาคำคนมารกอุรา\nใช้ปัญญาเยียวยา...รักษาใจ","overview":"ระวังการถูกวิพากษ์วิจารณ์หรือคำพูดที่กระทบกระเทือนจิตใจ อย่าเอาความคิดแง่ลบของคนอื่นมาทำลายความมั่นใจ","work":"อาจเจอคำติชมที่รุนแรง ให้มองหาข้อเท็จจริงเพื่อพัฒนา อย่าเก็บความรู้สึกโกรธไว้ในใจ","money":"ระวังถูกหลอกให้เสียเงินจากความเกรงใจ หรือคำพูดกดดันของคนรอบข้าง","love":"ระวังคำพูดประชดประชันกันเองในคู่รัก คำพูดที่หลุดปากอาจสร้างบาดแผลลึก","health":"ดูแลสุขภาพใจ ระวังอาการหมดไฟ (Burnout) หาเวลาพักผ่อนและพูดคุยกับคนที่เข้าใจ","tags":"Emotional Damage, Burnout, Heal"},{"title":"บียอนด์ก้าวล้ำ เกินต้านทาน","label":"ดีเลิศ","badge":"Beyond / Visionary","level":0,"head":"ใบสี่สิบห้าความคิดก้าวล้ำยุค\nสร้างความสุขบียอนด์เกินต้านไหว\nมองเห็นทางข้างหน้าไกลแสนไกล\nพาตนไป...สู่จุดสุดยอดเอย","overview":"วิสัยทัศน์กว้างไกล ความคิดสร้างสรรค์แปลกใหม่ช่วยเปิดประตูสู่ความสำเร็จที่ไร้ขีดจำกัด","work":"ไอเดียล้ำสมัยได้รับการยอมรับ สามารถปฏิรูปกระบวนการทำงานให้ทันสมัยและมีประสิทธิภาพ","money":"การลงทุนในเทคโนโลยีหรือนวัตกรรมใหม่ๆ ให้ผลตอบแทนคุ้มค่าเกินคาด","love":"มุมมองความรักเปิดกว้าง เข้าใจและยอมรับในตัวตนของคนรักได้อย่างลึกซึ้ง","health":"สมองปลอดโปร่ง คิดงานสร้างสรรค์ได้ตลอดเวลา อารมณ์แจ่มใส","tags":"Beyond, Visionary, Next Level"},{"title":"สลีปปี้อ่อนล้า ชาร์จแบตด่วน","label":"เตือนสติ","badge":"Sleep Deprived / Rest","level":3,"head":"ใบสี่สิบหกร่างกายฟ้องอ่อนล้า\nสลีปปี้ตาจะปิดหมดแรงหนา\nอย่าฝืนทนทำงานเปลืองเวลา\nนอนหลับตา...ชาร์จแบตฟื้นชีวี","overview":"ร่างกายกำลังส่งสัญญาณเตือนว่าใช้งานหนักเกินไป อย่าละเลยการนอนหลับและการพักผ่อน","work":"ประสิทธิภาพการทำงานลดลงเพราะความง่วง พักเบรกสั้นๆ หรือนอนกลางวันสักครู่จะช่วยได้","money":"ระวังการตัดสินใจทางการเงินผิดพลาดเพราะความเบลอ พักผ่อนให้เต็มที่ก่อนเซ็นสัญญา","love":"อาจมีอารมณ์หงุดหงิดใส่คนรักเพราะความเหนื่อยล้า อธิบายให้เขาเข้าใจและขอเวลาพักผ่อน","health":"ระวังภูมิต้านทานตก เป็นหวัดง่าย หรือนอนไม่เป็นเวลา ควรปรับเวลานอนด่วน","tags":"Sleepy, Burnout, Recharge"},{"title":"ไวบ์ดีฟีลกู๊ด กัลยาณมิตรเกื้อหนุน","label":"ดีมาก","badge":"Good Vibes / Blessed","level":1,"head":"ใบสี่สิบเจ็ดไวบ์ดีพาชีวีสุข\nไร้เรื่องทุกข์เพื่อนแท้คอยเกื้อหนุน\nบรรยากาศรอบกายเปี่ยมการุณย์\nแผ่ผลบุญ...สู่ทุกคนรอบตัว","overview":"แวดล้อมไปด้วยพลังบวกและกัลยาณมิตรที่ดี มีคนคอยสนับสนุนและให้กำลังใจเสมอ","work":"บรรยากาศในที่ทำงานอบอุ่น ทำงานร่วมกับเพื่อนร่วมทีมได้อย่างราบรื่นและมีความสุข","money":"มีช่องทางทำมาหากินร่วมกับเพื่อนฝูงหรือพันธมิตรที่ไว้ใจได้ ธุรกิจเติบโตดี","love":"ความสัมพันธ์อบอุ่น เข้าใจกันและกัน เป็นทั้งคนรักและเพื่อนคู่คิดที่ดี","health":"สุขภาพกายและใจสดใส เบิกบาน มีพลังบวกส่งต่อให้คนรอบข้าง","tags":"Good Vibes, Wholesome, W Friends"},{"title":"ไฮป์เกินจริง ระวังฟองสบู่","label":"เตือนสติ","badge":"Overhyped / Reality Check","level":3,"head":"ใบสี่สิบแปดกระแสไฮป์เกินจริง\nอย่ารีบวิ่งตามเขาให้มัวหมอง\nของบางอย่างมองดูคล้ายดั่งทอง\nแท้เพียงกลอง...กลวงในไร้ราคา","overview":"อย่าหลงไปกับกระแสชั่วคราวหรือคำโฆษณาชวนเชื่อ พิจารณาข้อเท็จจริงอย่างมีเหตุผล","work":"อย่าเพิ่งกระโจนเข้าหาโปรเจกต์ที่ดูดีแต่ขาดแผนงานที่ชัดเจน วิเคราะห์ความเป็นไปได้ก่อน","money":"ระวังติดดอยจากการซื้อสินทรัพย์ตามกระแสโซเชียล ตรวจสอบพื้นฐานให้รอบคอบ","love":"คนที่ดูดีสมบูรณ์แบบอาจสร้างภาพขึ้นมา ค่อยๆ ดูพฤติกรรมจริงในชีวิตประจำวัน","health":"อย่าหลงเชื่ออาหารเสริมหรือวิธีลดน้ำหนักแบบเร่งด่วนที่โฆษณาเกินจริง เน้นวิธีธรรมชาติ","tags":"Overhyped, Cap, Do Your Own Research"},{"title":"สายเปย์จัดหนัก ระวังกระเป๋าฉีก","label":"เคราะห์เบา","badge":"Overspending / Simp Trap","level":3,"head":"ใบสี่สิบเก้าสายเปย์เทหมดหน้าตัก\nหลงความรักจนลืมตัวหมดเงินหนา\nกระเป๋าฉีกเงินร่อยหรอไร้ราคา\nจงดึงสติกลับมา...ประหยัดเอย","overview":"ใช้เงินตามอารมณ์มากเกินไป ระวังจะเดือดร้อนเรื่องค่าใช้จ่ายในระยะยาว ต้องรู้จักปฏิเสธบ้าง","work":"อย่ารับภาระงานของคนอื่นมาทำแทนเพียงเพื่อต้องการให้เขาชื่นชอบ รักษาสมดุลของตนเอง","money":"งดการซื้อของขวัญราคาแพงเกินกำลัง หรือการเลี้ยงเพื่อนฝูงบ่อยเกินไป วางแผนการเงินใหม่","love":"ความรักที่แท้จริงไม่ได้วัดกันที่มูลค่าของเงินทอง ให้ความจริงใจและความเข้าใจมีค่ามากกว่า","health":"ระวังความเครียดเมื่อเห็นยอดบัตรเครดิต รีบวางแผนชำระหนี้อย่างเป็นระบบ","tags":"Simp, สายเปย์, Broke"},{"title":"น็อคมืดฟื้นคืน พลิกกลับมาชนะ","label":"ดีเลิศ","badge":"Comeback King / Resilience","level":0,"head":"ใบที่ห้าสิบล้มแล้วลุกขึ้นใหม่\nหัวใจแกร่งไม่ยอมแพ้ชะตาหนา\nพลิกวิกฤตเป็นโอกาสสง่างามตา\nชัยชนะหวนมา...ดั่งใจปอง","overview":"เรื่องร้ายๆ กำลังจะผ่านไป คุณจะกลับมาผงาดได้อย่างยิ่งใหญ่และแข็งแกร่งกว่าเดิม","work":"แก้ไขความผิดพลาดในอดีตได้สำเร็จ พลิกเกมกลับมาเป็นผู้นำในโปรเจกต์ได้อย่างยอดเยี่ยม","money":"การเงินที่เคยสะดุดเริ่มฟื้นตัว มีรายได้เข้ามาช่วยปลดเปลื้องภาระอย่างเห็นได้ชัด","love":"ปรับความเข้าใจกับคนรักได้สำเร็จ ความสัมพันธ์กลับมาหวานชื่นและแน่นแฟ้นยิ่งขึ้น","health":"ร่างกายที่เคยเจ็บป่วยจะฟื้นตัวอย่างรวดเร็ว มีพลังใจเต็มเปี่ยมในการดำเนินชีวิต","tags":"Comeback, W, Never Give Up"},{"title":"คลัตช์วินาทีสุดท้าย ลาสต์ช็อตคว้าชัย","label":"ดีเลิศ","badge":"Clutch King / Epic Win","level":0,"head":"ใบห้าสิบเอ็ดคลัตช์วินาทีท้าย\nลาสต์ช็อตยิงสลายคู่แข่งหนา\nพลิกเกมคว้าชัยชนะอย่างสง่า\nเสียงเฮลั่นพารา...สมใจปอง","overview":"แม้สถานการณ์จะดูคับขัน แต่คุณมีความสามารถในการพลิกเกมและคว้าชัยชนะได้ในวินาทีสุดท้าย","work":"ส่งงานทันเวลาเฉียดฉิว หรือแก้ไขปัญหาวิกฤตของโปรเจกต์ได้สำเร็จจนได้รับคำชมเชย","money":"มีเงินเข้ามาหมุนเวียนได้ทันเวลาพอดี รอดพ้นวิกฤตการเงินได้อย่างหวุดหวิด","love":"กล้าบอกความรู้สึกในจังหวะสุดท้าย ทำให้ไม่พลาดโอกาสดีๆ ในความรัก","health":"หัวใจเต้นแรงจากความตื่นเต้น หลังผ่านพ้นเรื่องลุ้นระทึกควรนั่งพักผ่อนให้สงบ","tags":"Clutch, Last Shot, GG"},{"title":"นิวไฮทะลุเพดาน เติบโตไร้ขีดจำกัด","label":"ดีเลิศ","badge":"All-Time High / New High","level":0,"head":"ใบห้าสิบสองพุ่งทะยานสู่ฟ้า\nทำนิวไฮสูงค่าเกินขีดคั่น\nความสำเร็จหลั่งไหลสารพัน\nเป็นคืนวัน...ที่งดงามเกินบรรยาย","overview":"ชีวิตกำลังก้าวขึ้นสู่จุดสูงสุดใหม่ในหลายๆ ด้าน ทั้งหน้าที่การงาน การเงิน และชื่อเสียง","work":"ยอดขาย ทราฟฟิก หรือผลการประเมินงานทำลายสถิติเดิม ได้รับการเลื่อนขั้นอย่างรวดเร็ว","money":"มูลค่าสินทรัพย์และเงินในบัญชีทำสถิติสูงสุด มีโอกาสสร้างความมั่งคั่งระยะยาว","love":"ความสัมพันธ์หวานชื่นที่สุดตั้งแต่คบกันมา มีการวางแผนอนาคตร่วมกันอย่างจริงจัง","health":"พลังงานกายและใจเต็มเปี่ยม สุขภาพแข็งแรงพร้อมรับทุกความสำเร็จ","tags":"All-Time High, New High, To the Moon"},{"title":"คูลดาวน์รอจังหวะ พักผ่อนเอาแรง","label":"ปานกลาง","badge":"Cooldown / Strategic Rest","level":2,"head":"ใบห้าสิบสามกดคูลดาวน์สกิลไว้\nอย่ารีบร้อนก้าวไปให้เหนื่อยหนา\nรอจังหวะเหมาะสมตามเวลา\nฟื้นพลังคืนมา...ค่อยลุยต่อ","overview":"ช่วงนี้ควรชะลอความเร็วลง ไม่จำเป็นต้องรีบเร่ง พักผ่อนและเตรียมความพร้อมสำหรับรอบต่อไป","work":"หลังจบโปรเจกต์ใหญ่ ให้ใช้เวลาจัดระเบียบเอกสารและวางแผนงานถัดไป อย่าเพิ่งรีบเปิดงานใหม่","money":"ช่วงนี้การเงินนิ่งๆ ไม่ควรรีบลงทุนในสินทรัพย์เสี่ยง รอให้ตลาดมีสัญญาณชัดเจนก่อน","love":"ให้พื้นที่ว่างแก่กันและกัน ไม่ต้องตัวติดกันตลอดเวลา จะช่วยให้ความสัมพันธ์ไม่อึดอัด","health":"นอนหลับพักผ่อนให้เพียงพอ นวดคลายกล้ามเนื้อเพื่อลดความเมื่อยล้าสะสม","tags":"Cooldown, Recharge, Patience"},{"title":"ยอดซับสไครบ์พุ่ง ชื่อเสียงโด่งดัง","label":"ดีมาก","badge":"Going Viral / Subscribed","level":1,"head":"ใบห้าสิบสี่คนติดตามล้นหลาม\nชื่อเสียงก้องทุกคามดังสนั่น\nยอดซับสไครบ์ยอดแชร์สารพัน\nเป็นคืนวัน...ที่ใครต่างชื่นชม","overview":"ผลงานของคุณได้รับความสนใจอย่างกว้างขวาง เป็นที่รู้จักและได้รับความนิยมในสังคม","work":"คอนเทนต์หรือผลงานกลายเป็นไวรัล ได้รับการติดต่อให้ร่วมงานจากแบรนด์หรือลูกค้ารายใหญ่","money":"มีรายได้จากชื่อเสียง การเป็นสปอนเซอร์ หรือส่วนแบ่งยอดวิว มีความคล่องตัวสูง","love":"มีคนแอบปลื้มและติดตามชีวิตคุณอยู่ห่างๆ อาจมีคนโปรไฟล์ดีเข้ามาทักแชตทำความรู้จัก","health":"ระวังอาการสายตาล้าจากการตอบคอมเมนต์หรือเช็กยอดแจ้งเตือนบนมือถือ","tags":"Subscribe, Viral, Influencer"},{"title":"จังหวะโบ๊ะบ๊ะ อารมณ์ขันสร้างมิตร","label":"ดี","badge":"Humor & Charm / Funny Vibe","level":1,"head":"ใบห้าสิบห้าจังหวะฮาโบ๊ะบ๊ะ\nเสียงหัวเราะเปี่ยมมานะพาสดใส\nเสน่ห์แห่งอารมณ์ขันชนะใจ\nสร้างมิตรภาพยิ่งใหญ่...รอบกายา","overview":"การมองโลกในแง่ดีและอารมณ์ขันจะช่วยผ่อนคลายสถานการณ์ตึงเครียดและดึงดูดคนดีๆ เข้ามา","work":"การใช้อารมณ์ขันในการสื่อสารช่วยให้การประชุมราบรื่น ลดความขัดแย้งในทีมงาน","money":"มีโชคจากการพบปะสังสรรค์ ได้ไอเดียทำมาหากินใหม่ๆ จากวงสนทนาที่สนุกสนาน","love":"คารมเป็นต่อ รูปหล่อเป็นรอง ความเป็นคนตลกและอบอุ่นทำให้คนรักหลงรักทุกวัน","health":"การหัวเราะช่วยหลั่งสารเอนดอร์ฟิน สุขภาพจิตแจ่มใส หัวใจแข็งแรง","tags":"โบ๊ะบ๊ะ, Humor, W Rizz"},{"title":"วินเรทสูงลิ่ว แข่งขันย่อมมีชัย","label":"ดีเลิศ","badge":"High Winrate / Dominance","level":0,"head":"ใบห้าสิบหกวินเรทพุ่งสูงส่ง\nผลการแข่งมั่นคงชนะรวด\nฝีมือเด่นเป็นสง่าในชั้นงวด\nไร้คู่แข่งประกวด...เทียบเคียงทัน","overview":"ความสามารถและความพร้อมนำพาชัยชนะมาสู่คุณอย่างต่อเนื่อง สถิติการทำงานโดดเด่น","work":"ยื่นประกวด แข่งขัน หรือสอบคัดเลือกมีโอกาสติดอันดับต้นๆ ความสำเร็จอยู่แค่เอื้อม","money":"การค้าขายได้กำไรต่อเนื่อง วางแผนการเงินแม่นยำ เงินในบัญชีเติบโตอย่างมั่นคง","love":"ความมั่นใจทำให้คุณดูมีเสน่ห์ จีบใครก็มีโอกาสสมหวังสูง","health":"ร่างกายแข็งแรง ฟิตเปรี๊ยะ พร้อมสำหรับกิจกรรมท้าทายทุกรูปแบบ","tags":"Winrate, Dominance, GG EZ"},{"title":"ดับมั่นคนหยิ่ง สยบความโอหัง","label":"เตือนสติ","badge":"Stay Humble / Ego Check","level":3,"head":"ใบห้าสิบเจ็ดอย่ามั่นหน้าเกินไป\nความโอหังอาจพาให้เสียท่าหนา\nคนเก่งกว่ายังมีอยู่ทั่วโลกา\nถ่อมใจไว้มีค่า...สง่างาม","overview":"ความมั่นใจเป็นสิ่งที่ดี แต่การเย่อหยิ่งจะสร้างศัตรูโดยไม่รู้ตัว จงรักษาความอ่อนน้อมถ่อมตน","work":"อย่าดูถูกเพื่อนร่วมงานหรือผู้มีประสบการณ์น้อยกว่า รับฟังความคิดเห็นรอบด้านเพื่อความรอบคอบ","money":"อย่าใช้จ่ายอวดรวยจนเกินตัว ความมั่งคั่งที่แท้จริงคือความมั่นคงที่ไม่ต้องโอ้อวด","love":"อย่าวางตัวเหนือกว่าคนรัก การให้เกียรติซึ่งกันและกันคือหัวใจของความสัมพันธ์ระยะยาว","health":"ระวังอุบัติเหตุจากการประมาทหรือความมั่นใจในตัวเองมากเกินไป","tags":"ดับมั่น, Humble, Ego Check"},{"title":"ดึงเชิงไว้ก่อน อย่าเพิ่งเผยไต๋","label":"ดี","badge":"Poker Face / Mystery","level":1,"head":"ใบห้าสิบแปดดึงเชิงไว้ให้แนบเนียน\nอย่าเพิ่งเปิดความลับเตียนให้เห็นหนา\nนิ่งสุขุมลึกล้ำดั่งคงคา\nชัยชนะเบื้องหน้า...จะตกเป็นของเธอ","overview":"การเก็บงำความลับและแผนการไว้ก่อนจะช่วยให้คุณมีความได้เปรียบในเชิงกลยุทธ์","work":"ในการเจรจาต่อรอง อย่าเพิ่งรีบเปิดเผยข้อเสนอสุดท้าย รอดูท่าทีของอีกฝ่ายก่อน","money":"อย่าเพิ่งบอกใครเรื่องแผนการลงทุนหรือผลกำไร รักษาความเงียบไว้เพื่อความปลอดภัย","love":"การรักษาระยะห่างและความลึกลับไว้นิดหน่อยจะช่วยเพิ่มเสน่ห์ให้น่าค้นหา","health":"รักษาอารมณ์ให้นิ่ง สงบ การฝึกควบคุมลมหายใจช่วยให้อารมณ์มั่นคง","tags":"ดึงเชิง, Poker Face, Mystery"},{"title":"สปอยล์ยับทำลายอารมณ์ ระวังวาจา","label":"เตือนภัย","badge":"Spoiler Alert / Loose Lips","level":3,"head":"ใบห้าสิบเก้าระวังปากพาพัง\nสปอยล์เรื่องไม่ควรฟังทำลายขวัญ\nความลับเพื่อนเก็บไว้ให้สำคัญ\nมิเช่นนั้นสัมพันธ์...จักขาดรอน","overview":"ระวังการพูดเรื่องที่ยังไม่ควรพูด หรือการเปิดเผยความลับของผู้อื่นจนทำให้เกิดความบาดหมาง","work":"รักษาความลับทางการค้าและข้อมูลภายในองค์กรอย่างเคร่งครัด อย่าเอาไปเล่าต่อ","money":"อย่าหลุดปากบอกรหัสผ่าน ข้อมูลบัตรเครดิต หรือธุรกรรมส่วนตัวกับใคร","love":"อย่าเอาเรื่องในมุ้งหรือข้อเสียของคนรักไปนินทาให้เพื่อนฟัง จะสร้างรอยร้าวในความสัมพันธ์","health":"ระวังอาการร้อนใน แผลในช่องปาก หรือเจ็บคอจากการพูดมากเกินไป","tags":"Spoiler, Loose Lips, Trust"},{"title":"รันวงการสร้างเทรนด์ ผู้นำกระแส","label":"ดีเลิศ","badge":"Trendsetter / Icon","level":0,"head":"ใบที่หกสิบรันวงการนำสมัย\nสร้างเทรนด์ใหม่ใครต่างก็ทำตาม\nความคิดสร้างสรรค์ล้ำทุกเขตคาม\nก้าวสู่ความเป็นไอคอน...อันเกรียงไกร","overview":"คุณมีความคิดริเริ่มสร้างสรรค์ที่โดดเด่น สามารถเป็นผู้นำทางความคิดและสร้างแรงบันดาลใจให้ผู้อื่น","work":"ริเริ่มโปรเจกต์ใหม่ที่ฉีกแนวเดิมๆ และประสบความสำเร็จอย่างงดงาม กลายเป็นมาตรฐานใหม่ของทีม","money":"มองเห็นโอกาสทางธุรกิจก่อนใคร สามารถทำกำไรจากการเป็นผู้บุกเบิกตลาด","love":"มีสไตล์เป็นของตัวเองจนคนรักหลงใหล เป็นคู่รักที่มีเอกลักษณ์โดดเด่น","health":"มีพลังงานในการใช้ชีวิตสูง กระตือรือร้นและเต็มไปด้วยไอเดียใหม่ๆ ตลอดเวลา","tags":"รันวงการ, Trendsetter, Icon"},{"title":"โนสโคปยิงตรงเป้า แม่นยำเฉียบคม","label":"ดีมาก","badge":"No-Scope / High Accuracy","level":1,"head":"ใบหกสิบเอ็ดโนสโคปตรงเป้าหมาย\nสัญชาตญาณเฉียบคมหลายไม่ผิดเพี้ยน\nปัญหายากแก้ไขได้ดั่งบทเรียน\nความเพียรพาสำเร็จ...ดั่งใจจินต์","overview":"สัญชาตญาณและการตัดสินใจที่รวดเร็วแม่นยำจะนำพาคุณไปสู่ผลลัพธ์ที่ยอดเยี่ยม เชื่อมั่นในตนเอง","work":"แก้ไขปัญหาเฉพาะหน้าได้อย่างยอดเยี่ยม มองขาดว่าต้องแก้จุดไหนทำให้ประหยัดเวลา","money":"จับจังหวะการซื้อขายสินทรัพย์ได้อย่างแม่นยำ ได้กำไรเข้ากระเป๋าอย่างงดงาม","love":"จับสังเกตความรู้สึกของคนรักได้ไว รู้ใจว่าเขาต้องการอะไร ทำให้ความสัมพันธ์ราบรื่น","health":"สายตาและการทำงานประสานกันของประสาทสัมผัสดีเยี่ยม สุขภาพแข็งแรง","tags":"No-scope, Instinct, Precision"},{"title":"อัปเกรดระบบ พัฒนาตัวเองไม่หยุด","label":"ดีมาก","badge":"Upgrade System / Growth","level":1,"head":"ใบหกสิบสองอัปเกรดตนไม่หยุดยั้ง\nเติมพลังความรู้ใหม่สู่กายา\nทักษะล้ำเลิศเกินกาลเวลา\nคุณค่าทวีคูณ...หนุนนำชัย","overview":"การหมั่นเรียนรู้สิ่งใหม่ๆ และปรับปรุงตัวเองอยู่เสมอจะทำให้คุณเป็นบุคคลที่มีค่าและเป็นที่ต้องการ","work":"การเรียนคอร์สเสริมหรือฝึกใช้เครื่องมือ AI ใหม่ๆ ช่วยเพิ่มความเร็วและคุณภาพในการทำงาน","money":"ความรู้ที่เพิ่มขึ้นนำมาซึ่งโอกาสสร้างรายได้ที่สูงขึ้น เงินเดือนหรือผลตอบแทนเพิ่มขึ้น","love":"ปรับปรุงนิสัยและข้อบกพร่องของตนเอง ทำให้ความสัมพันธ์เติบโตและเป็นผู้ใหญ่มากขึ้น","health":"ปรับเปลี่ยนพฤติกรรมการกินและการนอนเพื่อสุขภาพที่ดีขึ้น ร่างกายสดชื่นกระปรี้กระเปร่า","tags":"Upgrade, Level Up, Continuous Learning"},{"title":"เซิร์ฟเวอร์ล่มชั่วคราว ตั้งสติรับมือ","label":"เคราะห์ระวัง","badge":"Server Down / Patience","level":3,"head":"ใบหกสิบสามเซิร์ฟเวอร์ล่มกะทันหัน\nแผนการที่วางไว้นั้นชะงักหนา\nอย่าหัวร้อนตั้งสติใช้ปัญญา\nรอระบบฟื้นคืนมา...ค่อยลุยต่อ","overview":"อาจมีเหตุสุดวิสัยหรืออุปสรรคภายนอกที่ควบคุมไม่ได้เข้ามาขัดจังหวะ จงใจเย็นและรอจังหวะแก้ไข","work":"ระบบขัดข้อง การติดต่อสื่อสารสะดุด หรือเครื่องมือทำงานมีปัญหา มีแผนสำรองไว้เสมอ","money":"ระบบแอปธนาคารหรือการโอนเงินอาจติดขัด พกเงินสดสำรองไว้บ้างจะช่วยลดความวุ่นวาย","love":"การสื่อสารอาจเข้าใจผิดกันชั่วคราว อย่าเพิ่งด่วนสรุป รอให้อารมณ์เย็นลงแล้วค่อยคุย","health":"ระวังอาการหงุดหงิดจากสิ่งรอบข้างที่ไม่ได้ดั่งใจ ฝึกการปล่อยวางและผ่อนคลาย","tags":"Server Down, Crash, Backup Plan"},{"title":"โดนแก๊งก์รุมล้อม สามัคคีคือทางรอด","label":"เคราะห์ระวัง","badge":"Ganked / Call for Help","level":3,"head":"ใบหกสิบสี่โดนรุมล้อมหลายทิศ\nอุปสรรคประชิดรอบกายหนา\nอย่าสู้เดี่ยวเรียกเพื่อนพ้องเข้ามา\nความสามัคคีพา...รอดปลอดภัย","overview":"ปัญหาที่เข้ามาอาจมีหลายด้านเกินกว่าจะรับมือคนเดียวได้ อย่ากลัวที่จะขอความช่วยเหลือจากผู้อื่น","work":"ภาระงานล้นมือ แจ้งหัวหน้าหรือขอแรงเพื่อนร่วมทีมมาช่วยกระจายงาน อย่าแบกไว้คนเดียว","money":"หากมีปัญหาหนี้สินหรือค่าใช้จ่ายตึงตัว ปรึกษาครอบครัวหรือผู้เชี่ยวชาญเพื่อหาทางออกร่วมกัน","love":"หากมีความขัดแย้งกับครอบครัวของอีกฝ่าย ให้จับมือกับคนรักให้แน่นแล้วช่วยกันอธิบาย","health":"ระวังความเครียดสะสมจนส่งผลต่อร่างกาย พูดคุยระบายความรู้สึกกับเพื่อนสนิท","tags":"Ganked, Teamwork, Call for Backup"},{"title":"สแปมปุ่มมั่วซั่ว มีแต่จะเสียทรง","label":"เตือนสติ","badge":"Button Mashing / Strategy First","level":3,"head":"ใบหกสิบห้าอย่าสแปมกดมั่วซั่ว\nทำอะไรไม่รู้ตัวเสียทรงหนา\nวางแผนก่อนลงมือด้วยปัญญา\nความรอบคอบนำพา...สู่ชัยเอย","overview":"การทำอะไรรนราน ขาดการวางแผน มีแต่จะทำให้สถานการณ์แย่ลง ต้องตั้งสติและคิดก่อนทำเสมอ","work":"อย่าส่งอีเมลหรือกดส่งงานโดยไม่ได้ตรวจทานความถูกต้อง ความรีบจะทำให้เกิดข้อผิดพลาดใหญ่","money":"อย่ากดเทรดหรือซื้อของด้วยความโลภแบบรัวๆ กำหนดยุทธศาสตร์และจุดตัดขาดทุนให้ชัดเจน","love":"อย่ารัวข้อความหรือโทรจิกเมื่อเขาไม่ตอบ ให้เวลาและพื้นที่ส่วนตัวแก่เขาบ้าง","health":"ระวังนิ้วล็อคหรือปวดข้อมือจากการกดพิมพ์แป้นพิมพ์หรือมือถือรัวเกินไป","tags":"Button Mashing, สแปม, Strategy"},{"title":"บัฟพลังเต็มพิกัด ดวงหนุนเกื้อกูล","label":"ดีเลิศ","badge":"Full Buffed / Blessed","level":0,"head":"ใบหกสิบหกได้รับบัฟเต็มพลัง\nโชคชะตาหนุนหลังเปี่ยมราศี\nผู้ใหญ่เมตตากัลยาณมิตรมี\nทุกทิวาราตรี...สุขสมบูรณ์","overview":"ดวงชะตาได้รับการสนับสนุนจากสิ่งศักดิ์สิทธิ์และผู้หลักผู้ใหญ่ ทำสิ่งใดก็สำเร็จราบรื่นดั่งมีมนต์ดลบันดาล","work":"หัวหน้ามอบโอกาสสำคัญ มีคนคอยชี้แนะแนวทางและช่วยเคลียร์ทางให้ทำงานได้สะดวก","money":"มีคนอุปถัมภ์ค้ำชู ได้รับมรดก ทุนการศึกษา หรือการสนับสนุนทางการเงินที่มั่นคง","love":"ผู้ใหญ่ทั้งสองฝ่ายให้ความเห็นชอบและสนับสนุนความรักอย่างเต็มที่","health":"สุขภาพกายใจแข็งแรง ภูมิต้านทานดีเยี่ยม มีพลังงานสดใสอยู่เสมอ","tags":"Buffed, Blessed, God Tier"},{"title":"ดีบัฟถดถอย ระวังพลังตก","label":"เคราะห์เบา","badge":"Debuffed / Low Energy","level":3,"head":"ใบหกสิบเจ็ดติดดีบัฟพลังลด\nเรี่ยวแรงหดเหนื่อยล้าอย่าเพิ่งฝืน\nดูแลใจกายตนให้กลับคืน\nรอวันตื่น...สดใสฟื้นชีวา","overview":"ช่วงนี้พลังงานในตัวอาจลดลง รู้สึกเฉื่อยชาหรือไม่ค่อยมีกระจิตกระใจ เป็นช่วงเวลาที่ต้องพักฟื้นฟู","work":"อย่าเพิ่งรับงานเสริมหรือโปรเจกต์ใหม่ที่หนักเกินไป โฟกัสแค่งานหลักให้ผ่านไปในแต่ละวัน","money":"ระวังรายจ่ายจิปาถะที่ทำให้เงินรั่วไหล งดการช้อปปิ้งแก้เครียดชั่วคราว","love":"อาจมีความรู้สึกเฉยชาต่อกัน ไม่ต้องกังวล เป็นเพียงช่วงปรับอารมณ์ ให้เวลาฟื้นฟูความรู้สึก","health":"ระวังอาการขาดวิตามิน หรือนอนไม่พอ ควรทานอาหารที่มีประโยชน์และพักผ่อนให้เพียงพอ","tags":"Debuff, Low Energy, Recharge"},{"title":"อันฟอลสิ่งเป็นพิษ ตัดไฟแต่ต้นลม","label":"ดี","badge":"Unfollow Toxic / Cleanse","level":1,"head":"ใบหกสิบแปดกดอันฟอลคนท็อกซิก\nตัดสิ่งกวนใจยิกให้พ้นหน้า\nสร้างเซฟโซนปลอดภัยในอุรา\nความสุขหวนคืนมา...สู่อกตน","overview":"การตัดสิ่งแวดล้อมหรือบุคคลที่เป็นพิษออกจากชีวิตจะช่วยคืนความสงบสุขและความสดใสกลับมา","work":"ถอยห่างจากวงสนทนาที่ชอบนินทาหรือปล่อยพลังลบ โฟกัสที่งานและเพื่อนร่วมงานที่ดี","money":"เลิกติดตามเพจหรือบัญชีที่กระตุ้นให้เกิดความอยากซื้อของเกินความจำเป็น ประหยัดเงินได้มาก","love":"ตัดใจจากความสัมพันธ์ที่ทำให้เสียน้ำตา เปิดโอกาสให้ตัวเองได้พบกับคนที่เห็นคุณค่าอย่างแท้จริง","health":"สุขภาพจิตดีขึ้นอย่างเห็นได้ชัด ความเครียดลดลง อารมณ์แจ่มใสตลอดวัน","tags":"Unfollow, Toxic Cleanse, Safe Zone"},{"title":"ชาร์จแบตชีวิต เติมพลังใจ","label":"ดี","badge":"Recharge / Self-Care","level":1,"head":"ใบหกสิบเก้าให้รางวัลแก่ตัวเอง\nฟังเสียงเพลงพักผ่อนให้สุขศานต์\nชาร์จแบตเตอรี่ชีวิตชื่นบาน\nวันเบิกบาน...รออยู่เบื้องหน้าเอย","overview":"ถึงเวลาให้รางวัลและดูแลตัวเองหลังจากเหน็ดเหนื่อยมานาน การพักผ่อนอย่างมีคุณภาพจะเติมพลังให้พร้อมลุยต่อ","work":"ใช้วันลาพักร้อนไปท่องเที่ยวหรือนอนพักอยู่บ้าน ชาร์จพลังให้เต็มที่เพื่อกลับมาสร้างสรรค์ผลงาน","money":"เจียดเงินส่วนหนึ่งไปใช้เพื่อความสุขและการเรียนรู้ของตนเองอย่างสมเหตุสมผล","love":"พากันไปเดตในบรรยากาศสบายๆ ผ่อนคลาย เติมความหวานและความทรงจำดีๆ ร่วมกัน","health":"สุขภาพดีขึ้นจากการได้พักผ่อนอย่างเต็มอิ่ม ผิวพรรณสดใส หน้าตาผ่องใส","tags":"Recharge, Self-Care, Treat Yourself"},{"title":"คอนเทนต์ครีเอเตอร์ โด่งดังชั่วข้ามคืน","label":"ดีเลิศ","badge":"Viral Creator / Fame","level":0,"head":"ใบที่เจ็ดสิบความคิดสร้างสรรค์ล้ำ\nสร้างคอนเทนต์เลิศล้ำคนหลงใหล\nยอดวิวพุ่งกระฉูดเกริกเกรียงไกร\nสำเร็จใหญ่...ชั่วข้ามคืนตระการตา","overview":"ความคิดสร้างสรรค์และผลงานของคุณจะได้รับการยอมรับอย่างสูง มีโอกาสสร้างชื่อเสียงและความสำเร็จแบบก้าวกระโดด","work":"ไอเดียการตลาดหรือผลงานครีเอทีฟปังสุดๆ ได้รับเสียงชื่นชมจากทั้งในและนอกองค์กร","money":"มีรายรับเข้ามาจากหลายช่องทาง ผลงานสร้างมูลค่าทางธุรกิจได้อย่างมหาศาล","love":"เสน่ห์และความสามารถทำให้คุณดูเปล่งประกาย มีคนเข้ามาสนใจและชื่นชมมากมาย","health":"ระวังการนอนดึกจากการตัดต่อหรือคิดงานสร้างสรรค์ จัดเวลาพักผ่อนให้สมดุล","tags":"Content Creator, Viral, Overnight Success"},{"title":"มินิมอลเรียบง่าย สบายใจกว่า","label":"ดี","badge":"Minimalist / Simplicity","level":1,"head":"ใบเจ็ดสิบเอ็ดใช้ชีวิตแบบมินิมอล\nตัดสิ่งรกเกินทอนให้เบาหนา\nความเรียบง่ายนำสุขสู่ชีวา\nใจสงบมีค่า...กว่าสิ่งใด","overview":"การลดทอนสิ่งของที่ไม่จำเป็นและความคิดที่ยุ่งเหยิงจะทำให้ชีวิตเบาสบายและมองเห็นความสุขที่แท้จริง","work":"จัดโต๊ะทำงานและเคลียร์ไฟล์ในคอมพิวเตอร์ให้เป็นระเบียบ ช่วยให้ทำงานได้รวดเร็วและมีสมาธิขึ้น","money":"ลดรายจ่ายฟุ่มเฟือย หันมาเก็บออมและลงทุนในสิ่งที่มีคุณค่าอย่างแท้จริง การเงินมั่นคง","love":"ความรักเรียบง่าย ไม่ต้องมีพิธีรีตองมาก แค่ความจริงใจและความเข้าใจก็เพียงพอ","health":"จิตใจผ่อนคลาย ไม่ยึดติดกับวัตถุหรือค่านิยมภายนอก สุขภาพจิตสมบูรณ์แข็งแรง","tags":"Minimalist, Declutter, Simple Life"},{"title":"แม็กซ์สเตตัสเต็มหลอด เก่งรอบด้าน","label":"ดีเลิศ","badge":"Max Stats / All-Rounder","level":0,"head":"ใบเจ็ดสิบสองสเตตัสเต็มทุกด้าน\nปัญญากล้าเชี่ยวชาญทุกหนแห่ง\nทั้งศาสตร์ศิลป์พร้อมสรรพแกร่งกำแหง\nเปรียบดั่งแสง...เทียนส่องทางเรืองรอง","overview":"คุณมีทักษะและความสามารถรอบด้าน พร้อมที่จะรับมือกับทุกความท้าทาย เป็นบุคคลที่มีศักยภาพสูงสุด","work":"สามารถทำงานข้ามสายงานได้อย่างมีประสิทธิภาพ เป็นที่ต้องการตัวของทุกแผนกและองค์กร","money":"มีช่องทางทำเงินได้หลากหลาย ทั้งงานประจำและงานฟรีแลนซ์ รายได้มั่นคงแข็งแกร่ง","love":"เป็นคนที่มีคุณสมบัติครบเครื่อง ทั้งนิสัย ฐานะ และความคิด เป็นคู่ชีวิตในฝันของใครหลายคน","health":"สุขภาพร่างกายแข็งแรง ความคิดเฉียบแหลม อารมณ์มั่นคงสมบูรณ์แบบ","tags":"Max Stats, All-Rounder, OP (Overpowered)"},{"title":"ปลดแบนคืนอิสรภาพ พ้นโทษทัณฑ์","label":"พ้นเคราะห์","badge":"Unbanned / Redemption","level":1,"head":"ใบเจ็ดสิบสามปลดแบนพ้นเคราะห์ร้าย\nเรื่องเข้าใจผิดคลายกระจ่างหนา\nมลทินหมดหลุดพ้นจากพันธนา\nอิสรภาพหวนมา...สู่อ้อมใจ","overview":"ความเข้าใจผิดหรือข้อกล่าวหาที่เคยมีจะได้รับการคลี่คลาย คุณจะได้รับความยุติธรรมและโอกาสใหม่อีกครั้ง","work":"เคลียร์ข้อพิพาทในที่ทำงานได้สำเร็จ ได้รับการคืนตำแหน่งหรือได้รับความไว้วางใจกลับคืนมา","money":"ปัญหาทางกฎหมาย ภาษี หรือบัญชีที่เคยติดขัดได้รับการปลดล็อก การเงินกลับมาหมุนเวียนได้ปกติ","love":"ปรับความเข้าใจกับคนรักได้สำเร็จหลังจากมีเรื่องบาดหมาง ความสัมพันธ์กลับมาสดใสดั่งเดิม","health":"หลุดพ้นจากความเครียดที่ค้างคาใจ สุขภาพกายและใจฟื้นตัวอย่างรวดเร็ว","tags":"Unbanned, Redemption, Freedom"},{"title":"เดอะแบกหลังแอ่น พักบ้างอย่าหักโหม","label":"เตือนสติ","badge":"Heavy Burden / Set Boundaries","level":3,"head":"ใบเจ็ดสิบสี่แบกทุกอย่างจนหลังแอ่น\nช่วยทุกคนแน่นแฟ้นแต่ตนล้า\nหัดปฏิเสธบ้างเถิดน้องยา\nอย่าปล่อยให้กายา...พังทลาย","overview":"คุณใจดีและรับภาระของคนอื่นมาแบกไว้มากเกินไป ต้องรู้จักกำหนดขอบเขตและหัดปฏิเสธเพื่อปกป้องตัวเอง","work":"กระจายงานให้เพื่อนร่วมทีมทำบ้าง อย่าทำงานแทนคนอื่นจนตัวเองต้องทำงานล่วงเวลาทุกวัน","money":"ระวังการเป็นผู้แบกรับค่าใช้จ่ายของคนอื่นมากเกินไปจนเงินตัวเองไม่พอใช้ ต้องจัดสรรให้ชัดเจน","love":"ความสัมพันธ์ควรพึ่งพาและดูแลซึ่งกันและกัน อย่าเป็นฝ่ายให้เพียงคนเดียวจนเหนื่อยใจ","health":"ระวังอาการปวดหลังเรื้อรัง ออฟฟิศซินโดรม และความเหนื่อยล้าทางอารมณ์","tags":"เดอะแบก, Hard Carry, Boundaries"},{"title":"ลุยเดี่ยวไม่ง้อใคร มั่นใจในตัวเอง","label":"ดี","badge":"Solo Queue / Self-Reliant","level":1,"head":"ใบเจ็ดสิบห้าลุยเดี่ยวอย่างมาดมั่น\nไม่หวั่นเกรงสิ่งกีดกั้นขวางหน้า\nสองมือสองเท้าและสติปัญญา\nจักนำพา...สู่จุดหมายปลายทาง","overview":"การพึ่งพาตนเองและความมั่นใจในความสามารถของตนจะนำพาคุณไปสู่ความสำเร็จ ไม่ต้องรอพึ่งพาใคร","work":"การทำงานอิสระ ฟรีแลนซ์ หรือการทำธุรกิจส่วนตัวมีความก้าวหน้าอย่างโดดเด่น","money":"หาเงินได้ด้วยลำแข้งของตนเองอย่างภาคภูมิใจ มีอิสระในการใช้จ่ายตามที่ต้องการ","love":"คนโสดมีความสุขกับชีวิตอิสระ คนมีคู่สามารถพึ่งพาตัวเองได้โดยไม่เป็นภาระของกันและกัน","health":"สุขภาพกายและใจแข็งแกร่ง พร้อมเผชิญหน้ากับทุกอุปสรรคด้วยพลังของตนเอง","tags":"Solo Queue, Self-Made, Independent"},{"title":"สุดตารางแรงก์ ท็อปฟอร์มสะท้านปฐพี","label":"ดีเลิศ","badge":"Top Leaderboard / Peak Performance","level":0,"head":"ใบเจ็ดสิบหกทะยานสู่ท็อปตาราง\nผลงานสว่างกระจ่างใจไร้ข้อกังขา\nยืนหนึ่งบนยอดดอยเปี่ยมปรีดา\nใครมองมา...ต่างยกย่องนับถือเอย","overview":"ผลงานและความสามารถของคุณขึ้นสู่อันดับหนึ่ง เป็นที่ยอมรับและเป็นแบบอย่างให้แก่ผู้อื่น","work":"ทำยอดหรือสร้างผลงานได้คะแนนสูงสุดในทีม ได้รับโบนัสหรือการปูนบำเหน็จรางวัลอย่างงาม","money":"รายรับเติบโตสูงสุด การเงินคล่องตัว มั่นคงและมั่งคั่งอย่างน่าภาคภูมิใจ","love":"คู่ครองยกย่องและให้เกียรติ คนโสดมีคนเข้ามาแย่งชิงจีบจนเลือกไม่ถูก","health":"สุขภาพร่างกายและจิตใจแข็งแรงสมบูรณ์ อยู่ในจุดที่สมดุลและมีความสุขที่สุด","tags":"Top Leaderboard, Peak, W"},{"title":"ฟินเว่อร์เต็มคาราเบล อิ่มเอมเปรมปรีดิ์","label":"ดีเลิศ","badge":"Pure Satisfaction / Fin","level":0,"head":"ใบเจ็ดสิบเจ็ดฟินเว่อร์เปี่ยมล้นสุข\nไร้เรื่องทุกข์ชื่นฉ่ำในอุรา\nสมหวังทุกประการที่ปรารถนา\nโชคชะตา...บันดาลสุขสถาพร","overview":"ชีวิตเต็มไปด้วยความพึงพอใจและสมหวังในสิ่งที่รอคอย มีความสุขอย่างเต็มเปี่ยมในทุกมิติ","work":"งานเสร็จสมบูรณ์แบบไร้ที่ติ ได้รับผลตอบแทนและคำชื่นชมคุ้มค่าความเหนื่อยยาก","money":"มีเงินใช้จ่ายตามใจชอบ ได้ซื้อของขวัญที่อยากได้มานาน การเงินไม่มีสะดุด","love":"ความรักหวานชื่น ได้รับความรักและการเอาใจใส่อย่างอบอุ่นและลึกซึ้ง","health":"จิตใจแจ่มใส อารมณ์ดี นอนหลับฝันดี สุขภาพกายแข็งแรงสดชื่น","tags":"ฟินเว่อร์, เต็มคาราเบล, Satisfaction"},{"title":"ชิลเอาต์ริมหาด พักผ่อนหย่อนใจ","label":"ดี","badge":"Chill Out / Vacation Mode","level":1,"head":"ใบเจ็ดสิบแปดทอดกายริมชายหาด\nสายลมวาดผ่อนคลายสบายหนา\nทิ้งเรื่องวุ่นวายใจไว้ไกลตา\nรับไอแดดพา...ชีวีสุขสำราญ","overview":"ถึงเวลาออกเดินทางท่องเที่ยวหรือพักผ่อนเพื่อเติมพลังบวก ปล่อยวางความเครียดทั้งปวง","work":"เคลียร์งานเสร็จลุล่วง สามารถลาพักร้อนได้อย่างสบายใจไร้ความกังวล","money":"มีเงินเก็บสำหรับท่องเที่ยวและหาความสุขให้ตัวเองอย่างเพียงพอ ไม่เดือดร้อน","love":"ได้ชวนคนรักไปเที่ยวพักผ่อน เปลี่ยนบรรยากาศ สร้างความทรงจำที่แสนประทับใจ","health":"ได้สูดอากาศบริสุทธิ์ ผ่อนคลายกล้ามเนื้อ สุขภาพกายและใจฟื้นฟูเต็มที่","tags":"Chill Out, Vacation Mode, Good Vibes"},{"title":"ทางสะดวกไฟเขียว ปลอดโปร่งโล่งสบาย","label":"ดีมาก","badge":"Green Flag / Clear Path","level":1,"head":"ใบเจ็ดสิบเก้าเปิดทางสว่างโล่ง\nดั่งสะพานโค้งเชื่อมสู่ความสำเร็จ\nอุปสรรคทั้งหลายคลี่คลายเสร็จ\nดั่งเพชรเก็จ...ส่องแสงนำทางไป","overview":"เส้นทางข้างหน้าเปิดกว้าง ไร้อุปสรรคขัดขวาง สามารถดำเนินแผนการต่างๆ ได้อย่างราบรื่นรวดเร็ว","work":"การขออนุมัติโครงการ การสอบ หรือการทำเอกสารผ่านฉลุย ไม่มีเรื่องติดขัด","money":"การหมุนเวียนเงินคล่องตัว การขอสินเชื่อหรือการทำธุรกรรมทางการเงินสำเร็จเรียบร้อย","love":"ความรักราบรื่น ครอบครัวทั้งสองฝ่ายเปิดทางและให้การสนับสนุนอย่างเต็มที่","health":"สุขภาพแข็งแรง เดินทางปลอดภัย ไร้อุบัติเหตุและโรคภัยเบียดเบียน","tags":"Green Flag, Smooth, Clear Path"},{"title":"มงลงรับตำแหน่ง สง่างามดั่งราชินี","label":"ดีเลิศ","badge":"Crowned / Slay Queen","level":0,"head":"ใบที่แปดสิบมงลงอย่างสง่า\nเด่นเลอค่าเหนือใครในแผ่นดิน\nชื่อเสียงกึกก้องเกียรติระบิล\nไร้ราคิน...คว้าตำแหน่งยอดคน","overview":"ความสามารถและความดีงามของคุณได้รับการยอมรับ ได้รับตำแหน่ง เกียรติยศ หรือรางวัลอันทรงคุณค่า","work":"ได้รับการแต่งตั้ง เลื่อนขั้น หรือได้รับเลือกให้เป็นตัวแทนระดับองค์กร สร้างชื่อเสียง","money":"ฐานะทางการเงินมั่นคงและมีเกียรติ มีทรัพย์สินและรายได้ที่สมฐานะ","love":"เป็นที่ยกย่องและภาคภูมิใจของคนรัก ได้รับการดูแลดั่งเจ้าชายหรือเจ้าหญิง","health":"บุคลิกภาพสง่างาม ผิวพรรณเปล่งปลั่ง มีสง่าราศีจับ สุขภาพดีเยี่ยม","tags":"มงลง, Slay Queen, Crowned"},{"title":"ทะลุมิติเปิดโลกใหม่ ประสบการณ์ล้ำค่า","label":"ดีมาก","badge":"Multiverse / Expansion","level":1,"head":"ใบแปดสิบเอ็ดก้าวข้ามสู่โลกใหม่\nเปิดมุมมองกว้างไกลไร้ขอบเขต\nประสบการณ์ล้ำค่าทั่วประเทศ\nพาพ้นเหตุ...ความจำเจเดิมเดิม","overview":"มีเกณฑ์ได้เดินทางไกล ศึกษาต่อ หรือเริ่มต้นสิ่งใหม่ๆ ที่เปิดโลกทัศน์และมุมมองชีวิตอย่างมหาศาล","work":"ได้ทำงานร่วมกับต่างชาติ หรือขยายขอบเขตงานสู่ระดับสากล ได้เรียนรู้วิธีการทำงานใหม่ๆ","money":"มีลู่ทางทำเงินจากตลาดต่างประเทศหรือสกุลเงินต่างประเทศ การลงทุนมีผลตอบแทนดี","love":"อาจพบรักกับคนต่างถิ่น ต่างแดน หรือคนที่มีวัฒนธรรมแตกต่างกันแต่เข้าใจกันดี","health":"ปรับตัวเข้ากับสภาพแวดล้อมใหม่ได้ดี สุขภาพแข็งแรงพร้อมรับการผจญภัย","tags":"Multiverse, New Horizon, Level Up"},{"title":"ออร่าอนันต์ ไร้ขีดจำกัด","label":"ดีเลิศ","badge":"Infinite Aura / Transcendent","level":0,"head":"ใบแปดสิบสองออร่าไร้ขีดคั่น\nบารมีอนันต์เปล่งประกายฉาย\nดึงดูดโชคลาภมิตรสหาย\nสุขสบาย...ตราบชั่วชีวันเอย","overview":"แต้มบุญและความดีงามสะสมมาถึงจุดสูงสุด มีพลังดึงดูดสิ่งมงคลและผู้คนที่ดีเข้ามาในชีวิตไม่ขาดสาย","work":"ทำสิ่งใดก็มีคนคอยช่วยเหลือเกื้อกูล ความสำเร็จเกิดขึ้นอย่างง่ายดายดั่งปาฏิหาริย์","money":"เงินทองไหลมาเทมาไม่ขาดมือ มีความมั่งคั่งและสามารถเกื้อกูลแบ่งปันให้สังคมได้","love":"ความรักบริสุทธิ์ มั่นคง อบอุ่น และเปี่ยมด้วยความสุขที่แท้จริง","health":"จิตใจสงบ บริสุทธิ์ ปราศจากความกังวล ร่างกายมีภูมิคุ้มกันแข็งแกร่ง","tags":"Infinite Aura, Transcendent, Blessed"},{"title":"ดาเมจทางสายตา สะกดทุกดวงใจ","label":"ดีมาก","badge":"Visual Mog / Stunner","level":1,"head":"ใบแปดสิบสามสบตาก็สยบ\nความงามครบเครื่องสะกดใจหนา\nเสน่ห์ล้นเหลือเปี่ยมปรีดา\nใครมองมา...ต่างเคลิ้มหลงใหลเอย","overview":"เสน่ห์ดึงดูดและบุคลิกภาพของคุณสะกดใจทุกคนที่พบเห็น การเจรจาหรือติดต่อสื่อสารราบรื่น","work":"การพรีเซนต์ การขาย หรือการเป็นหน้าเป็นตาให้ทีมงานทำได้อย่างยอดเยี่ยม ลูกค้าประทับใจ","money":"รูปลักษณ์และการเจรจานำมาซึ่งโอกาสในการสร้างรายได้ มีคนสนับสนุนเรื่องเงินทอง","love":"เสน่ห์แรงเกินต้าน มีคนเข้ามาแสดงความสนใจมากมาย บริหารความสัมพันธ์ให้ดี","health":"ดวงตาสดใส ผิวพรรณดี ดูอ่อนกว่าวัย สุขภาพโดยรวมแข็งแรง","tags":"Visual Mog, Stunner, Charisma"},{"title":"ฟาร์มเหรียญทอง สะสมความมั่งคั่ง","label":"ดีมาก","badge":"Coin Farming / Compounding","level":1,"head":"ใบแปดสิบสี่ขยันเก็บเล็กผสมน้อย\nเหรียญทองทยอยพอกพูนหนา\nดอกเบี้ยทบต้นเพิ่มราคา\nความมั่งคั่งพา...สุขสบายใจ","overview":"การออมและการลงทุนอย่างมีวินัยเริ่มแสดงพลัง ดอกเบี้ยทบต้นทำให้ทรัพย์สินงอกเงยอย่างมั่นคง","work":"สั่งสมผลงานและความดีทีละนิด จนกลายเป็นประวัติการทำงานที่โดดเด่นและน่าเชื่อถือ","money":"พอร์ตการลงทุนเติบโตดี เงินออมเพิ่มพูน มีความมั่นคงทางการเงินในระยะยาว","love":"ความรักค่อยๆ ถักทออย่างช้าๆ แต่มั่นคง ดั่งต้นไม้ใหญ่ที่หยั่งรากลึก","health":"การดูแลสุขภาพสม่ำเสมอส่งผลดี ร่างกายไม่เจ็บป่วยง่าย มีภูมิต้านทานดี","tags":"Coin Farming, Compounding, Long-term Grind"},{"title":"คอนเนกต์ถูกคน ได้กัลยาณมิตรใหญ่","label":"ดีเลิศ","badge":"Power Network / Big Connect","level":0,"head":"ใบแปดสิบห้าพบมิตรแท้มีพลัง\nคอนเนกชันหนุนหลังให้ก้าวหน้า\nร่วมมือสร้างสรรค์สิ่งมีราคา\nความเจริญพา...สู่ตนและทีม","overview":"ได้พบปะกับบุคคลที่มีอิทธิพล มีความรู้ หรือมีบารมี ที่จะช่วยชี้แนะและเปิดประตูโอกาสสำคัญให้","work":"ได้ร่วมงานกับคนเก่ง หรือได้ที่ปรึกษาที่เชี่ยวชาญ ช่วยให้งานสำเร็จแบบก้าวกระโดด","money":"ได้รับคำแนะนำด้านการเงินที่ดี หรือได้พันธมิตรทางธุรกิจที่พากันร่ำรวย","love":"เพื่อนฝูงหรือผู้ใหญ่แนะนำคนดีๆ ให้รู้จัก มีโอกาสพัฒนาเป็นความสัมพันธ์ที่จริงจัง","health":"ได้เพื่อนชวนไปออกกำลังกาย หรือได้หมอดีคอยดูแลสุขภาพอย่างใกล้ชิด","tags":"Connect, Networking, Power Ally"},{"title":"แก้บั๊กชีวิต ปลดล็อกความติดขัด","label":"ดี","badge":"Bug Fix / Life Optimization","level":1,"head":"ใบแปดสิบหกค้นพบบั๊กที่ซ่อนอยู่\nเร่งเรียนรู้แก้ไขให้ถูกต้อง\nปลดล็อกปัญหาตามครรลอง\nชีวิตผุดผ่อง...คล่องตัวดั่งใจ","overview":"พบต้นตอของปัญหาที่เคยสร้างความหงุดหงิด เมื่อแก้ไขตรงจุด ชีวิตจะราบรื่นขึ้นทันตาเห็น","work":"แก้ไขจุดบกพร่องในระบบงานหรือกระบวนการทำงานได้สำเร็จ ทำให้งานเดินหน้าได้เร็วขึ้น","money":"อุดรอยรั่วทางการเงิน ค่าใช้จ่ายที่ไม่จำเป็นถูกตัดออก ทำให้มีเงินเหลือเก็บมากขึ้น","love":"เปิดใจคุยเรื่องที่เคยขัดแย้งและปรับความเข้าใจกันได้ ความรักกลับมาสดใส ไร้สิ่งค้างคา","health":"พบสาเหตุของอาการป่วยเรื้อรังและรักษาได้ถูกวิธี ร่างกายกลับมาแข็งแรง","tags":"Bug Fix, Life Optimization, Debug"},{"title":"เมตาใหม่มาแล้ว ปรับตัวรับชัย","label":"ดีมาก","badge":"New Meta / Quick Adapt","level":1,"head":"ใบแปดสิบเจ็ดกฎเกณฑ์ใหม่เริ่มหมุนเวียน\nจงเร่งเรียนปรับตัวไม่ขัดขืน\nคว้าเมตาใหม่ให้มั่นยืน\nจะพลิกฟื้น...เป็นผู้นำอย่างสง่า","overview":"สถานการณ์หรือกติกาในสังคมกำลังเปลี่ยนแปลง ผู้ที่ปรับตัวได้ไวกว่าจะคว้าโอกาสทองไปครอง","work":"นำเครื่องมือหรือเทคโนโลยีใหม่มาใช้ในงานก่อนใคร ทำให้มีประสิทธิภาพเหนือคู่แข่ง","money":"ปรับกลยุทธ์การลงทุนให้สอดคล้องกับสภาวะเศรษฐกิจใหม่ สร้างผลตอบแทนได้ดี","love":"ปรับเปลี่ยนวิธีการสื่อสารและการดูแลเอาใจใส่ให้เข้ากับยุคสมัย ความรักจะสดใหม่อยู่เสมอ","health":"ปรับวิถีชีวิตให้เข้ากับสุขอนามัยยุคใหม่ สุขภาพแข็งแรง ปลอดภัยจากโรคอุบัติใหม่","tags":"New Meta, Adapt or Die, Meta Shift"},{"title":"ปล่อยจอยไม่คิดมาก สุขอยู่ที่ใจ","label":"ดี","badge":"Let It Go / Carefree Joy","level":1,"head":"ใบแปดสิบแปดปล่อยจอยให้เบาสบาย\nเรื่องวุ่นวายวางลงอย่าถือหนา\nยิ้มรับทุกสิ่งตามเวลา\nสุขหรรษา...อยู่ในใจเราเอง","overview":"ความสุขไม่ได้อยู่ที่การควบคุมทุกสิ่ง แต่อยู่ที่การรู้จักปล่อยวางและมีความสุขกับปัจจุบันขณะ","work":"ทำหน้าที่ของตนเองอย่างเต็มที่แล้วปล่อยให้ผลลัพธ์เป็นไปตามธรรมชาติ ลดความกังวล","money":"ไม่ตระหนกกับความผันผวนชั่วคราว วางแผนไว้ดีแล้วก็ใช้ชีวิตอย่างสบายใจ","love":"ไม่จู้จี้จุกจิกหรือกดดันคนรัก ให้อิสระและความสบายใจแก่กัน ความรักจะยั่งยืน","health":"สุขภาพจิตเบาสบาย ไร้ความเครียด ร่างกายผ่อนคลาย หลับสบายทุกคืน","tags":"ปล่อยจอย, Let It Go, Carefree"},{"title":"ซีนใหญ่เปิดตัว อลังการงานสร้าง","label":"ดีเลิศ","badge":"Grand Entrance / Spotlight","level":0,"head":"ใบแปดสิบเก้าซีนใหญ่เปิดอลังการ\nเสียงตบมือกังวานทั่วทิศหนา\nสปอตไลต์ส่องประกายส่องลงมา\nเด่นสง่า...กลางเวทีแห่งชีวิต","overview":"ช่วงเวลาแห่งการเปิดตัวผลงานหรือการปรากฏตัวที่น่าประทับใจ ทุกสายตาจับจ้องมาที่คุณด้วยความชื่นชม","work":"การเปิดตัวสินค้า นิทรรศการ หรือการพรีเซนต์งานใหญ่ประสบความสำเร็จอย่างงดงาม","money":"มีรายได้ก้อนโตจากการเปิดตัวโครงการใหม่ หรือได้รับเงินสนับสนุนก้อนใหญ่","love":"การเปิดตัวคนรักต่อหน้าเพื่อนฝูงหรือครอบครัวเป็นไปด้วยความชื่นมื่นและได้รับการยอมรับ","health":"พลังงานกายและใจเต็มเปี่ยม บุคลิกภาพโดดเด่น มีความมั่นใจในทุกท่วงท่า","tags":"ซีนใหญ่, Grand Entrance, Spotlight"},{"title":"สายซัพพอร์ตยอดเยี่ยม เบื้องหลังความสำเร็จ","label":"ดีมาก","badge":"Best Support / Pillar","level":1,"head":"ใบที่เก้าสิบปิดทองหลังพระหนา\nสายซัพพอร์ตทรงคุณค่าไม่เหือดหาย\nแม้ไม่เด่นหน้าฉากแต่วางใจ\nเป็นพลังยิ่งใหญ่...ค้ำจุนทีม","overview":"บทบาทผู้สนับสนุนอยู่เบื้องหลังมีความสำคัญยิ่ง ผลงานและความเสียสละของคุณจะได้รับการตอบแทนอย่างคุ้มค่า","work":"การเป็นผู้สนับสนุนที่ดีทำให้ทีมประสบความสำเร็จ หัวหน้าและเพื่อนร่วมงานมองเห็นคุณค่าอย่างลึกซึ้ง","money":"มีรายได้ที่มั่นคงจากการเป็นฟันเฟืองสำคัญในองค์กร ได้รับส่วนแบ่งผลประโยชน์ที่ยุติธรรม","love":"เป็นลมใต้ปีกคอยสนับสนุนความฝันของคนรัก ความสัมพันธ์มั่นคงและซาบซึ้งใจ","health":"สุขภาพกายและใจสงบ มีความสุขจากการได้ช่วยเหลือและแบ่งปันแก่ผู้อื่น","tags":"Support, Pillar, Unsung Hero"},{"title":"ล็อกอินรับรางวัล ผลตอบแทนความสม่ำเสมอ","label":"ดี","badge":"Daily Login / Faithful Reward","level":1,"head":"ใบเก้าสิบเอ็ดล็อกอินไม่เคยขาด\nรับรางวัลตามคาดไม่สูญหาย\nความสม่ำเสมอพาสุขสบาย\nผลกำไรกระจาย...ทุกคืนวัน","overview":"ผลตอบแทนจากความสม่ำเสมอและความซื่อตรงเริ่มปรากฏให้เห็น มีเรื่องน่ายินดีเข้ามาทุกวัน","work":"การเข้าทำงานตรงเวลาและรับผิดชอบหน้าที่สม่ำเสมอได้รับการประเมินเกรด A","money":"มีรายรับเข้ามาเรื่อยๆ ทุกวัน ดั่งหยดน้ำที่เติมเต็มตุ่ม การเงินมั่นคง","love":"ความใส่ใจดูแลในชีวิตประจำวันเล็กๆ น้อยๆ ช่วยให้ความรักหวานชื่นไม่จืดจาง","health":"การดูแลสุขภาพเป็นกิจวัตรทำให้ร่างกายแข็งแรง ห่างไกลจากโรคภัยไข้เจ็บ","tags":"Daily Login, Streak, Reward"},{"title":"ทะยานสู่ดาวอังคาร ฝันใหญ่เป็นจริง","label":"ดีเลิศ","badge":"To Mars / Sky is Not the Limit","level":0,"head":"ใบเก้าสิบสองพุ่งทะยานสู่ดาวอังคาร\nข้ามขีดจำกัดตระการเหนือฝันหนา\nความทะเยอทะยานเปี่ยมปัญญา\nคว้าดวงดารา...มาไว้ในมือ","overview":"เป้าหมายที่เคยคิดว่าเป็นไปไม่ได้กำลังจะกลายเป็นจริง ความกล้าหาญและความฝันอันยิ่งใหญ่จะนำพาชัยชนะ","work":"ได้ทำงานในโครงการระดับชาติหรือโครงการระดับโลกที่สร้างผลกระทบในวงกว้าง","money":"มีโอกาสเติบโตทางการเงินแบบก้าวกระโดด ได้รับเงินทุนหรือผลตอบแทนมหาศาล","love":"ความรักก้าวข้ามอุปสรรคเรื่องระยะทางหรือฐานะ จนได้ครองคู่กันอย่างมีความสุข","health":"มีพลังใจมหาศาล ร่างกายกระปรี้กระเปร่า พร้อมลุยทุกภารกิจที่ยิ่งใหญ่","tags":"To Mars, Beyond Limits, Moonshot"},{"title":"ผ่านด่านมหาโหด แกร่งเกินต้าน","label":"ดีเลิศ","badge":"Soulslike Victory / Hardcore Win","level":0,"head":"ใบเก้าสิบสามด่านมหาโหดผ่านพ้นแล้ว\nจิตใจแกร่งดั่งแก้วไม่สลาย\nผ่านร้อนหนาวฟันฝ่าอันตราย\nเป็นยอดคนเฉิดฉาย...ในโลกา","overview":"คุณได้ผ่านช่วงเวลาที่ยากลำบากที่สุดในชีวิตมาแล้ว ไม่มีสิ่งใดที่จะมาทำร้ายคุณได้อีกต่อไป แกร่งขึ้นในทุกมิติ","work":"ผ่านช่วงทดลองงานที่เข้มข้น หรือผ่านวิกฤตที่ยากลำบากมาได้อย่างสง่างาม ได้รับการยอมรับสูงสุด","money":"ปลดหนี้สินหรือผ่านช่วงวิกฤตทางการเงินมาได้ ต่อจากนี้คือช่วงเวลาของการสร้างความมั่งคั่ง","love":"ผ่านบททดสอบความรักที่หนักหน่วงมาได้ ทำให้ความผูกพันแนบแน่นจนไม่มีอะไรมาพรากได้","health":"ร่างกายและจิตใจแข็งแกร่ง มีภูมิคุ้มกันต่อความยากลำบากทุกรูปแบบ","tags":"Soulslike, Hardcore, Unbreakable"},{"title":"ไวรัลข้ามพรมแดน โกอินเตอร์สำเร็จ","label":"ดีเลิศ","badge":"Global Viral / Go International","level":0,"head":"ใบเก้าสิบสี่ชื่อเสียงกระฉ่อนโลก\nพ้นทุกข์โศกโกอินเตอร์สุขศานต์\nผลงานประจักษ์แจ้งทุกสถาน\nข้ามเขตคามตระการ...ก้องโลกา","overview":"ผลงาน ชื่อเสียง หรือธุรกิจของคุณมีเกณฑ์ขยายตัวไปสู่ระดับสากล ได้รับการยอมรับข้ามวัฒนธรรม","work":"ได้ร่วมงานกับชาวต่างชาติ ได้รับเชิญไปบรรยายหรือแสดงผลงานในต่างประเทศ","money":"มีรายได้เป็นเงินตราต่างประเทศ หรือมีช่องทางขยายธุรกิจในต่างแดน","love":"มีเสน่ห์ดึงดูดชาวต่างชาติ หรือมีโอกาสได้เดินทางไปพบรักในต่างแดน","health":"ปรับตัวเข้ากับสภาพอากาศและเวลาต่างไทม์โซนได้ดี สุขภาพแข็งแรง","tags":"Global Viral, Go International, Worldwide"},{"title":"คืนชีพไร้รอยต่อ โอกาสที่สองมาถึง","label":"พ้นเคราะห์","badge":"Respawn / Second Chance","level":1,"head":"ใบเก้าสิบห้ารีสปอว์นฟื้นคืนชีพ\nดั่งแสงประทีปส่องประกายสว่างหนา\nโอกาสที่สองหวนคืนกลับมา\nจงเร่งใช้ปัญญา...คว้าชัยเอย","overview":"คุณได้รับโอกาสที่สองในการเริ่มต้นใหม่ สิ่งที่เคยผิดพลาดสามารถแก้ไขได้ จงใช้บทเรียนเดิมเป็นเกราะป้องกัน","work":"ได้รับโอกาสแก้ตัวในงาน หรือได้เริ่มต้นงานใหม่ในสภาพแวดล้อมที่เกื้อหนุนกว่าเดิม","money":"ช่องทางการเงินที่เคยปิดตายกลับมาเปิดอีกครั้ง มีรายได้เข้ามาช่วยฟื้นฟูฐานะ","love":"ได้ปรับความเข้าใจหรือได้เริ่มต้นความสัมพันธ์ใหม่ที่เข้าใจกันมากกว่าเดิม","health":"ฟื้นตัวจากอาการเจ็บป่วยได้อย่างน่าอัศจรรย์ ร่างกายสดชื่นมีพลังดั่งได้ชีวิตใหม่","tags":"Respawn, Second Chance, Rebirth"},{"title":"กักตุนไอเทมแรร์ ของมีค่าในมือ","label":"ดีมาก","badge":"Rare Item / Collector","level":1,"head":"ใบเก้าสิบหกครอบครองไอเทมแรร์\nของล้ำค่าหาแท้ยากยิ่งหนา\nทวีคูณมูลค่าตามกาลเวลา\nเป็นทรัพย์สินนำพา...ความเจริญ","overview":"คุณมีสิ่งล้ำค่าอยู่ในมือ ไม่ว่าจะเป็นความรู้พิเศษ ทรัพย์สินหายาก หรือกัลยาณมิตรที่ซื่อสัตย์ จงดูแลรักษาไว้ให้ดี","work":"มีความเชี่ยวชาญเฉพาะทางที่หาคนทำแทนได้ยาก เป็นที่ต้องการตัวของตลาดแรงงาน","money":"ทรัพย์สิน พระเครื่อง ของสะสม หรือที่ดินที่ถือครองมีมูลค่าเพิ่มสูงขึ้นอย่างมาก","love":"ได้พบกับคนรักที่ดีเลิศดั่งเพชรเม็ดงาม ควรรักษาและดูแลความรักนี้ไว้ให้ดีที่สุด","health":"มีสุขภาพพื้นฐานที่ดีเป็นทุนเดิม หมั่นดูแลรักษาความแข็งแรงนี้ไว้อย่างสม่ำเสมอ","tags":"Rare Item, Collector, High Value"},{"title":"จิตวิญญาณแห่งแชมป์ ไม่ยอมจำนน","label":"ดีเลิศ","badge":"Champion Spirit / Winner","level":0,"head":"ใบเก้าสิบเจ็ดหัวใจดั่งแชมเปียน\nความมุ่งมั่นพากเพียรไม่ถดถอย\nแม้ล้มลงก็ลุกขึ้นไม่เลื่อนลอย\nเหรียญทองรอคอย...คล้องคอเธอ","overview":"จิตใจที่ไม่ยอมแพ้คือสิ่งที่จะนำพาคุณไปสู่บัลลังก์แห่งชัยชนะ คุณมีคุณสมบัติของผู้ชนะอย่างแท้จริง","work":"ไม่ย่อท้อต่อปัญหาและอุปสรรค นำพาทีมฟันฝ่าจนคว้าชัยชนะในโปรเจกต์สำคัญ","money":"มีเป้าหมายทางการเงินที่ชัดเจนและมุ่งมั่นทำให้สำเร็จ ฐานะทางการเงินเติบโตสู่ระดับเศรษฐี","love":"ความจริงใจและไม่ยอมแพ้ในการตามจีบจะเอาชนะใจคนที่คุณหมายปองได้ในที่สุด","health":"มีความมุ่งมั่นในการดูแลสุขภาพ ออกกำลังกายสม่ำเสมอจนได้รูปร่างและสุขภาพที่ยอดเยี่ยม","tags":"Champion Spirit, Winner, Never Surrender"},{"title":"หลุดพ้นจากเมทริกซ์ มองเห็นสัจธรรม","label":"ดีเลิศ","badge":"Escape the Matrix / Awakening","level":0,"head":"ใบเก้าสิบแปดตื่นรู้พ้นเมทริกซ์\nมองเห็นภาพแท้จริงที่ลึกซึ้งหนา\nหลุดพ้นจากค่านิยมลวงตา\nใช้ชีวิตเปี่ยมปัญญา...ผาสุกเอย","overview":"คุณมองเห็นความจริงของชีวิต ไม่ตกเป็นทาสของกระแสสังคมหรือการตลาด มีอิสรภาพทางความคิดอย่างแท้จริง","work":"ออกแบบวิถีการทำงานในแบบของตนเองได้อย่างมีประสิทธิภาพ มีอิสระและมีความสุขในงาน","money":"มีอิสรภาพทางการเงิน ไม่ต้องวิ่งตามค่านิยมอวดรวย แต่มีความมั่งคั่งที่แท้จริงจากภายใน","love":"ความรักที่เข้าใจในตัวตนซึ่งกันและกันอย่างแท้จริง ปราศจากความคาดหวังหรือการครอบงำ","health":"จิตใจสงบ บริสุทธิ์ หลุดพ้นจากความเครียดและความวิตกกังวล สุขภาพกายใจสมบูรณ์","tags":"Escape the Matrix, Awakening, True Freedom"},{"title":"ดวงดาวนำทาง พรสวรรค์เปล่งประกาย","label":"ดีเลิศ","badge":"Guiding Star / Pure Talent","level":0,"head":"ใบเก้าสิบเก้าดวงดาวส่องประกาย\nชี้ทางทิศเฉิดฉายในเวหา\nพรสวรรค์ผสานความพากเพียรพา\nโชคชะตานำพา...สู่บัลลังก์","overview":"พรสวรรค์และความดีของคุณได้รับการชี้นำจากดวงดาวแห่งโชคชะตา ก้าวเข้าสู่ยุคทองของชีวิต","work":"ทำงานที่ตรงกับความถนัดและแพชชัน ทำให้ผลงานออกมาโดดเด่นและสร้างความสำเร็จอย่างยิ่งใหญ่","money":"มีรายได้จากสิ่งที่ตนเองรักและเชี่ยวชาญ การเงินมั่งคั่งและมีความสุขในการหาเงิน","love":"ได้พบกับเนื้อคู่หรือคู่แท้ที่เกื้อหนุนดวงชะตา พากันเจริญรุ่งเรืองในทุกด้าน","health":"สุขภาพกายและใจเต็มไปด้วยพลังบวก ผิวพรรณเปล่งปลั่ง มีความสุขในทุกๆ วัน","tags":"Guiding Star, Pure Talent, Golden Era"},{"title":"บรรลุขั้นสุดยอด สกิบิดี้ซิกม่ามหาราช","label":"สูงสุดในปฐพี","badge":"Ultimate Ascendancy / God Tier","level":0,"head":"ใบที่หนึ่งร้อยสมบูรณ์ในทุกสิ่ง\nซิกม่าแท้สุขจริงเกริกเกรียงไกร\nสกิบิดี้มหาโชคอำนวยชัย\nร้อยใบจบลงไซร้...เกษมศานต์เทอญ","overview":"สมบูรณ์แบบในทุกประการ บรรลุความสำเร็จสูงสุดในชีวิต ทั้งเกียรติยศ ทรัพย์สิน ความรัก และความสงบสุขทางใจ","work":"ก้าวขึ้นสู่จุดสูงสุดในสายอาชีพ เป็นตำนานที่ผู้คนจดจำและยกย่องตลอดไป","money":"มั่งคั่ง ร่ำรวย มั่นคง และมีเหลือกินเหลือใช้ สามารถส่งต่อความมั่งคั่งให้ลูกหลานได้","love":"ชีวิตคู่ราบรื่น อบอุ่น มีความสุขอย่างสมบูรณ์แบบ ร่วมสร้างครอบครัวที่มั่นคง","health":"มีสุขภาพร่างกายแข็งแรง อายุยืนยาว จิตใจเปี่ยมด้วยความเมตตาและสันติสุข","tags":"Ultimate Ascendancy, God Tier, Skibidi Sigma, G.O.A.T."}],"glossary":{"Skibidi":{"th":"สกิบิดี้","d":"คำคุณศัพท์ครอบจักรวาล มาจากซีรีส์ Skibidi Toilet ใช้สื่อถึงความเจ๋ง ความเท่ แปลกใหม่ หรือบางบริบทหมายถึงความบ๊องๆ สุดขีด"},"Sigma":{"th":"ซิกม่า","d":"ผู้นำเดี่ยว รักสันโดษ เท่ นิ่ง มีวินัย พึ่งพาตัวเองได้สูง ไม่สนใจกระแสตลาด (เช่น Sigma Male Grindset)"},"Rizz":{"th":"ริซซ์ / W Rizz / L Rizz","d":"มาจากคำว่า Charisma หมายถึง เสน่ห์ คารมแพรวพราว ความสามารถในการจีบคนอื่นให้หลงรัก (W Rizz = จีบติด/เสน่ห์แรง, L Rizz = มุกแป้ก/จีบพัง)"},"Gyatt":{"th":"กียัตต์","d":"คำอุทานแสดงความตกตะลึงเมื่อเห็นสิ่งที่โดดเด่นสะดุดตาเป็นพิเศษ (เช่น รูปร่างหรือความปังระดับ Level 10 Gyatt)"},"Fanum Tax":{"th":"ฟานัมแท็กซ์","d":"การโดนเพื่อนหรือคนใกล้ตัวแอบหยิบ แย่งของกิน หรือหักหัวคิวส่วนแบ่งไปต่อหน้าต่อตา (มาจากสตรีมเมอร์ Fanum)"},"Mewing":{"th":"มิวอิ้ง","d":"การนำลิ้นแตะเพดานปากและเก๊กกรามให้คมชัด ใช้เปรียบเทียบถึงการนิ่งสงบ ไม่พูดพล่าม เอาเวลาไปพัฒนาตัวเอง"},"Mog / Mogging":{"th":"ม็อก","d":"การข่มรัศมี ดูดีกว่า เด่นกว่า หล่อสวยกว่าคนอื่นรอบตัวอย่างขาดลอย"},"Cooked / Let Him Cook":{"th":"คุก / เล็ทฮิมคุก","d":"\"Cooked\" หมายถึง จบเห่ พังยับ หมดสภาพ ส่วน \"Let him cook\" หมายถึง ปล่อยให้เขาโชว์ฝีมือ อย่าเพิ่งขัดขวาง"},"Aura":{"th":"+Aura / -Aura","d":"บารมี แต้มบุญ ความสง่างาม ราศีของบุคคล ทำเรื่องเท่ได้ +1,000 Aura ทำเรื่องเปิ่นได้ -1,000 Aura"},"Delulu":{"th":"เดลูลู","d":"มาจาก Delusional หมายถึง การมโน เพ้อฝัน เข้าข้างตัวเองเกินจริง"},"Touch Grass":{"th":"ทัชแกรส","d":"การออกไปเหยียบหญ้า สัมผัสธรรมชาติ เตือนสติคนที่ติดหน้าจอคอมหรือมือถือจนหลุดโลกความจริง"},"Yap / Yapper":{"th":"ยัป","d":"การพูดมาก พูดน้ำไหลไฟดับ บ่นไร้สาระจนคนอื่นเหนื่อยหน่าย"},"Ohio / Only in Ohio":{"th":"โอไฮโอ","d":"สื่อถึงความแปลกประหลาด พิสดาร อิหยังวะ เรื่องราวที่หลุดโลกราวกับอยู่ในดินแดนอาถรรพ์"},"Crash Out":{"th":"เครชเอาท์","d":"การฟิวส์ขาด สติแตก ปรี๊ดแตก ระเบิดอารมณ์จนควบคุมตัวเองไม่อยู่"},"No Cap / Cap":{"th":"โนแคป / แคป","d":"\"No Cap\" หมายถึง เรื่องจริง ไม่โกหก ไม่โม้ ส่วน \"Cap\" หมายถึง โกหก ตอแหล"},"Bussing":{"th":"บัสซิ่ง","d":"อร่อยเหาะ ดีเลิศ ยอดเยี่ยม ประทับใจมาก"},"Bet":{"th":"เบท","d":"ได้เลย เอาสิ จัดไป มั่นใจแน่นอน"},"NPC":{"th":"เอ็นพีซี","d":"ตัวละครประกอบในเกม ใช้เปรียบถึงคนที่ไม่มีความคิดเป็นของตัวเอง ใช้ชีวิตตามกระแส ทำตามคำสั่งไปวันๆ"},"Gigachad":{"th":"กิกะแชด","d":"ชายแท้ในอุดมคติ หล่อล่ำ บึกบึน จิตใจเข้มแข็ง มั่นคง และมีน้ำใจ"},"Edging":{"th":"เอดจิ้ง","d":"การอดทน อั้นไว้ รอจังหวะสุกงอมที่สุดก่อนจะปล่อยพลังหรือลงมือทำ"},"Brainrot":{"th":"เบรนร็อต","d":"ภาวะสมองไหล สมองเปื่อย จากการเสพวิดีโอสั้นหรือคอนเทนต์ไร้สาระติดต่อกันเป็นเวลานาน"},"Grimace Shake":{"th":"กริมเมซเชก","d":"เครื่องดื่มสีม่วงที่เป็นมีมบน TikTok สื่อถึงสิ่งลี้ลับ อาถรรพ์ หรือเรื่องอันตรายที่ควรหลีกเลี่ยง"},"Looksmaxxing":{"th":"ลุคส์แม็กซิ่ง","d":"ศาสตร์แห่งการพัฒนาบุคลิกภาพ รูปร่าง หน้าตา และการแต่งกายให้ดูดีที่สุด"},"Slay":{"th":"สเลย์","d":"ปังมาก ฟาดเรียบ ฆ่าได้ฆ่า ทำผลงานได้ยอดเยี่ยมไร้ที่ติ"},"Ate & Left No Crumbs":{"th":"กินรอบวงไม่เหลือเศษ","d":"ทำได้อย่างสมบูรณ์แบบ ชนะขาดลอย ไม่เหลือโอกาสให้คู่แข่ง"},"Streak":{"th":"สตรีค","d":"การทำกิจกรรมใดกิจกรรมหนึ่งติดต่อกันอย่างสม่ำเสมอทุกวันไม่ให้ขาดตอน"},"Sus":{"th":"ซัส","d":"ย่อมาจาก Suspicious หมายถึง น่าสงสัย มีพิรุธ ไม่น่าไว้วางใจ"},"Chill Guy":{"th":"ชิลกวาย","d":"ตัวละครหมาสวมเสื้อไหมพรมยืนเอามือล้วงกระเป๋า สื่อถึงคนที่ไม่เดือดเนื้อร้อนใจ สบายๆ ปล่อยวางทุกสิ่ง"},"Robux":{"th":"โรบักซ์","d":"สกุลเงินในเกม Roblox สื่อถึงทรัพย์สิน ความร่ำรวย เงินทอง"},"Blox Fruits":{"th":"บล็อกซ์ฟรุต","d":"เกมยอดนิยมใน Roblox สื่อถึงการฟาร์มเลเวล ความอุตสาหะพากเพียรเพื่อความสำเร็จ"},"Main Character":{"th":"เมนคาแรคเตอร์","d":"ความรู้สึกหรือการวางตัวเป็นตัวเอกของชีวิต ไม่ยอมเป็นเพียงตัวประกอบ"},"Side Quest":{"th":"ไซด์เควสต์","d":"ภารกิจย่อย เรื่องหยุมหยิมที่ไม่ใช่เป้าหมายหลักในชีวิต"},"Glazing":{"th":"เกลซซิ่ง","d":"การประจบสอพลอ อวยเกินจริง เลียแข้งเลียขาเพื่อหวังผล"},"Canon Event":{"th":"แคนอนอีเวนต์","d":"เหตุการณ์สำคัญในชะตากรรมที่ต้องเกิดขึ้นเพื่อหล่อหลอมให้เราเติบโตเป็นผู้ใหญ่"},"Clutch":{"th":"คลัตช์","d":"การพลิกกลับมาชนะในวินาทีสุดท้ายเมื่อสถานการณ์คับขัน"},"All-Time High / New High":{"th":"นิวไฮ","d":"การทำสถิติสูงสุดใหม่ในชีวิต"},"Cooldown":{"th":"คูลดาวน์","d":"ช่วงเวลาพักฟื้นเพื่อสะสมพลังงานก่อนใช้ความสามารถใหม่อีกครั้ง"},"Uncanny":{"th":"อันแคนนี่","d":"ความรู้สึกหลอนๆ อึดอัด ไม่น่าไว้วางใจ เหมือนภาพคุณมิสเตอร์อินเครดิเบิลเวอร์ชันหลอน"},"Backrooms":{"th":"แบครูมส์","d":"มิติลี้ลับ ทางเดินสีเหลืองที่ไร้ทางออก สื่อถึงความสับสนหรือติดอยู่ในปัญหา"},"Escape the Matrix":{"th":"หลุดพ้นเมทริกซ์","d":"การตื่นรู้ มองเห็นความจริงแท้ของชีวิต ไม่ตกเป็นทาสของค่านิยมจอมปลอม"}}}</script>
+<script>
+(function(){
+'use strict';
+// ผู้สร้างเกม: ถ้านำไฟล์นี้ไปเปิดบนเว็บของตัวเอง สามารถวางโค้ดตั้งค่า (จากหน้า "สำรองและย้ายการตั้งค่า") แทน null ได้
+const PRESET = null;
+
+const N = 100, KEY = 'siamsi-suanbua-v1';
+const TH = '๐๑๒๓๔๕๖๗๘๙';
+const th = v => String(v).replace(/\d/g, d => TH[d]);
+const LV = ['ดีเลิศ','ดี','ปานกลาง','ควรระวัง'];
+const $ = id => document.getElementById(id);
+
+/* ---------------- Fortune texts ---------------- */
+const HEADS = [
+'ดอกบัวพ้นน้ำรับแสงเช้า สิ่งที่รอคอยมานานจะเบ่งบานในไม่ช้า',
+'ลมดีพัดเรือใบออกจากท่า เดินหน้าได้เต็มที่ ฟ้าเปิดทาง',
+'ต้นมะม่วงออกผลเต็มกิ่ง ความเพียรที่ลงไว้ถึงเวลาเก็บเกี่ยว',
+'ปลาคาร์ปว่ายทวนน้ำถึงประตูมังกร อุปสรรคจะกลายเป็นบันได',
+'พระจันทร์เต็มดวงกลางฤดูใบไม้ร่วง ครอบครัวพร้อมหน้า ใจเป็นสุข',
+'ผึ้งพบสวนดอกไม้บาน โอกาสอยู่รอบตัว เลือกเก็บให้ดี',
+'รุ้งขึ้นหลังฝนหยุด เรื่องหนักใจจะคลี่คลายเป็นข่าวดี',
+'นกกระเรียนบินคู่สูงเมฆ มีผู้ใหญ่ใจดีคอยส่งเสริม',
+'ทับทิมแตกเม็ดแดงสด ความสำเร็จมาเป็นพวง ไม่มาเดี่ยว',
+'ระฆังดังกังวานไกล ชื่อเสียงดีงามจะเป็นที่รู้จัก',
+'รวงข้าวเต็มเมล็ดก้มหัวลง ยิ่งถ่อมตนยิ่งรุ่งเรือง',
+'โคมแดงจุดสว่างหน้าบ้าน ลาภมาเคาะประตูถึงที่',
+'น้ำพุใสในสวนไม่เคยแห้ง เงินทองไหลมาเรื่อย ๆ ไม่ขาดมือ',
+'ดาวเหนือส่องทางคนเดินเรือ ตัดสินใจครั้งนี้ถูกต้องแล้ว',
+'ต้นไผ่ลู่ลมไม่หัก ผ่านมรสุมมาได้ ต่อจากนี้มีแต่สดใส',
+'ดอกมะลิบานยามค่ำ ความดีที่ทำไว้เงียบ ๆ จะส่งกลิ่นหอม',
+'แมวน้อยนอนอาบแดดบนหลังคา ใจสบาย เรื่องเล็กไม่ต้องกังวล',
+'ส้มสีทองเต็มตะกร้า ของขวัญเล็ก ๆ จะนำโชคใหญ่มาให้',
+'สะพานไม้ข้ามลำธาร มีคนยื่นมือมาช่วยในเวลาที่ต้องการ',
+'กล้วยไม้เกาะต้นไม้ใหญ่ อาศัยผู้ใหญ่แล้วจะเติบโตงดงาม',
+'น้ำชาร้อนหนึ่งกา คุยกันดี ๆ เรื่องค้างคาจะจบด้วยรอยยิ้ม',
+'ว่าวลอยลมได้เพราะมีเชือกรั้ง อิสระที่ดีต้องมีหลักยึด',
+'เต่าเดินช้าแต่ถึงก่อน ค่อยเป็นค่อยไป ได้ผลแน่นอน',
+'ดอกทานตะวันหันหาแสง มองด้านดีไว้ โชคก็หันมาหา',
+'กระดิ่งลมไหวเบา ๆ ข่าวดีกำลังเดินทางมา',
+'นาข้าวเขียวขจี ปลูกวันนี้ อีกไม่นานได้เกี่ยว',
+'นกกางเขนร้องยามเช้า มีแขกดีหรือคนรู้ใจมาเยือน',
+'ต้นกล้าแทงยอดใหม่ เริ่มต้นสิ่งใหม่ได้ ฤกษ์ดี',
+'ผีเสื้อออกจากดักแด้ การเปลี่ยนแปลงครั้งนี้พาไปที่ดีกว่า',
+'ลูกท้อสุกหวานฉ่ำ ความรักมีรสหวาน ดูแลกันให้ดี',
+'ทางเดินหินเรียงเป็นระเบียบ วางแผนให้ดี งานจะราบรื่น',
+'ตะเกียงส่องห้อง ความรู้คือทรัพย์ เรียนเพิ่มแล้วได้ใช้',
+'ดอกเหมยบานกลางหนาว ยิ่งยากยิ่งเห็นคุณค่าของตัวเอง',
+'ปลาทองในอ่างหยก อยู่ในที่ที่ใช่ ใจก็สงบ',
+'หมอกจางยามสาย ความสับสนจะหายไป เห็นทางชัดขึ้น',
+'ต้นไทรแผ่ร่มเงา เป็นที่พึ่งให้ผู้อื่น บุญจะย้อนกลับมา',
+'ข้าวเหนียวมะม่วงจานโปรด ความสุขเรียบง่ายอยู่ใกล้ตัว',
+'เรือพายในคลองเล็ก ไปช้าแต่ปลอดภัย ไม่ต้องรีบร้อน',
+'ดอกพุดซ้อนขาวบริสุทธิ์ ใจซื่อตรงจะได้รับความไว้วางใจ',
+'หิ่งห้อยส่องแสงกลางคืน แม้แสงเล็กก็นำทางได้',
+'ม้าเร็วถึงทางแยก เลือกทางที่ใจสงบ ไม่ใช่ทางที่เร็วที่สุด',
+'ต้นสนเขียวทั้งปี ความสม่ำเสมอคือจุดแข็งของคุณ',
+'ขนมไหว้พระจันทร์แบ่งกันกิน ยิ่งแบ่งปันยิ่งได้คืน',
+'ใบไม้ผลิใหม่หลังพายุ ฟื้นตัวได้เร็วกว่าที่คิด',
+'สายน้ำค่อย ๆ เซาะหิน อดทนอีกนิด สิ่งที่หวังจะสำเร็จ',
+'นกแก้วช่างพูด คำพูดดีนำโชค พูดดีแล้วจะได้เพื่อน',
+'ร่มกระดาษสีแดง มีผู้คุ้มครองอยู่ ไม่ต้องกลัวฝน',
+'ลูกพลับแขวนชายคา รอให้สุกเองแล้วจะหวานกว่า',
+'กระต่ายในดวงจันทร์ ความฝันที่ดูไกลค่อย ๆ ใกล้เข้ามา',
+'เมฆขาวลอยผ่านภูเขา เรื่องกวนใจเป็นเพียงชั่วคราว',
+'ดอกบัวยังตูม รออีกสักพัก เวลายังมาไม่ถึง',
+'ลมนิ่งเรือใบรอ ทำสิ่งที่ทำได้ไปก่อน แล้วลมจะมา',
+'พระจันทร์ครึ่งดวง ได้บ้างเสียบ้าง วางใจกลาง ๆ ไว้ดีที่สุด',
+'บ่อน้ำขุ่นเพราะตะกอน นิ่งก่อนแล้วจะเห็นชัด',
+'ต้นไม้ผลัดใบ ปล่อยสิ่งเก่าไปบ้าง ของใหม่จะงอกงาม',
+'ทางเดินในสวนวกวน ไม่หลงหรอก แค่ไปช้ากว่าที่คิด',
+'ชาเย็นชืดไปหน่อย เรื่องดีมีอยู่ แต่อาจไม่ทันใจ',
+'นกพิราบหาทางกลับรัง คิดถึงคนเก่า ลองติดต่อดู',
+'กระถางเล็กไปสำหรับต้นไม้ ถึงเวลาขยับขยาย',
+'สายฝนพรำทั้งวัน อยู่บ้านพักใจ ไม่ต้องออกไปสู้ทุกเรื่อง',
+'เปลวตะเกียงไหว ระวังใจโลเล ตั้งเป้าให้มั่นคง',
+'ผลไม้ยังดิบ อย่าเพิ่งรีบเด็ด รอฤดูกาลอีกนิด',
+'ประตูไม้เปิดแง้ม โอกาสมี แต่ต้องเคาะเองก่อน',
+'หมากรุกเดินหนึ่งตา คิดล่วงหน้าสักสองตาก่อนลงมือ',
+'ปลาว่ายในอ่างเดิม สบายดีแต่ไม่โต ลองออกจากที่เดิมบ้าง',
+'ดอกไม้บานผิดฤดู ของดีมาผิดจังหวะ ใช้ให้เป็น',
+'ลูกคิดดีดเลขไม่ลงตัว ตรวจรายจ่ายให้ละเอียด',
+'เงาไผ่ทอดยาวยามเย็น เรื่องเล็กดูใหญ่เพราะมุมมอง',
+'สะพานยังสร้างไม่เสร็จ ข้ามไม่ได้ตอนนี้ ไม่ใช่ตลอดไป',
+'ไก่ขันผิดเวลา ข่าวลืออย่าเพิ่งเชื่อ ฟังให้ครบก่อน',
+'ทุ่งนาหลังฤดูเกี่ยว พักให้เต็มที่ แล้วค่อยเริ่มใหม่',
+'เทียนเล่มเดียวในห้องใหญ่ ทำทีละเรื่อง อย่าแบกทุกอย่างคนเดียว',
+'ว่าวติดกิ่งไม้ ขอความช่วยเหลือได้ ไม่เสียหน้า',
+'ดอกเบญจมาศบานช้า งานนี้ใช้เวลา แต่ผลออกมาสวย',
+'กาน้ำเดือดเสียงดัง ใจร้อนไปนิด ถอยออกมาหายใจลึก ๆ',
+'เส้นด้ายพันกัน แก้ทีละปม อย่ากระชาก',
+'นกกระจอกหลายตัวจิกข้าว แบ่งกันพอดี ทุกคนอิ่ม',
+'หลังคารั่วเล็กน้อย ซ่อมเสียตอนนี้ ก่อนฝนใหญ่จะมา',
+'พัดจีนเปิดครึ่งเดียว เรื่องนี้ยังมีอีกด้านที่ยังไม่เห็น',
+'ทางลาดขึ้นเขา เหนื่อยหน่อย แต่ข้างบนวิวสวย',
+'เมฆครึ้มบังตะวัน ช่วงนี้ทำตัวเงียบ ๆ เก็บแรงไว้ก่อน',
+'ทางเดินลื่นหลังฝน ก้าวช้า ๆ ระวังพลาดเล็กพลาดน้อย',
+'แมวปัดแจกันตก ระวังของแตกหักและคำพูดที่หลุดปาก',
+'ลมแรงพัดโคมดับ อย่าเพิ่งลงทุนก้อนใหญ่ช่วงนี้',
+'รดน้ำต้นไม้มากเกินไป ใส่ใจพอดี ๆ อย่ารัดคนรอบข้างแน่นนัก',
+'เรือเล็กออกทะเลไกล ประเมินกำลังตัวเองก่อนรับปาก',
+'ดอกกุหลาบมีหนาม ความรักช่วงนี้ต้องใช้ความเข้าใจ',
+'หมอกลงหนาบนภูเขา อย่าตัดสินใจเรื่องใหญ่ตอนใจไม่นิ่ง',
+'ประตูลงกลอน ทางนี้ยังไม่เปิด ลองหาทางอื่นก่อน',
+'นกหลงฝูง กลับไปหาคนที่ไว้ใจ แล้วจะไม่เดียวดาย',
+'ไฟในเตาแรงเกิน อารมณ์ร้อนทำงานเสีย ใจเย็นไว้',
+'ร่มหักกลางฝน เตรียมแผนสำรองไว้เสมอ',
+'กิ่งไม้เปราะยามหนาว พักผ่อนให้พอ ดูแลร่างกายเป็นพิเศษ',
+'ถุงเงินขาดก้น ระวังเงินรั่วไหลไปกับของไม่จำเป็น',
+'เงาตามตัวยามบ่าย เรื่องเก่าอาจย้อนมา จัดการให้จบ',
+'ลำธารแห้งชั่วคราว รอฝนอีกระยะ อย่าฝืนตักน้ำ',
+'ดอกไม้โดนแดดจัด ทำงานหนักเกินไป หาที่ร่มพักใจ',
+'เสียงฟ้าร้องไกล ๆ เตรียมตัวไว้ แต่ไม่ต้องตื่นกลัว',
+'ทางแยกไม่มีป้าย ถามคนที่รู้จริงก่อนออกเดิน',
+'จันทร์ข้างแรมค่อย ๆ หาย ทุกอย่างมีขึ้นมีลง อีกไม่นานจันทร์จะเต็มดวง'
+];
+const WORK = [
+ ['งานที่ตั้งใจได้รับการยอมรับ มีโอกาสเลื่อนขั้นหรือได้งานที่ดีกว่า','โปรเจกต์ใหญ่สำเร็จเกินคาด หัวหน้าเห็นฝีมือ','เจรจาสิ่งใดสำเร็จ เซ็นสัญญาได้','มีผู้ใหญ่ชวนไปทำสิ่งใหม่ ตอบรับได้เลย','ไอเดียของคุณจะเป็นที่พูดถึง'],
+ ['งานเดินหน้าเรื่อย ๆ มีเพื่อนร่วมงานช่วยเหลือ','ได้เรียนรู้ทักษะใหม่ที่ใช้ได้จริง','ทำตามแผนแล้วจะทันกำหนด','มีงานเสริมเล็ก ๆ เข้ามา รับไว้ได้','สอบหรือสัมภาษณ์ผ่านไปด้วยดี'],
+ ['งานพอไปได้ ยังไม่ถึงเวลาเปลี่ยน','มีเรื่องจุกจิกให้แก้ ใจเย็นแล้วจะผ่าน','ทำงานเป็นทีมดีกว่าทำคนเดียว','อย่าเพิ่งรับปากงานเกินตัว','ผลงานยังไม่เห็นชัด ทำต่อไปอย่าหยุด'],
+ ['ระวังพลาดเพราะรีบ ตรวจงานซ้ำอีกรอบ','อาจมีคนไม่เข้าใจเจตนา อธิบายให้ชัด','ยังไม่ควรเปลี่ยนงานหรือลาออกช่วงนี้','งานหนักขึ้นชั่วคราว แบ่งเวลาให้ดี','ระวังเอกสารและนัดหมายตกหล่น']
+];
+const MONEY = [
+ ['มีลาภลอย เงินเข้าจากทางที่ไม่คาดคิด','ค้าขายคล่อง กำไรงาม','ลงทุนระยะยาวได้ผลดี','มีคนคืนเงินหรือได้ของขวัญมีค่า','รายได้เพิ่มขึ้นจากฝีมือของตัวเอง'],
+ ['เงินเข้าสม่ำเสมอ เก็บออมได้','ได้ส่วนลดหรือของถูกใจราคาดี','ใช้จ่ายพอดี มีเหลือเก็บ','มีรายได้เสริมเล็ก ๆ น้อย ๆ','หนี้สินค่อย ๆ ลดลง'],
+ ['เงินเข้ามาก็ออกไป วางแผนใช้จ่ายให้ดี','ยังไม่ใช่เวลาเสี่ยงโชคก้อนใหญ่','ซื้อของจำเป็นก่อนของที่อยากได้','จะให้ใครยืมเงินควรคิดให้ดี','จดรายรับรายจ่ายแล้วจะเห็นทางออม'],
+ ['ระวังเงินรั่วไหลไปกับของไม่จำเป็น','ไม่ควรค้ำประกันหรือให้ยืมช่วงนี้','ระวังมิจฉาชีพและข้อเสนอที่ดีเกินจริง','อาจมีค่าซ่อมแซมที่ไม่คาดคิด','ชะลอการลงทุนไว้ก่อน']
+];
+const LOVE = [
+ ['คนโสดจะพบคนถูกใจ คนมีคู่รักกันหวานขึ้น','มีคนแอบชอบอยู่ใกล้ ๆ','ความสัมพันธ์ก้าวหน้า ผู้ใหญ่เอ็นดู','บอกความในใจได้ สมหวัง','วางแผนอนาคตร่วมกันได้ดี'],
+ ['ความรักราบรื่น ใส่ใจเรื่องเล็ก ๆ','มีนัดดี ๆ หรือได้เจอเพื่อนใหม่','เข้าใจกันมากขึ้นหลังคุยเปิดใจ','คนรอบข้างให้ความอบอุ่น','รักที่เริ่มจากมิตรภาพไปได้ดี'],
+ ['ความรักทรงตัว ต้องเติมความใส่ใจ','อย่าเปรียบเทียบคนรักกับคนอื่น','ให้เวลาอีกฝ่ายได้ตัดสินใจ','คนโสดยังสนุกกับชีวิตตัวเองได้','ฟังมากกว่าพูด แล้วจะเข้าใจกัน'],
+ ['ระวังน้อยใจเรื่องเล็กจนลามเป็นเรื่องใหญ่','อย่าเชื่อคำหวานของคนเพิ่งรู้จักง่ายเกินไป','อาจมีมือที่สามเข้ามา รักษาระยะ','อย่าตัดสินใจเรื่องรักตอนกำลังโกรธ','รักตัวเองให้มากขึ้นก่อน']
+];
+const HEALTH = [
+ ['แข็งแรงสดชื่น เหมาะเริ่มออกกำลังกาย','โรคเก่าทุเลาลง','นอนหลับสนิท พลังเต็มเปี่ยม','จิตใจแจ่มใส ส่งผลดีต่อร่างกาย','มีแรงทำกิจกรรมกลางแจ้ง'],
+ ['สุขภาพดี ดื่มน้ำให้พอ','ออกไปเดินเล่นในสวนจะช่วยให้สดชื่น','พักผ่อนพอดี ร่างกายตอบรับดี','กินผักผลไม้เพิ่มอีกนิด','อาการเล็กน้อยหายเร็ว'],
+ ['พักผ่อนให้มากขึ้น อย่านอนดึก','ระวังปวดหลังปวดบ่าจากการนั่งนาน','ลุกเปลี่ยนท่าบ่อย ๆ','ระวังกินข้าวไม่ตรงเวลา','ลดหวานลดเค็มลงหน่อย'],
+ ['ระวังอุบัติเหตุเล็กน้อย เดินทางอย่าประมาท','ไปตรวจสุขภาพตามนัด อย่าเลื่อน','ระวังหวัดเพราะอากาศเปลี่ยน','ความเครียดสะสม หาเวลาพักใจ','ระวังของมีคมและพื้นลื่น']
+];
+const LOST = [
+ ['ได้คืนเร็ว อยู่ใกล้ตัว','มีคนเก็บไว้ให้','หาเจอภายในสามวัน'],
+ ['อยู่ในบ้าน ลองดูที่สูง','ได้คืนแต่ช้าหน่อย','ถามคนใกล้ชิดดู'],
+ ['ได้คืนบางส่วน','เจอตอนเลิกหา','อยู่ในกระเป๋าใบเก่า'],
+ ['หายาก ทำใจไว้บ้าง','ได้คืนยาก ป้องกันไว้ครั้งหน้า','อย่าเสียเวลาหานาน']
+];
+const COLORS = ['ชมพูกลีบบัว','เขียวใบตอง','ฟ้าคราม','เหลืองทอง','ขาวมุก','ส้มอิฐ','ม่วงอัญชัน','แดงชาด','น้ำตาลไม้สัก','เขียวหยก'];
+
+// Shuffle which saying goes to which number (fixed, so the set is stable)
+const PERM = (() => {
+  const a = [...Array(N).keys()]; let s = 20261109;
+  const r = () => { s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  for (let i = N - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+})();
+const levelOfIdx = i => i < 15 ? 0 : i < 50 ? 1 : i < 80 ? 2 : 3;
+function gardenFortune(n){
+  const i = PERM[n-1], L = levelOfIdx(i);
+  return { level:L, label:LV[L], title:'', badge:'', head:HEADS[i], overview:'', work:WORK[L][(n*3)%5], money:MONEY[L][(n*7+1)%5], love:LOVE[L][(n*11+2)%5],
+    health:HEALTH[L][(n*13+3)%5], lost:LOST[L][n%3], color:COLORS[(n*17)%COLORS.length], lucky:String(((n*37)%89)+10), tags:'', prize:'' };
+}
+// Gen Alpha deck (กลอนคล้องจองผสานสแลง Gen Alpha) embedded as data above
+const GA = (() => { try { return JSON.parse(document.getElementById('deckGA').textContent); } catch(e) { return { deck: [], glossary: {} }; } })();
+const GLOSS = GA.glossary || {};
+const GKEYS = Object.keys(GLOSS).map(k => ({ k, names: k.toLowerCase().split(/\s*[\/&]\s*/).concat([k.toLowerCase()]) }));
+function glossFor(tag){ const t = tag.toLowerCase().trim(); if (!t) return null; for (const g of GKEYS) if (g.names.includes(t)) return g.k; return null; }
+function baseFortune(n){
+  const g = state.deck !== 'garden' && GA.deck[n-1];
+  if (g) return Object.assign({ label: LV[g.level], title:'', badge:'', overview:'', lost:'', color:'', lucky:'', tags:'', prize:'' }, g);
+  return gardenFortune(n);
+}
+const FIELDS = ['level','label','title','badge','head','overview','work','money','love','health','lost','color','lucky','tags','prize'];
+function fortune(n){
+  const b = baseFortune(n), o = state.overrides[n];
+  return o ? Object.assign(b, o) : b;
+}
+
+/* ---------------- State ---------------- */
+function defaults(){
+  return { weights:Array(N).fill(1), limits:Array(N).fill(null), used:Array(N).fill(0), overrides:{},
+    pin:'1234', muted:false, music:true, autoRead:true, history:[], deck:'ga', title:'เซียมซีสวนบัว', shrine:'ศาลสวนบัว', sub:'ตั้งจิตอธิษฐาน แล้วเขย่าให้ไม้หล่นมา ๑ อัน' };
+}
+function numArr(a, def, allowNull){
+  if (!Array.isArray(a) || a.length !== N) return Array(N).fill(def);
+  return a.map(v => { if (allowNull && (v === null || v === '' || v === undefined)) return null; const x = Number(v); return isFinite(x) && x >= 0 ? x : def; });
+}
+function cleanOverrides(o){
+  const out = {};
+  if (o && typeof o === 'object') for (const k in o) {
+    const n = +k; if (!(n >= 1 && n <= N) || !o[k] || typeof o[k] !== 'object') continue;
+    const r = {};
+    FIELDS.forEach(f => { if (o[k][f] !== undefined) r[f] = f === 'level' ? Math.min(3, Math.max(0, +o[k][f] || 0)) : String(o[k][f]); });
+    out[n] = r;
+  }
+  return out;
+}
+function normalize(s){
+  const d = defaults();
+  if (!s || typeof s !== 'object') return d;
+  d.weights = numArr(s.weights, 1, false);
+  d.limits = numArr(s.limits, null, true);
+  d.used = numArr(s.used, 0, false);
+  d.overrides = cleanOverrides(s.overrides);
+  if (typeof s.pin === 'string' && s.pin) d.pin = s.pin;
+  d.muted = !!s.muted;
+  d.music = s.music !== false;
+  d.autoRead = s.autoRead !== false;
+  if (s.deck === 'garden' || s.deck === 'ga') d.deck = s.deck;
+  if (Array.isArray(s.history)) d.history = s.history.filter(h => h && h.n >= 1 && h.n <= N).slice(-200);
+  ['title','shrine','sub'].forEach(k => { if (typeof s[k] === 'string' && s[k].trim()) d[k] = s[k]; });
+  return d;
+}
+function load(){
+  let s = null;
+  try { s = JSON.parse(localStorage.getItem(KEY)); } catch(e) {}
+  if (!s && PRESET) s = PRESET;
+  return normalize(s);
+}
+let state = load();
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {} }
+
+/* ---------------- Draw ---------------- */
+const eligible = i => { const w = +state.weights[i] || 0; if (w <= 0) return false; const l = state.limits[i]; return l === null || state.used[i] < l; };
+const anyEligible = () => { for (let i = 0; i < N; i++) if (eligible(i)) return true; return false; };
+function rand(){ try { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; } catch(e) { return Math.random(); } }
+function pick(){
+  let total = 0; for (let i = 0; i < N; i++) if (eligible(i)) total += +state.weights[i];
+  if (total <= 0) return -1;
+  let r = rand() * total;
+  for (let i = 0; i < N; i++) if (eligible(i)) { r -= +state.weights[i]; if (r < 0) return i; }
+  for (let i = N - 1; i >= 0; i--) if (eligible(i)) return i;
+  return -1;
+}
+
+/* ---------------- Sound ---------------- */
+let ac = null, master = null, noiseBuf = null;
+function audio(){
+  if (state.muted) return null;
+  if (!ac) {
+    try { ac = new (window.AudioContext || window.webkitAudioContext)(); master = ac.createGain(); master.gain.value = .7; master.connect(ac.destination); }
+    catch(e) { return null; }
+  }
+  if (ac.state === 'suspended') ac.resume();
+  return ac;
+}
+function noise(){
+  if (!noiseBuf) { noiseBuf = ac.createBuffer(1, ac.sampleRate * .6, ac.sampleRate); const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+  return noiseBuf;
+}
+function env(g, t, peak, a, d){ g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); }
+function tone(type, f0, f1, t, peak, a, d){
+  const o = ac.createOscillator(), g = ac.createGain(); o.type = type;
+  o.frequency.setValueAtTime(f0, t); if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t + a + d);
+  env(g, t, peak, a, d); o.connect(g).connect(master); o.start(t); o.stop(t + a + d + .02);
+}
+function burst(t, freq, q, peak, d, type){
+  const s = ac.createBufferSource(); s.buffer = noise();
+  const f = ac.createBiquadFilter(); f.type = type || 'bandpass'; f.frequency.value = freq; f.Q.value = q;
+  const g = ac.createGain(); env(g, t, peak, .002, d);
+  s.connect(f).connect(g).connect(master); s.start(t, Math.random() * .4); s.stop(t + d + .03);
+}
+const sfx = {
+  rattle(s, k){ if (!audio()) return; k = k || 0; const t = ac.currentTime; const c = 2 + (Math.random() * 3 | 0) + Math.round(k * 3);
+    for (let i = 0; i < c; i++) { const tt = t + i * (.022 - k * .008) + Math.random() * .01, f = 1500 + Math.random() * 1500 + k * 600;
+      burst(tt, f, 7, (.18 + .3 * s) * (1 + k * .5), .045); tone('triangle', f * .42, f * .38, tt, .07 + .08 * s, .002, .045); }
+    // rising cute note: the fuller the meter, the higher it climbs
+    const scale = [523.3, 587.3, 659.3, 784, 880, 1046.5, 1174.7, 1318.5, 1568, 1760];
+    const f = scale[Math.min(scale.length - 1, Math.floor(k * scale.length))];
+    tone('triangle', f, f, t, .05 + k * .04, .003, .12);
+    if (k > .55) tone('sine', 130, 48, t, .45 * k, .003, .2); },
+  stage(n){ if (!audio()) return; const t = ac.currentTime;
+    [784, 988, 1175, 1568].slice(0, n + 1).forEach((f, i) => { tone('sine', f, f, t + i * .055, .13, .004, .25); tone('square', f * 2, f * 2, t + i * .055, .015, .004, .12); }); },
+  reveal(){ if (!audio()) return; const t = ac.currentTime;
+    tone('sine', 520, 2400, t, .16, .02, .4); burst(t, 4000, .7, .2, .4, 'bandpass');
+    tone('sine', 196, 196, t, .3, .005, 1.4); tone('sine', 392, 392, t, .1, .005, 1.1);
+    for (let i = 0; i < 7; i++) { const f = 2000 + Math.random() * 2400; tone('sine', f, f, t + .12 + i * .05, .07, .003, .25); } },
+  whoosh(){ if (!audio()) return; const t = ac.currentTime; tone('sine', 330, 880, t, .16, .03, .3); burst(t, 2400, 1.2, .12, .3, 'bandpass'); },
+  land(){ if (!audio()) return; const t = ac.currentTime;
+    tone('triangle', 520, 360, t, .45, .002, .12); burst(t, 900, 4, .35, .08);
+    tone('triangle', 560, 400, t + .17, .22, .002, .09); burst(t + .17, 1000, 4, .18, .06);
+    tone('sine', 1760, 1760, t + .05, .12, .005, 1.1); tone('sine', 3520, 3520, t + .05, .03, .005, .7); },
+  chime(){ if (!audio()) return; const t = ac.currentTime + .05;
+    [1046.5, 1318.5, 1568, 2093, 2637].forEach((f, i) => { tone('sine', f, f, t + i * .085, .16, .005, .9); tone('sine', f * 2, f * 2, t + i * .085, .03, .005, .5); }); },
+  paper(){ if (!audio()) return; const t = ac.currentTime; burst(t, 3200, .8, .16, .22, 'bandpass'); burst(t + .1, 2200, .8, .1, .18, 'bandpass'); },
+  pop(){ if (!audio()) return; const t = ac.currentTime; tone('sine', 520, 980, t, .2, .004, .09); },
+  empty(){ if (!audio()) return; const t = ac.currentTime; tone('triangle', 440, 330, t, .18, .005, .2); tone('triangle', 330, 260, t + .18, .16, .005, .25); }
+};
+
+/* ---------------- Background music: an original pentatonic tune, plucked like a guzheng ---------------- */
+const NOTE_ON = '<svg viewBox="0 0 24 24" fill="none" stroke="#2d2b4e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><ellipse cx="6.5" cy="18" rx="2.8" ry="2.2" fill="#f4a6b6"/><ellipse cx="16.5" cy="16" rx="2.8" ry="2.2" fill="#f4a6b6"/></svg>';
+const NOTE_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="#2d2b4e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><ellipse cx="6.5" cy="18" rx="2.8" ry="2.2"/><ellipse cx="16.5" cy="16" rx="2.8" ry="2.2"/><path d="M3 3l18 18" stroke="#e2574c" stroke-width="2.4"/></svg>';
+function mctx(){
+  if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); master = ac.createGain(); master.gain.value = .7; master.connect(ac.destination); } catch(e) { return null; } }
+  if (ac.state === 'suspended') ac.resume();
+  return ac;
+}
+// [note, length in eighth notes]; 0 = rest. Twelve bars in C pentatonic (C D E G A).
+const N_ = { A3:57, C4:60, D4:62, E4:64, G4:67, A4:69, C5:72, D5:74, E5:76, G5:79, A5:81, C6:84 };
+const TUNE = [
+  ['E5',2],['G5',1],['A5',1],['G5',2],['E5',1],['D5',1],  ['C5',2],['D5',1],['E5',1],['G5',4],
+  ['A5',2],['G5',1],['E5',1],['D5',2],['C5',1],['D5',1],  ['E5',6],[0,2],
+  ['G5',2],['A5',1],['C6',1],['A5',2],['G5',2],          ['E5',1],['G5',1],['A5',2],['G5',4],
+  ['D5',2],['E5',1],['G5',1],['E5',2],['D5',1],['C5',1],  ['A4',2],['C5',2],['D5',4],
+  ['E5',1],['D5',1],['C5',2],['A4',2],['C5',2],          ['D5',2],['E5',1],['G5',1],['E5',4],
+  ['G5',1],['E5',1],['D5',2],['C5',2],['A4',2],          ['C5',6],[0,2]
+];
+const BASS = [48,48,45,48, 48,45,43,43, 45,48,43,48]; // one root per bar
+const STEPS = (() => { const a = []; let t = 0; TUNE.forEach(([n, d]) => { if (n) a[t] = { m: N_[n], d }; t += d; }); a.length = t; return a; })();
+const EIGHTH = 60 / 80 / 2;
+let mGain = null, mTimer = null, mStep = 0, mNext = 0, mLoop = 0;
+const hz = m => 440 * Math.pow(2, (m - 69) / 12);
+function pluck(m, t, vol, dec){
+  const f = hz(m), o = ac.createOscillator(), o2 = ac.createOscillator(), g = ac.createGain(), g2 = ac.createGain();
+  o.type = 'triangle'; o.frequency.setValueAtTime(f * 1.025, t); o.frequency.exponentialRampToValueAtTime(f, t + .05);
+  o2.type = 'sine'; o2.frequency.setValueAtTime(f * 2, t);
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .006); g.gain.exponentialRampToValueAtTime(.0001, t + dec);
+  g2.gain.setValueAtTime(.0001, t); g2.gain.exponentialRampToValueAtTime(vol * .3, t + .004); g2.gain.exponentialRampToValueAtTime(.0001, t + dec * .5);
+  o.connect(g).connect(mGain); o2.connect(g2).connect(mGain);
+  o.start(t); o2.start(t); o.stop(t + dec + .05); o2.stop(t + dec * .5 + .05);
+}
+function schedule(){
+  if (!ac || !mGain) return;
+  while (mNext < ac.currentTime + .5) {
+    const t = Math.max(mNext, ac.currentTime + .02), st = STEPS[mStep], bar = mStep >> 3, beat = mStep & 7;
+    if (st) {
+      pluck(st.m, t, .5, .9 + st.d * .28);
+      // every other time round, a quick grace note slides into the long notes
+      if (st.d >= 4 && mLoop % 2) pluck(st.m - (st.m % 12 === 0 ? 3 : 2), t - .07, .2, .25);
+    }
+    if (beat === 0) { pluck(BASS[bar], t, .42, 2.2); pluck(BASS[bar] + 12, t + .01, .14, 1.6); }
+    if (beat === 4) pluck(BASS[bar] + 7, t, .22, 1.4);
+    if (mLoop % 2 && (beat === 2 || beat === 6)) pluck(BASS[bar] + 12 + (beat === 2 ? 4 : 7) - (BASS[bar] % 12 === 9 ? 1 : 0), t, .1, .8);
+    mNext += EIGHTH; mStep++;
+    if (mStep >= STEPS.length) { mStep = 0; mLoop++; }
+  }
+}
+function startMusic(){
+  if (!state.music || mTimer || !mctx()) return;
+  if (!mGain) {
+    mGain = ac.createGain(); mGain.gain.value = 0; mGain.connect(ac.destination);
+    const d = ac.createDelay(1), fb = ac.createGain(), wet = ac.createGain();
+    d.delayTime.value = EIGHTH * 1.5; fb.gain.value = .28; wet.gain.value = .35;
+    mGain.connect(d); d.connect(fb); fb.connect(d); d.connect(wet); wet.connect(ac.destination);
+  }
+  mGain.gain.cancelScheduledValues(ac.currentTime); mGain.gain.setValueAtTime(mGain.gain.value, ac.currentTime); mGain.gain.linearRampToValueAtTime(.16, ac.currentTime + 1.2);
+  mNext = ac.currentTime + .1; schedule(); mTimer = setInterval(schedule, 120);
+}
+function stopMusic(){
+  if (mTimer) { clearInterval(mTimer); mTimer = null; }
+  if (mGain && ac) { mGain.gain.cancelScheduledValues(ac.currentTime); mGain.gain.setValueAtTime(mGain.gain.value, ac.currentTime); mGain.gain.linearRampToValueAtTime(0, ac.currentTime + .4); }
+}
+function renderMusic(){ const b = document.getElementById('btnMusic'); b.innerHTML = state.music ? NOTE_ON : NOTE_OFF; b.setAttribute('aria-label', state.music ? 'ปิดเพลง' : 'เปิดเพลง'); }
+document.getElementById('btnMusic').addEventListener('click', () => { state.music = !state.music; save(); renderMusic(); if (state.music) startMusic(); else stopMusic(); });
+// browsers only allow sound after the first touch, so the tune starts then
+['pointerdown', 'keydown'].forEach(ev => window.addEventListener(ev, () => { if (state.music && !mTimer && !document.hidden) startMusic(); }));
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopMusic(); else if (state.music && mGain) startMusic(); });
+renderMusic();
+const SPK_ON = '<svg viewBox="0 0 24 24" fill="none" stroke="#2d2b4e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#f5d27b"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
+const SPK_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="#2d2b4e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
+function renderSound(){ $('btnSound').innerHTML = state.muted ? SPK_OFF : SPK_ON; $('btnSound').setAttribute('aria-label', state.muted ? 'เปิดเสียง' : 'ปิดเสียง'); }
+$('btnSound').addEventListener('click', () => { state.muted = !state.muted; save(); renderSound(); sfx.pop(); });
+
+/* ---------------- Scene ---------------- */
+const SVGNS = 'http://www.w3.org/2000/svg';
+const STICKS = [{x:146,t:206},{x:166,t:152},{x:254,t:212},{x:186,t:226},{x:236,t:160},{x:204,t:184},{x:270,t:238},{x:222,t:232},{x:130,t:246},{x:176,t:198},{x:246,t:190}];
+const sticksG = $('sticks');
+STICKS.forEach((s, i) => {
+  const g = document.createElementNS(SVGNS, 'g');
+  const w = 11;
+  g.innerHTML = `<path d="M${s.x-w} ${s.t+12} L${s.x} ${s.t} L${s.x+w} ${s.t+12} L${s.x+w} 330 L${s.x-w} 330 Z" fill="#47c086" stroke="#2d2b4e" stroke-width="2.6" stroke-linejoin="round"/><rect x="${s.x-3}" y="${s.t+16}" width="6" height="${314-s.t}" fill="#2c9a68" opacity=".55"/>`;
+  sticksG.appendChild(g);
+  s.el = g; s.dy = 0; s.r = 0; s.lift = 0;
+});
+const urn = $('urn'), drop = $('drop'), dropRot = $('dropRot'), badge = $('badge');
+let urnA = 0, urnX = 0, urnY = 0;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let phase = 'idle'; // idle | shaking | rising | falling | landed | reading
+let energy = 0, lastImpulse = 0, drawn = -1, liftK = -1;
+let glow = 0, shakeAmt = 0, stage = 0, dropPos = null, lastAmb = 0;
+const wrap = document.querySelector('.scene-wrap');
+const aura = $('aura'), raysG = $('rays');
+for (let i = 0; i < 14; i++) {
+  const a0 = i * (360 / 14) * Math.PI / 180, a1 = a0 + 11 * Math.PI / 180, R = 420;
+  const p = document.createElementNS(SVGNS, 'path');
+  p.setAttribute('d', `M200 300 L${(200 + R * Math.cos(a0)).toFixed(1)} ${(300 + R * Math.sin(a0)).toFixed(1)} L${(200 + R * Math.cos(a1)).toFixed(1)} ${(300 + R * Math.sin(a1)).toFixed(1)} Z`);
+  p.setAttribute('fill', i % 2 ? '#fff6c8' : '#ffe9a0');
+  raysG.appendChild(p);
+}
+
+/* ---- particles (sparkles, lotus petals, dust) ---- */
+const fx = $('fx'), ctx = fx.getContext('2d');
+let dpr = 1, parts = [];
+function sizeFx(){ const r = fx.getBoundingClientRect(); dpr = Math.min(2, window.devicePixelRatio || 1); fx.width = Math.max(1, Math.round(r.width * dpr)); fx.height = Math.max(1, Math.round(r.height * dpr)); }
+sizeFx();
+try { new ResizeObserver(sizeFx).observe(fx); } catch(e) { window.addEventListener('resize', sizeFx); }
+function toLocal(x, y){
+  const m = $('scene').getScreenCTM(); if (!m) return { x: 0, y: 0, s: 1 };
+  const r = fx.getBoundingClientRect();
+  return { x: m.a * x + m.c * y + m.e - r.left, y: m.b * x + m.d * y + m.f - r.top, s: m.a };
+}
+const PETAL = ['#f4a6b6', '#fbc9d3', '#ffffff', '#f4a6b6'], SPARK = ['#ffe08a', '#fff6c8', '#f5d27b', '#ffffff'];
+function spawn(type, x, y, n, power, spread){
+  if (reduce) n = Math.ceil(n / 3);
+  const p = toLocal(x, y), sc = p.s;
+  for (let i = 0; i < n; i++) {
+    let a, sp = (1.6 + rand() * 3.6) * power * sc;
+    if (type === 'ring') a = rand() * Math.PI * 2;
+    else if (type === 'dust') { a = rand() < .5 ? Math.PI + (rand() - .5) * .5 : (rand() - .5) * .5; sp *= .8; }
+    else a = -Math.PI / 2 + (rand() - .5) * (spread || 2.2);
+    parts.push({ type, x: p.x + (rand() - .5) * 12 * sc, y: p.y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: 1,
+      decay: type === 'dust' ? .03 + rand() * .02 : .011 + rand() * .016,
+      size: (type === 'dust' ? 5 + rand() * 5 : type === 'petal' ? 5 + rand() * 3 : 3.5 + rand() * 5) * sc,
+      rot: rand() * 6.28, vr: (rand() - .5) * .3, color: (type === 'petal' ? PETAL : SPARK)[rand() * 4 | 0] });
+  }
+  if (parts.length > 450) parts.splice(0, parts.length - 450);
+}
+function star(x, y, r){
+  ctx.beginPath();
+  for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4, rr = i % 2 ? r * .38 : r; ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
+  ctx.closePath();
+}
+function drawParts(f){
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, fx.width / dpr, fx.height / dpr);
+  ctx.lineJoin = 'round'; ctx.strokeStyle = '#2d2b4e';
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const q = parts[i];
+    q.life -= q.decay * f; if (q.life <= 0) { parts.splice(i, 1); continue; }
+    q.x += q.vx * f; q.y += q.vy * f; q.rot += q.vr * f;
+    if (q.type === 'petal') { q.vy += .07 * f; q.vx = q.vx * .97 + Math.sin(q.rot * 2) * .12; q.vy = Math.min(q.vy, 2.2); }
+    else if (q.type === 'dust') { q.vx *= .9; q.vy *= .9; q.size *= 1 + .02 * f; }
+    else { q.vy += .05 * f; q.vx *= .965; q.vy *= .965; }
+    ctx.globalAlpha = Math.min(1, q.life * 1.6);
+    ctx.fillStyle = q.color;
+    if (q.type === 'petal') {
+      ctx.save(); ctx.translate(q.x, q.y); ctx.rotate(q.rot);
+      ctx.beginPath(); ctx.ellipse(0, 0, q.size, q.size * .55, 0, 0, Math.PI * 2); ctx.fill(); ctx.lineWidth = 1.3; ctx.stroke(); ctx.restore();
+    } else if (q.type === 'dust') {
+      ctx.fillStyle = '#fffaf0'; ctx.beginPath(); ctx.arc(q.x, q.y, q.size, 0, Math.PI * 2); ctx.fill(); ctx.lineWidth = 1.2; ctx.stroke();
+    } else {
+      const r = q.size * (.7 + .3 * Math.sin(q.rot * 3));
+      star(q.x, q.y, r); ctx.fill(); if (r > 4) { ctx.lineWidth = 1.2; ctx.stroke(); }
+    }
+  }
+  ctx.globalAlpha = 1;
+}
+function popText(msg, big){
+  if (reduce && !big) return;
+  wrap.querySelectorAll('.pop').forEach(x => x.remove());
+  const d = document.createElement('div'); d.className = 'pop' + (big ? ' big' : ''); d.textContent = msg;
+  wrap.appendChild(d); setTimeout(() => d.remove(), 1000);
+}
+function flash(){ const el = $('flash'); el.classList.remove('go'); void el.offsetWidth; el.classList.add('go'); }
+const STAGE_TXT = ['', 'ดีมาก!', 'อีกนิด!', 'ใกล้แล้ว!!'];
+
+function frame(now){
+  const dt = Math.min(.05, (now - (frame.last || now)) / 1000); frame.last = now;
+  const f = dt * 60;
+  if (phase === 'shaking' && now - lastImpulse > 260) {
+    energy = Math.max(0, energy - dt * 32);
+    const st = energy >= 75 ? 3 : energy >= 50 ? 2 : energy >= 25 ? 1 : 0;
+    if (st < stage) stage = st;
+    if (energy === 0) { phase = 'idle'; stage = 0; setHint(); }
+    meter();
+  }
+  // glow and light rays follow the shake energy
+  const target = phase === 'rising' || phase === 'falling' ? 110 : phase === 'landed' ? 35 : phase === 'reading' ? 0 : energy;
+  glow += (target - glow) * Math.min(1, .12 * f);
+  const g = Math.min(1, glow / 100);
+  aura.setAttribute('opacity', (g * .95).toFixed(3));
+  aura.setAttribute('r', (140 + 40 * g + 10 * g * Math.sin(now / 90)).toFixed(1));
+  raysG.setAttribute('opacity', Math.max(0, (glow - 30) / 70 * .6).toFixed(3));
+  raysG.setAttribute('transform', `rotate(${(now * (.01 + .04 * g)) % 360} 200 300)`);
+  // sparkles spilling from the rim when the meter is high
+  if (phase === 'shaking' && energy > 45 && rand() < (energy - 45) / 90 * f) spawn('spark', 200 + (rand() - .5) * 150, 300, 1, .9);
+  if (phase === 'falling' && dropPos) spawn('spark', dropPos.x, dropPos.y, 1, .35, 6.28);
+  if (phase === 'landed' && dropPos && now - lastAmb > 240) { lastAmb = now; spawn('spark', dropPos.x + (rand() - .5) * 150, dropPos.y + (rand() - .5) * 20, 1, .45); }
+  // camera shake
+  if (!reduce && shakeAmt > .2) { wrap.style.transform = `translate(${((rand() - .5) * shakeAmt).toFixed(2)}px,${((rand() - .5) * shakeAmt).toFixed(2)}px)`; shakeAmt *= Math.pow(.86, f); }
+  else if (shakeAmt) { shakeAmt = 0; wrap.style.transform = ''; }
+  drawParts(f);
+  urnA *= .82; urnX *= .82; urnY *= .8;
+  urn.setAttribute('transform', `rotate(${urnA.toFixed(2)} 200 512) translate(${urnX.toFixed(2)} ${urnY.toFixed(2)})`);
+  STICKS.forEach(s => { s.dy *= .78; s.r *= .78;
+    s.el.setAttribute('transform', `translate(0 ${(s.dy - s.lift).toFixed(2)}) rotate(${s.r.toFixed(2)} ${s.x} 330)`); });
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+function meter(){
+  const m = $('meter'); m.style.width = Math.min(100, energy) + '%';
+  const box = m.parentNode;
+  box.classList.toggle('live', phase === 'shaking');
+  box.classList.toggle('s2', energy >= 50 && energy < 80);
+  box.classList.toggle('s3', energy >= 80);
+}
+function vibrate(ms){ try { navigator.vibrate && navigator.vibrate(ms); } catch(e) {} }
+
+let emptyWarned = 0;
+function impulse(s){
+  if (phase !== 'idle' && phase !== 'shaking') return;
+  if (!anyEligible()) {
+    if (performance.now() - emptyWarned > 2500) { emptyWarned = performance.now(); sfx.empty(); toast('ไม้เซียมซีหมดแล้ว ผู้สร้างเกมต้องล้างจำนวนที่ออกหรือเพิ่มจำนวนครั้งในหน้าตั้งค่า'); }
+    return;
+  }
+  s = Math.max(.25, Math.min(1, s));
+  const wasIdle = phase === 'idle';
+  phase = 'shaking'; lastImpulse = performance.now();
+  energy = Math.min(100, energy + 5 + 8 * s);
+  const k = energy / 100, amp = (reduce ? .35 : 1) * (1 + 1.3 * k);
+  urnA = (rand() - .5) * 9 * s * amp; urnX = (rand() - .5) * 7 * s * amp; urnY = -rand() * 7 * s * k * amp;
+  STICKS.forEach(st => { st.dy = -rand() * 12 * s * amp * (1 + k); st.r = (rand() - .5) * 5 * s * amp; });
+  shakeAmt = Math.max(shakeAmt, (1.5 + 7 * k) * s);
+  spawn('spark', 200 + (rand() - .5) * 140, 300, 1 + Math.round(4 * k * s), .7 + k);
+  if (k > .35 && rand() < k) spawn('petal', 200 + (rand() - .5) * 140, 300, 1 + Math.round(2 * k), .8 + k * .6);
+  sfx.rattle(s, k); vibrate(Math.round(10 + 25 * k)); meter();
+  const st = energy >= 75 ? 3 : energy >= 50 ? 2 : energy >= 25 ? 1 : 0;
+  if (st > stage && energy < 100) { stage = st; popText(STAGE_TXT[st]); sfx.stage(st); setHint(); }
+  else if (wasIdle) setHint();
+  if (energy >= 100) startDrop();
+}
+
+function tween(ms, fn){
+  if (reduce) ms = Math.min(ms, 120);
+  return new Promise(res => { const t0 = performance.now();
+    (function step(now){ const t = Math.min(1, (now - t0) / ms); fn(t); if (t < 1) requestAnimationFrame(step); else res(); })(t0); });
+}
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+const easeInOut = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+function setDrop(cx, cy, a){
+  dropPos = { x: cx, y: cy };
+  drop.setAttribute('transform', `translate(${cx.toFixed(2)} ${cy.toFixed(2)})`);
+  dropRot.setAttribute('transform', `rotate(${a.toFixed(2)})`);
+  badge.setAttribute('transform', `translate(0,-66) rotate(${(-a).toFixed(2)})`);
+}
+
+async function startDrop(){
+  const i = pick();
+  if (i < 0) { phase = 'idle'; energy = 0; meter(); impulse(1); return; }
+  phase = 'rising'; drawn = i + 1;
+  state.used[i]++; state.history.push({ n: drawn, t: Date.now() }); if (state.history.length > 200) state.history.shift();
+  save(); if (!$('sheet').hidden && unlocked) refreshAdmin();
+  setHint(); $('mainBtn').disabled = true; $('mainBtn').textContent = 'ไม้กำลังหล่น…';
+  $('badgeTxt').textContent = th(drawn);
+
+  // a stick slides up out of the urn
+  liftK = rand() * STICKS.length | 0; const s = STICKS[liftK]; const rise = s.t - 100;
+  stage = 0; meter();
+  sfx.whoosh(); vibrate(30); shakeAmt = 6;
+  await tween(420, t => { s.lift = rise * easeOut(t); urnA = Math.sin(t * 40) * 2 * (1 - t); });
+  s.el.style.opacity = '0';
+  // swap to the free-flying stick: flash, burst of sparkles and petals, then it falls in front of the urn
+  const left = s.x < 200, ex = left ? 138 : 262, ey = 556, ea = left ? -82 : 82;
+  drop.setAttribute('visibility', 'visible'); setDrop(s.x, 200, 0);
+  flash(); sfx.reveal(); vibrate([40, 30, 60]); shakeAmt = 12;
+  spawn('ring', s.x, 110, 26, 1.6); spawn('petal', s.x, 120, 14, 1.4, 3.2);
+  popText('ออกแล้ว!', true);
+  phase = 'falling';
+  await tween(720, t => {
+    const x = s.x + (ex - s.x) * easeOut(t);
+    const y = 200 + (ey - 200) * t * t - 150 * t * (1 - t);
+    setDrop(x, y, ea * easeInOut(t) + (left ? -1 : 1) * 30 * Math.sin(Math.PI * t));
+  });
+  sfx.land(); vibrate([20, 60, 15]); shakeAmt = 7;
+  spawn('dust', ex, ey + 10, 12, 1.4); spawn('ring', ex, ey, 10, 1.1);
+  await tween(380, t => {
+    const b = Math.abs(Math.sin(Math.PI * t * 2)) * (1 - t) * 16;
+    setDrop(ex, ey - b, ea + (left ? 1 : -1) * Math.sin(Math.PI * t * 3) * (1 - t) * 6);
+  });
+  setDrop(ex, ey, ea);
+  phase = 'landed'; energy = 0; meter();
+  $('scene').classList.add('landed');
+  const b = $('mainBtn'); b.disabled = false; b.classList.add('ready'); b.textContent = 'เปิดคำทำนาย ใบที่ ' + th(drawn);
+  setHint();
+}
+
+function resetStick(){
+  $('scene').classList.remove('landed');
+  drop.setAttribute('visibility', 'hidden');
+  if (liftK >= 0) { const s = STICKS[liftK]; s.el.style.opacity = ''; const from = s.lift; tween(300, t => { s.lift = from * (1 - easeOut(t)); }); }
+  liftK = -1;
+}
+
+/* ---------------- Fortune slip ---------------- */
+let slipFor = 0;
+function fillSlip(n, f){
+  slipFor = n; slipData = f;
+  $('sNo').textContent = th(n);
+  $('sNoText').textContent = 'ใบที่ ' + n;
+  $('sShrine').textContent = state.shrine;
+  const label = String(f.label || '').trim() || LV[f.level];
+  const seal = $('sSeal'); seal.className = 'seal lv' + f.level + (label.length > 7 ? ' long' : ''); seal.textContent = label;
+  const has = v => !!String(v || '').trim();
+  $('sTitle').textContent = unesc(f.title); $('sTitle').hidden = !has(f.title);
+  const bd = $('sBadge'); bd.textContent = unesc(f.badge); bd.className = 'slip-badge lv' + f.level; bd.hidden = !has(f.badge);
+  const head = $('sHead'); head.textContent = unesc(f.head); head.hidden = !has(f.head);
+  const grid = $('sGrid'); grid.innerHTML = '';
+  const over = has(f.overview) ? [['ภาพรวม', f.overview, true]] : [];
+  const rest = [['การงาน / การเรียน', f.work], ['การเงิน / โชคลาภ', f.money], ['ความรัก', f.love], ['สุขภาพ / ข้อเตือนใจ', f.health]].filter(x => has(x[1]));
+  const secs = over.concat(rest);
+  secs.forEach((x, idx) => {
+    const lastOdd = !x[2] && rest.length % 2 && idx === secs.length - 1;
+    const d = document.createElement('div'); d.className = 'slip-sec' + (x[2] || lastOdd ? ' wide' : '');
+    const h = document.createElement('h3'); h.textContent = x[0];
+    const p = document.createElement('p'); p.textContent = unesc(x[1]);
+    d.append(h, p); grid.appendChild(d);
+  });
+  grid.hidden = !secs.length;
+  const ex = $('sExtra'); ex.innerHTML = '';
+  [['ของหาย', f.lost], ['สีมงคล', f.color], ['เลขนำโชค', f.lucky]].forEach(x => {
+    if (!String(x[1] || '').trim()) return;
+    const s = document.createElement('span'); s.textContent = x[0] + ' '; const b = document.createElement('b'); b.textContent = unesc(x[1]); s.appendChild(b); ex.appendChild(s);
+  });
+  ex.hidden = !ex.childNodes.length;
+  // slang chips: tap a dashed chip to see what the word means
+  const tg = $('sTags'), gl = $('sGloss'); tg.innerHTML = ''; gl.hidden = true;
+  String(f.tags || '').split(/,\s+|\s*;\s*/).map(t => t.trim()).filter(Boolean).forEach(t => {
+    const key = glossFor(t);
+    const el = document.createElement(key ? 'button' : 'span'); el.className = 'tag'; el.textContent = t;
+    if (key) {
+      el.type = 'button'; el.setAttribute('aria-pressed', 'false');
+      el.addEventListener('click', () => {
+        const on = el.getAttribute('aria-pressed') !== 'true';
+        tg.querySelectorAll('button.tag').forEach(b => b.setAttribute('aria-pressed', 'false'));
+        el.setAttribute('aria-pressed', on); gl.hidden = !on; sfx.pop();
+        if (on) { gl.innerHTML = ''; const b = document.createElement('b'); b.textContent = key + ' (' + GLOSS[key].th + '): '; gl.append(b, GLOSS[key].d); }
+      });
+    }
+    tg.appendChild(el);
+  });
+  tg.hidden = !tg.childNodes.length;
+  $('sPrizeText').textContent = unesc(f.prize); $('sPrize').hidden = !has(f.prize);
+  $('sFoot').textContent = state.shrine + ' · เซียมซี ๑๐๐ ใบ';
+}
+const unesc = v => String(v == null ? '' : v).replace(/\\n/g, '\n');
+function showSlip(n, f, preview){
+  fillSlip(n, f);
+  $('againBtn').textContent = preview ? 'ปิดตัวอย่าง' : 'เสี่ยงอีกครั้ง';
+  $('copyBtn').hidden = !!preview;
+  const ov = $('overlay'); ov.hidden = false; ov.dataset.preview = preview ? '1' : '';
+  ov.classList.remove('open'); void ov.offsetWidth; ov.classList.add('open'); ov.scrollTop = 0;
+  sfx.paper(); setTimeout(sfx.chime, 260);
+  setTimeout(() => $('againBtn').focus({ preventScroll: true }), 50);
+}
+function openResult(){
+  if (phase !== 'landed') return;
+  phase = 'reading';
+  $('mainBtn').classList.remove('ready');
+  showSlip(drawn, fortune(drawn), false);
+  if (state.autoRead) speakSlip(true);
+}
+function closeSlip(){
+  stopSpeak();
+  const ov = $('overlay'); const wasPreview = ov.dataset.preview === '1';
+  ov.hidden = true; ov.classList.remove('open');
+  if (wasPreview) return;
+  sfx.pop(); resetStick(); phase = 'idle'; energy = 0; meter();
+  const b = $('mainBtn'); b.disabled = false; b.textContent = 'เขย่าเซียมซี';
+  setHint();
+}
+
+/* ---------------- Read the fortune aloud (the device's own Thai voice) ---------------- */
+let slipData = null, speaking = false, speakTok = 0;
+const synth = window.speechSynthesis || null;
+function thaiVoice(){ try { const v = synth.getVoices(); return v.find(x => /^th/i.test(x.lang) && x.localService) || v.find(x => /^th/i.test(x.lang)) || null; } catch(e) { return null; } }
+if (synth) { try { synth.getVoices(); synth.addEventListener && synth.addEventListener('voiceschanged', () => synth.getVoices()); } catch(e) {} }
+function setSpeakBtn(){ $('speakBtn').textContent = speaking ? 'หยุดอ่าน' : 'ฟังคำทำนาย'; }
+function duck(on){ if (mGain && ac && mTimer) { mGain.gain.cancelScheduledValues(ac.currentTime); mGain.gain.setValueAtTime(mGain.gain.value, ac.currentTime); mGain.gain.linearRampToValueAtTime(on ? .04 : .16, ac.currentTime + .4); } }
+function stopSpeak(){ speakTok++; if (synth) { try { if (synth.speaking || synth.pending) synth.cancel(); } catch(e) {} } if (speaking) { speaking = false; duck(false); } setSpeakBtn(); }
+function speakSlip(auto){
+  if (!synth || typeof SpeechSynthesisUtterance === 'undefined') { if (!auto) toast('เบราว์เซอร์นี้ไม่รองรับเสียงอ่าน'); return; }
+  const f = slipData; if (!f) return;
+  let busy = false; try { busy = synth.speaking || synth.pending; } catch(e) {}
+  stopSpeak();
+  const has = v => !!String(v || '').trim(), say = v => unesc(v).replace(/[\/·|]/g, ' ').replace(/\.{2,}/g, ' ');
+  const parts = ['ใบที่ ' + slipFor + ' ' + (String(f.label || '').trim() || LV[f.level])];
+  if (has(f.title)) parts.push(say(f.title));
+  if (has(f.head)) say(f.head).split('\n').forEach(l => { if (l.trim()) parts.push(l); });
+  [['ภาพรวม', f.overview], ['การงาน', f.work], ['การเงิน', f.money], ['ความรัก', f.love], ['สุขภาพ', f.health], ['ของหาย', f.lost], ['สีมงคล', f.color], ['เลขนำโชค', f.lucky], ['ของรางวัล', f.prize]]
+    .forEach(x => { if (has(x[1])) parts.push(x[0] + ' ' + say(x[1])); });
+  const tok = ++speakTok, voice = thaiVoice();
+  let started = false, i = 0;
+  speaking = true; setSpeakBtn(); duck(true);
+  const done = () => { if (tok !== speakTok) return; speaking = false; duck(false); setSpeakBtn(); };
+  const next = () => {
+    if (tok !== speakTok) return;
+    if (i >= parts.length) { done(); return; }
+    const u = new SpeechSynthesisUtterance(parts[i++]);
+    u.lang = 'th-TH'; if (voice) u.voice = voice; u.rate = 1; u.pitch = 1.1; u.volume = 1;
+    u.onstart = () => { started = true; };
+    u.onend = next;
+    u.onerror = e => { if (tok !== speakTok) return; done(); if (!auto && !started && e.error !== 'interrupted' && e.error !== 'canceled') toast('เครื่องนี้เล่นเสียงอ่านภาษาไทยไม่ได้'); };
+    try { synth.resume(); synth.speak(u); } catch(e) { done(); }
+  };
+  // speaking straight after a cancel gets dropped by some browsers, so wait a moment in that case
+  if (busy) setTimeout(next, 200); else next();
+  // some browsers accept the request but never speak (no Thai voice installed, or speech blocked)
+  setTimeout(() => { if (tok === speakTok && !started && !synth.speaking) { stopSpeak(); toast('เสียงอ่านไม่ทำงานบนหน้านี้ อาจเพราะเครื่องไม่มีเสียงภาษาไทย หรือหน้านี้ถูกปิดกั้นเสียงอ่าน'); } }, 4000);
+}
+$('speakBtn').addEventListener('click', () => { if (speaking) stopSpeak(); else speakSlip(false); });
+$('cfgRead').addEventListener('change', () => { state.autoRead = $('cfgRead').checked; save(); });
+if (!synth) $('speakBtn').hidden = true;
+// phones only let a page speak after a touch: unlock the voice with a silent word on the first one
+if (synth) window.addEventListener('pointerdown', function prime(){ window.removeEventListener('pointerdown', prime); try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; u.lang = 'th-TH'; synth.speak(u); } catch(e) {} });
+$('againBtn').addEventListener('click', closeSlip);
+$('copyBtn').addEventListener('click', () => {
+  const f = fortune(slipFor);
+  const lines = [state.shrine + ' · เซียมซีใบที่ ' + slipFor + ' (' + (String(f.label || '').trim() || LV[f.level]) + ')', unesc(f.title), unesc(f.head)];
+  [['ภาพรวม', f.overview], ['การงาน', f.work], ['การเงิน', f.money], ['ความรัก', f.love], ['สุขภาพ', f.health], ['ของหาย', f.lost], ['สีมงคล', f.color], ['เลขนำโชค', f.lucky]]
+    .concat([['คำศัพท์', f.tags], ['ของรางวัล', f.prize]])
+    .forEach(x => { if (String(x[1] || '').trim()) lines.push(x[0] + ': ' + unesc(x[1])); });
+  copyText(lines.filter(Boolean).join('\n'), 'คัดลอกคำทำนายแล้ว');
+});
+function copyText(text, okMsg, fallbackEl){
+  const fail = () => {
+    if (fallbackEl) { fallbackEl.focus(); fallbackEl.select(); toast('กดคัดลอกจากช่องข้อความได้เลย'); return; }
+    const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
+    let ok = false; try { ok = document.execCommand('copy'); } catch(e) {} ta.remove();
+    toast(ok ? okMsg : 'คัดลอกไม่ได้ในหน้านี้');
+  };
+  try { navigator.clipboard.writeText(text).then(() => toast(okMsg), fail); } catch(e) { fail(); }
+}
+
+/* ---------------- Input: button, drag, keyboard, phone motion ---------------- */
+let autoTimer = null;
+$('mainBtn').addEventListener('click', () => {
+  audio();
+  if (phase === 'landed') { openResult(); return; }
+  if (phase !== 'idle' && phase !== 'shaking') return;
+  if (autoTimer) return;
+  sfx.pop();
+  impulse(.8);
+  autoTimer = setInterval(() => {
+    if (phase !== 'idle' && phase !== 'shaking') { clearInterval(autoTimer); autoTimer = null; return; }
+    impulse(.7 + rand() * .3);
+    if (phase === 'idle') { clearInterval(autoTimer); autoTimer = null; }
+  }, 115);
+});
+drop.addEventListener('click', e => { e.stopPropagation(); audio(); openResult(); });
+
+const scene = $('scene');
+let drag = null;
+scene.addEventListener('pointerdown', e => {
+  if (e.target.closest('#drop')) return;
+  audio();
+  drag = { x: e.clientX, y: e.clientY, dir: 0, travel: 0 };
+  try { scene.setPointerCapture(e.pointerId); } catch(_) {}
+});
+scene.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  const d = Math.abs(dx) > Math.abs(dy) ? dx : dy;
+  if (Math.abs(d) < 2) return;
+  const dir = Math.sign(d);
+  if (drag.dir && dir !== drag.dir && drag.travel > 14) { impulse(drag.travel / 60); drag.travel = 0; }
+  drag.dir = dir; drag.travel += Math.abs(d); drag.x = e.clientX; drag.y = e.clientY;
+  if (phase === 'idle' || phase === 'shaking') urnX = Math.max(-8, Math.min(8, urnX + dx * .15));
+});
+const endDrag = () => { drag = null; };
+scene.addEventListener('pointerup', endDrag); scene.addEventListener('pointercancel', endDrag);
+
+// Phone shake
+let motion = 'unknown'; // unknown | needs-permission | on | unavailable
+let prevAcc = null, lastMotionImpulse = 0, motionSeen = false;
+function onMotion(e){
+  const a = e.accelerationIncludingGravity || e.acceleration;
+  if (!a || a.x == null) return;
+  if (!motionSeen) { motionSeen = true; motion = 'on'; setHint(); }
+  if (prevAcc) {
+    const d = Math.abs(a.x - prevAcc.x) + Math.abs(a.y - prevAcc.y) + Math.abs(a.z - prevAcc.z);
+    const now = performance.now();
+    if (d > 16 && now - lastMotionImpulse > 95) { lastMotionImpulse = now; impulse(d / 42); }
+  }
+  prevAcc = { x: a.x, y: a.y, z: a.z };
+}
+function listenMotion(){
+  window.addEventListener('devicemotion', onMotion);
+  setTimeout(() => { if (!motionSeen) { motion = 'unavailable'; setHint(); } }, 1800);
+}
+async function askMotion(){
+  audio();
+  try {
+    const r = await DeviceMotionEvent.requestPermission();
+    if (r === 'granted') { motion = 'unknown'; setHint(); listenMotion(); toast('เขย่ามือถือได้เลย'); }
+    else { motion = 'unavailable'; setHint(); toast('ไม่ได้รับอนุญาตให้อ่านการเขย่า ใช้ปุ่มหรือลากกระบอกแทนได้'); }
+  } catch(e) { motion = 'unavailable'; setHint(); }
+}
+if (typeof DeviceMotionEvent === 'undefined') motion = 'unavailable';
+else if (typeof DeviceMotionEvent.requestPermission === 'function') motion = 'needs-permission';
+else listenMotion();
+
+function setHint(){
+  const h = $('hint'); h.innerHTML = '';
+  if (phase === 'landed') { h.textContent = 'ไม้หล่นมาแล้ว แตะไม้หรือกดปุ่มเพื่อเปิดคำทำนาย'; return; }
+  if (phase === 'rising' || phase === 'falling') { h.textContent = 'ตั้งจิตไว้…'; return; }
+  if (phase === 'shaking') { h.textContent = ['เขย่าต่อเลย!', 'ดีมาก เขย่าอีก!', 'อีกนิดเดียว!', 'ใกล้แล้ว เขย่าแรง ๆ!!'][stage]; return; }
+  if (motion === 'needs-permission') {
+    const b = document.createElement('button'); b.className = 'chip'; b.type = 'button'; b.textContent = 'แตะเพื่อเปิดโหมดเขย่ามือถือ';
+    b.addEventListener('click', askMotion); h.appendChild(b);
+    h.appendChild(document.createTextNode('หรือลากกระบอกไปมา'));
+  } else if (motion === 'on') {
+    const c = document.createElement('span'); c.className = 'chip on'; c.innerHTML = '<span class="dot"></span>เขย่ามือถือได้เลย'; h.appendChild(c);
+  } else {
+    h.textContent = 'ลากกระบอกไปมาเพื่อเขย่า หรือกดปุ่มด้านบน';
+  }
+}
+
+/* ---------------- Toast ---------------- */
+let toastT = 0;
+function toast(msg){ const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600); }
+
+/* ---------------- Branding ---------------- */
+function applyBrand(){
+  $('title').textContent = state.title; $('subtitle').textContent = state.sub; $('urnLabel').textContent = state.shrine;
+}
+
+/* ---------------- Creator settings ---------------- */
+let unlocked = false, filter = 'all';
+function openSheet(){
+  $('sheet').hidden = false; $('gateView').hidden = unlocked; $('adminView').hidden = !unlocked;
+  if (unlocked) refreshAdmin(); else { $('pinIn').value = ''; $('pinErr').textContent = ''; setTimeout(() => $('pinIn').focus(), 50); }
+}
+function closeSheet(){ $('sheet').hidden = true; if (location.hash === '#admin') history.replaceState(null, '', location.pathname + location.search); }
+$('btnGear').addEventListener('click', () => { sfx.pop(); openSheet(); });
+$('closeSheet').addEventListener('click', closeSheet);
+$('gateForm').addEventListener('submit', e => {
+  e.preventDefault();
+  if ($('pinIn').value === state.pin) { unlocked = true; sfx.chime(); openSheet(); }
+  else { $('pinErr').textContent = 'รหัสไม่ถูกต้อง ลองอีกครั้ง'; sfx.empty(); }
+});
+function onHash(){ if (location.hash === '#admin') openSheet(); }
+window.addEventListener('hashchange', onHash);
+
+// Table
+const rows = [];
+function buildTable(){
+  const tb = $('table'); tb.innerHTML = '';
+  const head = document.createElement('div'); head.className = 'trow thead';
+  ['เลข','ระดับ','คำทำนาย','น้ำหนัก','ออกได้สูงสุด','โอกาส','ออกแล้ว',''].forEach(t => { const s = document.createElement('span'); s.textContent = t; head.appendChild(s); });
+  tb.appendChild(head);
+  for (let n = 1; n <= N; n++) {
+    const r = document.createElement('div'); r.className = 'trow';
+    r.innerHTML = `<span class="tno"></span><span class="lvtag"></span><span class="tprev"></span>
+      <label class="tw"><span class="mlabel">น้ำหนัก</span><input type="number" min="0" step="any" id="w${n}" aria-label="น้ำหนักเลข ${n}"></label>
+      <label class="tlim"><span class="mlabel">ออกได้สูงสุด</span><input type="number" min="0" step="1" placeholder="ไม่จำกัด" id="l${n}" aria-label="ออกได้สูงสุดเลข ${n}"></label>
+      <span class="tpct"></span><span class="tused"></span>
+      <button class="btn sm tedit" type="button">แก้ข้อความ</button>`;
+    const w = r.querySelector('#w' + n), l = r.querySelector('#l' + n);
+    w.addEventListener('input', () => { const v = parseFloat(w.value); state.weights[n-1] = isFinite(v) && v >= 0 ? v : 0; save(); refreshNumbers(); });
+    l.addEventListener('input', () => { const v = l.value.trim(); const x = parseInt(v, 10); state.limits[n-1] = v === '' || !isFinite(x) || x < 0 ? null : x; save(); refreshNumbers(); });
+    r.querySelector('.tedit').addEventListener('click', () => openEditor(n));
+    rows.push({ el: r, n, w, l, no: r.querySelector('.tno'), lv: r.querySelector('.lvtag'), prev: r.querySelector('.tprev'), pct: r.querySelector('.tpct'), used: r.querySelector('.tused') });
+    tb.appendChild(r);
+  }
+}
+function refreshRowsText(){
+  rows.forEach(R => {
+    const f = fortune(R.n);
+    R.no.innerHTML = ''; R.no.append(th(R.n)); const sm = document.createElement('small'); sm.textContent = R.n; R.no.appendChild(sm);
+    if (state.overrides[R.n]) { const d = document.createElement('span'); d.className = 'edited'; d.title = 'แก้ข้อความแล้ว'; R.no.appendChild(d); }
+    R.lv.className = 'lvtag lv' + f.level; R.lv.textContent = LV[f.level];
+    R.prev.textContent = (String(f.prize || '').trim() ? 'รางวัล: ' + unesc(f.prize) + ' · ' : '') + ((unesc(f.title) || unesc(f.head)).replace(/\n/g, ' ') || '(ไม่มีข้อความ)');
+  });
+}
+function refreshNumbers(){
+  let total = 0; for (let i = 0; i < N; i++) if (eligible(i)) total += +state.weights[i];
+  let elig = 0, finite = true, left = 0, usedSum = 0;
+  rows.forEach(R => {
+    const i = R.n - 1, ok = eligible(i);
+    if (document.activeElement !== R.w) R.w.value = state.weights[i];
+    if (document.activeElement !== R.l) R.l.value = state.limits[i] === null ? '' : state.limits[i];
+    R.pct.textContent = ok && total > 0 ? (state.weights[i] / total * 100).toFixed(2) + '%' : '0%';
+    const lim = state.limits[i];
+    R.used.textContent = lim === null ? 'ออก ' + state.used[i] : 'ออก ' + state.used[i] + '/' + lim;
+    R.el.classList.toggle('out', !ok);
+    usedSum += state.used[i];
+    if (ok) { elig++; if (lim === null) finite = false; else left += lim - state.used[i]; }
+  });
+  $('stEligible').textContent = elig;
+  $('stUsed').textContent = usedSum;
+  $('stLeft').textContent = !elig ? '0' : finite ? left : 'ไม่จำกัด';
+  applyFilter();
+}
+const FILTERS = [['all','ทั้งหมด'],['0','ดีเลิศ'],['1','ดี'],['2','ปานกลาง'],['3','ควรระวัง'],['open','ยังออกได้'],['out','ออกไม่ได้แล้ว'],['edited','แก้ข้อความแล้ว'],['prize','มีของรางวัล']];
+function buildFilters(){
+  const box = $('filters');
+  FILTERS.forEach(([k, label]) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'fchip'; b.textContent = label; b.dataset.k = k;
+    b.setAttribute('aria-pressed', k === filter);
+    b.addEventListener('click', () => { filter = k; box.querySelectorAll('.fchip').forEach(x => x.setAttribute('aria-pressed', x.dataset.k === k)); applyFilter(); });
+    box.appendChild(b);
+  });
+  $('search').addEventListener('input', applyFilter);
+}
+function applyFilter(){
+  const q = $('search').value.trim().replace(/[๐-๙]/g, c => TH.indexOf(c));
+  rows.forEach(R => {
+    const i = R.n - 1, f = fortune(R.n);
+    let show = filter === 'all' || (/^\d$/.test(filter) && f.level === +filter) || (filter === 'open' && eligible(i)) || (filter === 'out' && !eligible(i)) || (filter === 'edited' && !!state.overrides[R.n]) || (filter === 'prize' && !!String(f.prize || '').trim());
+    if (q && !String(R.n).startsWith(q)) show = false;
+    R.el.hidden = !show;
+  });
+}
+function refreshHistory(){
+  const box = $('hist'); box.innerHTML = '';
+  const list = state.history.slice(-40).reverse();
+  if (!list.length) { const p = document.createElement('p'); p.className = 'empty'; p.textContent = 'ยังไม่มีการสุ่ม'; box.appendChild(p); return; }
+  list.forEach(h => {
+    const d = document.createElement('div'); const a = document.createElement('span'); const b = document.createElement('span');
+    const hf = fortune(h.n); a.textContent = 'ใบที่ ' + h.n + ' · ' + (String(hf.label || '').trim() || LV[hf.level]);
+    b.textContent = new Date(h.t).toLocaleString('th-TH', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    d.append(a, b); box.appendChild(d);
+  });
+}
+function refreshAdmin(){
+  if (!rows.length) { buildTable(); buildFilters(); }
+  $('cfgTitle').value = state.title; $('cfgShrine').value = state.shrine; $('cfgSub').value = state.sub; $('cfgRead').checked = state.autoRead; $('deckSel').value = state.deck;
+  refreshRowsText(); refreshNumbers(); refreshHistory();
+}
+
+$('applyW').addEventListener('click', () => { const v = parseFloat($('allW').value); if (!(v >= 0)) { toast('ใส่ตัวเลขตั้งแต่ 0 ขึ้นไป'); return; } state.weights.fill(v); save(); refreshNumbers(); toast('ตั้งน้ำหนักทุกเลขเป็น ' + v + ' แล้ว'); });
+$('applyL').addEventListener('click', () => { const v = $('allL').value.trim(); const x = parseInt(v, 10); state.limits.fill(v === '' || !(x >= 0) ? null : x); save(); refreshNumbers(); toast(v === '' ? 'ทุกเลขออกได้ไม่จำกัดแล้ว' : 'ทุกเลขออกได้สูงสุด ' + x + ' ครั้ง'); });
+$('applyPreset').addEventListener('click', () => {
+  const p = $('preset').value; const M = { rare: [1,4,4,2], kind: [3,4,2,1], equal: [1,1,1,1] }[p];
+  if (!M) { toast('เลือกรูปแบบก่อน'); return; }
+  for (let n = 1; n <= N; n++) state.weights[n-1] = M[fortune(n).level];
+  save(); refreshNumbers(); toast('ตั้งน้ำหนักตามระดับแล้ว');
+});
+function armConfirm(btn, label, action){
+  let armed = false, t = 0; const orig = btn.textContent;
+  btn.addEventListener('click', () => {
+    if (!armed) { armed = true; btn.textContent = label; t = setTimeout(() => { armed = false; btn.textContent = orig; }, 3500); return; }
+    clearTimeout(t); armed = false; btn.textContent = orig; action();
+  });
+}
+armConfirm($('resetUsed'), 'แตะอีกครั้งเพื่อยืนยัน', () => { state.used.fill(0); state.history = []; save(); refreshNumbers(); refreshHistory(); toast('ล้างจำนวนที่ออกแล้ว ทุกเลขกลับมาออกได้'); });
+['cfgTitle','cfgShrine','cfgSub'].forEach(id => $(id).addEventListener('input', () => {
+  const k = { cfgTitle: 'title', cfgShrine: 'shrine', cfgSub: 'sub' }[id]; const v = $(id).value;
+  if (v.trim()) { state[k] = v; save(); applyBrand(); }
+}));
+$('deckSel').addEventListener('change', () => { state.deck = $('deckSel').value; save(); refreshRowsText(); refreshNumbers(); refreshHistory(); toast('เปลี่ยนชุดคำทำนายแล้ว'); });
+$('savePin').addEventListener('click', () => { const v = $('newPin').value.trim(); if (v.length < 4) { toast('รหัสควรยาวอย่างน้อย 4 ตัว'); return; } state.pin = v; save(); $('newPin').value = ''; toast('เปลี่ยนรหัสแล้ว'); });
+
+// Export / import config
+function exportObj(){ return { app: 'siamsi-suanbua', v: 1, deck: state.deck, weights: state.weights, limits: state.limits, overrides: state.overrides, title: state.title, shrine: state.shrine, sub: state.sub }; }
+$('exportBtn').addEventListener('click', () => { const code = JSON.stringify(exportObj()); $('cfgCode').value = code; copyText(code, 'คัดลอกโค้ดตั้งค่าแล้ว', $('cfgCode')); });
+$('importBtn').addEventListener('click', () => {
+  let o; try { o = JSON.parse($('cfgCode').value); } catch(e) { toast('โค้ดไม่ถูกต้อง ตรวจว่าคัดลอกมาครบ'); return; }
+  if (!o || typeof o !== 'object' || !Array.isArray(o.weights)) { toast('โค้ดนี้ไม่ใช่โค้ดตั้งค่าเซียมซี'); return; }
+  const n = normalize(Object.assign({}, state, o, { used: state.used, history: state.history, pin: state.pin, muted: state.muted }));
+  state = n; save(); applyBrand(); refreshAdmin(); toast('นำเข้าการตั้งค่าแล้ว');
+});
+
+// Bulk text
+const LVMAP = { 'ดีเลิศ': 0, 'ดี': 1, 'ปานกลาง': 2, 'กลาง': 2, 'ควรระวัง': 3, 'ระวัง': 3, '0': 0, '1': 1, '2': 2, '3': 3 };
+const BULK_ORDER = ['level','label','title','badge','head','overview','work','money','love','health','lost','color','lucky','tags','prize'];
+$('bulkLoad').addEventListener('click', () => {
+  const lines = [];
+  for (let n = 1; n <= N; n++) { const f = fortune(n); lines.push([n, LV[f.level]].concat(BULK_ORDER.slice(1).map(k => String(f[k] || '').replace(/\n/g, '\\n').replace(/\|/g, '/'))).join(' | ')); }
+  $('bulkText').value = lines.join('\n'); toast('ดึงข้อความ 100 ใบมาแล้ว แก้แล้วกดบันทึกได้เลย');
+});
+$('bulkSave').addEventListener('click', () => {
+  const lines = $('bulkText').value.split(/\r?\n/).filter(l => l.trim());
+  let ok = 0, bad = [];
+  lines.forEach((line, idx) => {
+    const parts = line.split(line.includes('\t') ? '\t' : '|').map(s => s.trim());
+    const n = parseInt(String(parts[0]).replace(/[๐-๙]/g, c => TH.indexOf(c)), 10);
+    if (!(n >= 1 && n <= N)) { bad.push(idx + 1); return; }
+    const o = {};
+    BULK_ORDER.forEach((k, j) => {
+      const v = parts[j + 1]; if (v === undefined) return;
+      if (k === 'level') { if (v in LVMAP) o.level = LVMAP[v]; } else o[k] = v;
+    });
+    if (o.level === undefined) o.level = fortune(n).level;
+    state.overrides[n] = Object.assign({}, state.overrides[n] || {}, o); ok++;
+  });
+  save(); refreshRowsText(); refreshNumbers(); refreshHistory();
+  toast(bad.length ? `บันทึก ${ok} ใบ · บรรทัดที่ ${bad.slice(0, 5).join(', ')} ไม่มีเลข 1–100` : `บันทึกข้อความ ${ok} ใบแล้ว`);
+});
+armConfirm($('bulkReset'), 'แตะอีกครั้งเพื่อยืนยัน', () => { state.overrides = {}; save(); refreshRowsText(); refreshNumbers(); toast('คืนข้อความตั้งต้นทั้ง 100 ใบแล้ว'); });
+
+// Single editor
+let edN = 0;
+const ED = { level: 'edLevel', label: 'edLabel', title: 'edTitle2', badge: 'edBadge', head: 'edHead', overview: 'edOverview', work: 'edWork', money: 'edMoney', love: 'edLove', health: 'edHealth', lost: 'edLost', color: 'edColor', lucky: 'edLucky', tags: 'edTags', prize: 'edPrize' };
+function openEditor(n){
+  edN = n; const f = fortune(n);
+  $('edTitle').textContent = 'แก้ข้อความใบที่ ' + n;
+  for (const k in ED) $(ED[k]).value = k === 'level' ? f.level : unesc(f[k]);
+  $('editor').hidden = false; setTimeout(() => $('edHead').focus(), 30);
+}
+function readEditor(){ const o = {}; for (const k in ED) o[k] = k === 'level' ? +$(ED[k]).value : $(ED[k]).value; return o; }
+$('edForm').addEventListener('submit', e => {
+  e.preventDefault(); state.overrides[edN] = readEditor(); save();
+  $('editor').hidden = true; refreshRowsText(); refreshNumbers(); toast('บันทึกข้อความใบที่ ' + edN + ' แล้ว');
+});
+$('edPreview').addEventListener('click', () => showSlip(edN, Object.assign(baseFortune(edN), readEditor()), true));
+$('edCancel').addEventListener('click', () => { $('editor').hidden = true; });
+$('edReset').addEventListener('click', () => { delete state.overrides[edN]; save(); openEditor(edN); refreshRowsText(); refreshNumbers(); toast('คืนข้อความตั้งต้นของใบที่ ' + edN + ' แล้ว'); });
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (!$('editor').hidden) $('editor').hidden = true;
+  else if (!$('overlay').hidden) closeSlip();
+  else if (!$('sheet').hidden) closeSheet();
+});
+
+/* ---------------- Boot ---------------- */
+renderSound(); applyBrand(); setHint(); onHash();
+})();
+</script>
+
+</body>
+</html>
