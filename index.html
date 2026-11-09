@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FCEEEE">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ร้านของฉัน">
+<title>ร้านของฉัน POS</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app" id="app"></div>
+<div id="cartbar"></div>
+<nav class="nav" aria-label="เมนูหลัก"><div class="in" id="nav"></div></nav>
+<div id="sheetwrap"></div>
+<div id="toastwrap"></div>
+
+<!-- ช่องเลือกไฟล์ (มือถือจะให้เลือกถ่ายรูปหรือเลือกจากคลังภาพ) -->
+<input type="file" accept="image/*" id="f-receive" hidden>
+<input type="file" accept="image/*" id="f-item" hidden>
+<input type="file" accept="image/*" id="f-chat" hidden>
+<input type="file" accept="image/*" id="f-edit-img" hidden>
+<input type="file" accept="image/*" capture="environment" id="f-scan" hidden>
+<input type="file" accept="image/*" capture="environment" id="f-scan-recv" hidden>
+<input type="file" accept="image/*" capture="environment" id="f-bc-form" hidden>
+<input type="file" accept="image/*" capture="environment" id="f-bc-edit" hidden>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js" defer></script>
+<script src="config.js"></script>
+<script src="demo-data.js"></script>
+<script src="api.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
